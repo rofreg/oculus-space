@@ -23,7 +23,7 @@
 
 // Prevent scrolling on mobile
 document.ontouchmove = function(e){
-  e.preventDefault();
+  // e.preventDefault();
   viewport = document.querySelector("meta[name=viewport]")
 }
 
@@ -37,6 +37,11 @@ window.onresize = function(e){
 
 window.onload = function(e){
   try {
+    setTimeout(function(){
+      // Hide the address bar!
+      window.scrollTo(0, 1);
+      // window.scrollTo(0, 0);
+    }, 0);
     App.Utilities.checkOrientation();
   } catch (e) {
     // App not loaded yet
