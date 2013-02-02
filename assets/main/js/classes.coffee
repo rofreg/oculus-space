@@ -16,11 +16,14 @@ class App.Metagame
     this.room = io
       .of("/#{@id}")
       .on('connection', (socket) ->
-        socket.emit('player added')
+        socket.on 'player added', (data) ->
+          console.log data
+          socket.broadcast.emit 'player added', data
       )
 
   clientInit: (io) ->
-    this.socket = io.connect("/#{@id}", {name: 'kyle'})
+    this.socket = io.connect("/#{@id}")
+    this.socket.emit('player added', {player: App.player.name})
     this.socket.on 'player added', ->
       console.log 'player added'
 

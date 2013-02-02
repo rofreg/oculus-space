@@ -24,13 +24,17 @@
 
     Metagame.prototype.serverInit = function(io) {
       return this.room = io.of("/" + this.id).on('connection', function(socket) {
-        return socket.emit('player added');
+        return socket.on('player added', function(data) {
+          console.log(data);
+          return socket.broadcast.emit('player added', data);
+        });
       });
     };
 
     Metagame.prototype.clientInit = function(io) {
-      this.socket = io.connect("/" + this.id, {
-        name: 'kyle'
+      this.socket = io.connect("/" + this.id);
+      this.socket.emit('player added', {
+        player: App.player.name
       });
       return this.socket.on('player added', function() {
         return console.log('player added');
