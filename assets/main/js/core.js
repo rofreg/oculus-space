@@ -22,13 +22,13 @@
 }());
 
 // Prevent scrolling on mobile
-document.ontouchstart = function(e){ 
-  e.preventDefault(); 
+document.ontouchstart = function(e){
+  e.preventDefault();
 }
 
 // On window resize/rotation, recalculate screen dimensions
 window.onresize = function(e){
-  App.Utilities.resizeViewport(); 
+  App.Utilities.resizeViewport();
 }
 
 window.onload = function(e){
