@@ -1,6 +1,10 @@
-app = require('express')()
+express = require('express')
+app = express()
 server = require('http').createServer(app)
 io = require('socket.io').listen(server)
+
+app.configure () ->
+  app.use '/assets', express.static(__dirname + "/assets")
 
 server.listen(80)
 
