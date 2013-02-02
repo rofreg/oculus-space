@@ -1,8 +1,8 @@
 socket = io.connect('/')
 
-form = document.getElementById("user-form")
-form.onsubmit = ->
-  player = new App.Player this.elements["username"].value
+form = $("#user-form")
+form.submit = ->
+  player = new App.Player $("input[name='username']").val
   App.players.push player
   socket.emit "new player", { name: player.name }
   socket.on "enter metagame", (data) ->
