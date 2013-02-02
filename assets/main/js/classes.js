@@ -63,6 +63,39 @@
 
   })();
 
+  App.Utilities = {
+    resizeViewport: function() {
+      var view, viewSize, viewport, windowSize;
+      windowSize = {
+        width: $(window).width(),
+        height: $(window).height()
+      };
+      view = $('body > div.view.active');
+      if (view.length === 0) {
+        return;
+      }
+      viewSize = {
+        width: view.width(),
+        height: view.height()
+      };
+      view.css({
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: "-" + (viewSize.height / 2) + "px",
+        marginLeft: "-" + (viewSize.width / 2) + "px"
+      });
+      windowSize.ratio = windowSize.width * 1.0 / windowSize.height;
+      viewSize.ratio = viewSize.width * 1.0 / viewSize.height;
+      viewport = document.querySelector("meta[name=viewport]");
+      if (viewSize.ratio < windowSize.ratio) {
+        return viewport.setAttribute('content', 'width=' + (viewSize.height * windowSize.ratio) + ', user-scalable=0');
+      } else {
+        return viewport.setAttribute('content', 'width=' + viewSize.width + ', user-scalable=0');
+      }
+    }
+  };
+
   if (typeof module !== "undefined" && module !== null) {
     module.exports = App;
   } else {
