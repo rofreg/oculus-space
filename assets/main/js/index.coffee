@@ -4,7 +4,9 @@ socket = io.connect('/')
 
 form = document.getElementById("user-form")
 form.onsubmit = ->
-  socket.emit "new player", { name: form.elements["username"].value }
+  player = new Player(form.elements["username"].value)
+  App.players.push player
+  socket.emit "new player", { name: player.name }
   socket.on "enter metagame", (data) ->
     console.log(data)
   false
