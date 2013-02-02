@@ -23,5 +23,16 @@ Minigames include the following properties:
 * **max_lag:** Maximum allowed lag to play this game. *(default: 500)*
 * **physical\_proximity\_required:** Require users to play in the same physical location. *(default: false)*
 
+## How to run for development
+
+* sudo npm install -g supervisor
+* sudo npm install -g coffee-script
+* sudo supervisor app.coffee
+* coffee -c -w assets/
+
 ## Credits
 Built by [@rofreg](http://twitter.com/rofreg), [@lizneu08](http://twitter.com/lizneu08), and [@kyletns](http://twitter.com/kyletns) for the [DowncityJS hackathon](http://downcityjs.com), February 2-3.
+
+## License
+
+Mobile Party is released under a dual license. You may choose either the GPL or MIT license, depending on the project you are using it in and how you wish to use it. Have fun!
