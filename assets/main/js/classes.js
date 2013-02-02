@@ -15,7 +15,7 @@
       this.drawPlayerList = __bind(this.drawPlayerList, this);
 
       this.addPlayer = __bind(this.addPlayer, this);
-      this.id = 1;
+      this.id = Math.random().toString(36).substring(2, 6);
     }
 
     Metagame.prototype.url = function() {
@@ -45,7 +45,6 @@
       this.el = $("<div>").addClass('active view').attr("id", "metagame").text("test");
       $('.active.view').removeClass('active');
       $('body').append(this.el);
-      App.Utilities.resizeViewport();
       this.socket = io.connect("/" + this.id);
       this.socket.emit('player joining', {
         player: App.player
@@ -69,7 +68,7 @@
 
     function Player(name) {
       this.name = name;
-      this.id = Math.random().toString(36).substring(2, 8);
+      this.id = Math.random().toString(36).substring(2, 6);
     }
 
     return Player;
@@ -85,34 +84,9 @@
   })();
 
   App.Utilities = {
-    resizeViewport: function() {
-      var view, viewSize, viewport, windowSize;
-      windowSize = {
-        width: $(window).width(),
-        height: $(window).height()
-      };
-      view = $('body > div.view.active');
-      if (view.length === 0) {
-        return;
-      }
-      viewSize = {
-        width: view.width(),
-        height: view.height()
-      };
-      view.css({
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: "-" + (viewSize.height / 2) + "px",
-        marginLeft: "-" + (viewSize.width / 2) + "px"
-      });
-      windowSize.ratio = windowSize.width * 1.0 / windowSize.height;
-      viewSize.ratio = viewSize.width * 1.0 / viewSize.height;
-      viewport = document.querySelector("meta[name=viewport]");
-      if (viewSize.ratio < windowSize.ratio) {
-        return viewport.setAttribute('content', 'width=' + (viewSize.height * windowSize.ratio) + ', user-scalable=0');
-      } else {
-        return viewport.setAttribute('content', 'width=' + viewSize.width + ', user-scalable=0');
+    checkOrientation: function() {
+      if ($(window).width() > $(window).height()) {
+        return alert('you should use portrait orientation (and lock it)!');
       }
     }
   };

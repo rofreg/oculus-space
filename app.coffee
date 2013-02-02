@@ -20,8 +20,6 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'new player', (data) ->
     console.log(data)
     player = data
-    #add player to global collection
-    App.players.push player
 
     #find game
     game = null

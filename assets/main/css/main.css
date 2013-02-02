@@ -232,6 +232,8 @@ textarea {
   background: #fff;
   padding: 0;
   color: #000;
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
+  margin-top: -300px;
+  margin-left: -300px;
 }
