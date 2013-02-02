@@ -7,18 +7,19 @@
   form = document.getElementById("user-form");
 
   form.onsubmit = function() {
-    var player;
-    player = new App.Player(this.elements["username"].value);
-    App.players.push(player);
+    App.player = new App.Player(this.elements["username"].value);
+    App.players.push(App.player);
     socket.emit("new player", {
-      name: player.name
+      player: App.player
     });
     socket.on("enter metagame", function(data) {
       if (data.metagame_id != null) {
-        console.log("Connecting to " + data.metagame_id);
-        return socket = io.connect("/" + data.metagame_id);
+        App.metagame = new App.Metagame;
+        App.metagame.clientInit(io);
+        return console.log("Connecting to " + data.metagame_id);
       }
     });
+    $("button").attr('disabled', 'disabled');
     return false;
   };
 

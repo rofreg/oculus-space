@@ -18,6 +18,7 @@ App = require('./assets/main/js/classes.coffee')
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'new player', (data) ->
+    console.log(data)
     player = data
     #add player to global collection
     App.players.push player
@@ -31,6 +32,7 @@ io.sockets.on 'connection', (socket) ->
 
     if !game #still haven't found a game for them
       game = new App.Metagame
+      game.serverInit(io)
       App.metagames.push game
 
     socket.emit 'enter metagame', {metagame_id: game.id}
