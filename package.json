@@ -1,13 +1,13 @@
 {
    "name": "mobile-party",
-   "version": "0.0.1-1",
+   "version": "0.0.1-2",
    "dependencies": {
       "express": "3.1.0",
       "coffee-script": "1.4.0",
       "socket.io": "0.9.13",
       "supervisor": "0.5.0"
    },
-   "subdomain": "mobile-party",
+   "subdomain": "mobileparty",
    "scripts": {
       "start": "app.js"
    },
