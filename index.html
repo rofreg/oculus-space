@@ -12,22 +12,6 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-      var socket = io.connect('/');
-      socket.on('news', function (data) { 
-        console.log(data);
-        socket.emit('my other event', { my: 'data' });
-      });
-
-      var form = document.getElementById("user-form");
-      form.onsubmit = function() {
-        socket.emit("new player", { name: form.elements["username"].value });
-        socket.on("enter metagame", function(data) {
-          console.log(data);
-        });
-        return false;
-      };
-
-    </script>
+    <script src="/assets/main/js/index.js"></script>
   </body>
 </html>

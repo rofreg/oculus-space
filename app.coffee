@@ -3,6 +3,8 @@ app = express()
 server = require('http').createServer(app)
 io = require('socket.io').listen(server)
 
+app.use require('connect-assets')()
+
 app.configure () ->
   app.use '/assets', express.static(__dirname + "/assets")
 
@@ -11,19 +13,7 @@ server.listen(80)
 app.get '/', (req, res) ->
   res.sendfile(__dirname + '/index.html')
 
-App = {}
-App.metagames = []
-App.players = []
-
-class Metagame
-  id: ->
-    Math.floor((Math.random()*10)+1)
-
-  url: ->
-    "/#{@id}"
-
-class Player
-  constructor: (@name) ->
+App = require('./assets/main/js/classes.coffee')
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'new player', (data) ->
@@ -42,7 +32,6 @@ io.sockets.on 'connection', (socket) ->
       game = new App.Metagame
       App.metagames.push game
 
-    socket.emit 'enter metagame', {metagame: metagame}
+    console.log game.id
 
-  socket.on 'my other event', (data) ->
-    console.log(data)
+    socket.emit 'enter metagame', {metagame: game.id}
