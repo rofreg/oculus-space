@@ -3,8 +3,11 @@ App.metagames = []
 App.players = []
 
 class App.Metagame
-  constructor: ->
-    this.id = Math.random().toString(36).substring(2,6) # random hex id
+  constructor: (id) ->
+    if id
+      this.id = id
+    else
+      this.id = Math.random().toString(36).substring(2,6) # random hex id
 
   url: ->
     "/#{@id}"
@@ -25,8 +28,8 @@ class App.Metagame
 
   clientInit: (io) ->
     # create Metagame <div>
-    this.el = $("<div>").addClass('active view').attr("id","metagame").text("test")
-    $('.active.view').removeClass('active')
+    this.el = $("<div>").addClass('active view').attr("id","metagame")
+    $('.active.view').removeClass('active').hide()
     $('body').append(this.el)
 
     # connect to server and listen for players

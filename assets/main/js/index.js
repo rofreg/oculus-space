@@ -14,7 +14,7 @@
     });
     socket.on("enter metagame", function(data) {
       if (data.metagame_id != null) {
-        App.metagame = new App.Metagame;
+        App.metagame = new App.Metagame(data.metagame_id);
         App.metagame.clientInit(io);
         return console.log("Connecting to " + data.metagame_id);
       }

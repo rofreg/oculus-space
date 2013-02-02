@@ -11,11 +11,15 @@
 
   App.Metagame = (function() {
 
-    function Metagame() {
+    function Metagame(id) {
       this.drawPlayerList = __bind(this.drawPlayerList, this);
 
       this.addPlayer = __bind(this.addPlayer, this);
-      this.id = Math.random().toString(36).substring(2, 6);
+      if (id) {
+        this.id = id;
+      } else {
+        this.id = Math.random().toString(36).substring(2, 6);
+      }
     }
 
     Metagame.prototype.url = function() {
@@ -42,8 +46,8 @@
 
     Metagame.prototype.clientInit = function(io) {
       var _this = this;
-      this.el = $("<div>").addClass('active view').attr("id", "metagame").text("test");
-      $('.active.view').removeClass('active');
+      this.el = $("<div>").addClass('active view').attr("id", "metagame");
+      $('.active.view').removeClass('active').hide();
       $('body').append(this.el);
       this.socket = io.connect("/" + this.id);
       this.socket.emit('player joining', {
