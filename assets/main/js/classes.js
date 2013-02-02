@@ -8,10 +8,12 @@
 
   App.players = [];
 
+  App.minigames = [];
+
   App.Metagame = (function() {
 
     function Metagame() {
-      this.id = 1;
+      this.id = 2;
     }
 
     Metagame.prototype.url = function() {
@@ -26,19 +28,14 @@
       return this.room = io.of("/" + this.id).on('connection', function(socket) {
         var _this = this;
         return socket.on('player added', function(data) {
-          socket.broadcast.emit('player added', data);
-          if (true) {
-            return _this.start(socket);
-          }
+          return socket.broadcast.emit('player added', data);
         });
       });
     };
 
     Metagame.prototype.start = function(socket) {
-      this.currentMinigame = new App.Minigame;
-      return socket.emit('load minigame', {
-        src: this.currentMinigame.src
-      });
+      console.log("##################### STARTING GAME");
+      return this.currentMinigame = new App.Minigame;
     };
 
     Metagame.prototype.clientInit = function(io) {
@@ -46,11 +43,8 @@
       this.socket.emit('player added', {
         player: App.player.name
       });
-      this.socket.on('player added', function() {
+      return this.socket.on('player added', function() {
         return console.log('player added');
-      });
-      return this.socket.on('load minigame', function(data) {
-        return console.log(data);
       });
     };
 
@@ -71,8 +65,6 @@
   App.Minigame = (function() {
 
     function Minigame() {}
-
-    Minigame.prototype.src = "/assets/minigames/default.js";
 
     return Minigame;
 
