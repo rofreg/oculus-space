@@ -1,8 +1,33 @@
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io.connect('/');
-  socket.on('news', function (data) { 
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
-</script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>mobileparty</title>
+  </head>
+  <body>
+    <div>
+      <form id="user-form">
+        <input type="text" name="username" placeholder="Enter your name">
+        <button type="submit">Find me a game!</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('/');
+      socket.on('news', function (data) { 
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+      });
+
+      var form = document.getElementById("user-form");
+      form.onsubmit = function() {
+        socket.emit("new player", { name: form.elements["username"].value });
+        socket.on("enter metagame", function(data) {
+          console.log(data);
+        });
+        return false;
+      };
+
+    </script>
+  </body>
+</html>
