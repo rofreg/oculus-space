@@ -25,17 +25,22 @@
     };
 
     Metagame.prototype.serverInit = function(io) {
+      var _this = this;
       return this.room = io.of("/" + this.id).on('connection', function(socket) {
-        var _this = this;
         return socket.on('player added', function(data) {
-          return socket.broadcast.emit('player added', data);
+          socket.broadcast.emit('player added', data);
+          if (true) {
+            return _this.start(socket);
+          }
         });
       });
     };
 
     Metagame.prototype.start = function(socket) {
-      console.log("##################### STARTING GAME");
-      return this.currentMinigame = new App.Minigame;
+      this.currentMinigame = new App.Minigame;
+      return socket.emit('load minigame', {
+        src: this.currentMinigame.src
+      });
     };
 
     Metagame.prototype.clientInit = function(io) {
@@ -43,9 +48,17 @@
       this.socket.emit('player added', {
         player: App.player.name
       });
-      return this.socket.on('player added', function() {
+      this.socket.on('player added', function() {
         return console.log('player added');
       });
+      return this.socket.on('load minigame', function(data) {
+        console.log(data);
+        return $.getScript(data.src).done(function(script, textStatus) {});
+      });
+    };
+
+    Metagame.prototype.loadMinigame = function(src) {
+      return $.getScript(data.src).done(function(script, textStatus) {});
     };
 
     return Metagame;
@@ -65,6 +78,8 @@
   App.Minigame = (function() {
 
     function Minigame() {}
+
+    Minigame.prototype.src = "/assets/minigames/default.js";
 
     return Minigame;
 
