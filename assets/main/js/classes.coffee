@@ -9,7 +9,10 @@ class App.Metagame
   url: ->
     "/#{@id}"
 
-class Player
+class App.Player
   constructor: (@name) ->
 
-module.exports = App if module?
+if module?
+  module.exports = App
+else
+  window.App = App
