@@ -11,11 +11,30 @@
   App.Metagame = (function() {
 
     function Metagame() {
-      this.id = Math.floor((Math.random() * 10) + 1);
+      this.id = 1;
     }
 
     Metagame.prototype.url = function() {
       return "/" + this.id;
+    };
+
+    Metagame.prototype.isAcceptingPlayers = function() {
+      return true;
+    };
+
+    Metagame.prototype.serverInit = function(io) {
+      return this.room = io.of("/" + this.id).on('connection', function(socket) {
+        return socket.emit('player added');
+      });
+    };
+
+    Metagame.prototype.clientInit = function(io) {
+      this.socket = io.connect("/" + this.id, {
+        name: 'kyle'
+      });
+      return this.socket.on('player added', function() {
+        return console.log('player added');
+      });
     };
 
     return Metagame;
@@ -29,6 +48,14 @@
     }
 
     return Player;
+
+  })();
+
+  App.Minigame = (function() {
+
+    function Minigame() {}
+
+    return Minigame;
 
   })();
 
