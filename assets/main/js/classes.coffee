@@ -16,24 +16,45 @@ class App.Metagame
   serverInit: (io) ->
     this.room = io
       .of("/#{@id}")
-      .on('connection', (socket) =>
+      .on 'connection', (socket) =>
         socket.on 'player added', (data) =>
           socket.broadcast.emit 'player added', data
           if true#this.players.length >= 2
+            this.loadFirstGame(socket)
+        socket.on 'load minigame - done', (data) =>
+          #set this player to ready
+          for player in this.players
+            if player.id == data.player.id
+              player.ready = true
+              break
+          if this.allPlayersReady()
             this.start(socket)
-      )
 
-  start: (socket) ->
+  allPlayersReady: -> #server side check
+    for player in this.players
+      if !player.ready
+        return false
+    return true
+
+  start: ->
+    socket.broadbase.emit('start minigame')
+    socket.emit('start minigame')
+
+  loadFirstGame: (socket) ->
     #pick minigame
     this.currentMinigame = new App.Minigame
+    for player in this.players
+      player.ready = false
     socket.emit 'load minigame', {src: this.currentMinigame.src}
-    #send minigame to all clients, wait for response
 
   clientInit: (io) ->
     this.socket = io.connect("/#{@id}")
     this.socket.emit('player added', {player: App.player.name})
     this.socket.on 'player added', ->
       console.log 'player added'
+
+    this.socket.on 'start minigame', ->
+      console.log 'start the minigame!!!'
 
     this.socket.on 'load minigame', (data) ->
       console.log data
@@ -44,6 +65,7 @@ class App.Metagame
     #display loading.gif
     $.getScript(data.src).done (script, textStatus) ->
       #remove loading.gif
+      this.socket.emit('load minigame - done')
     
 
 class App.Player
