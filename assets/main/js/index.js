@@ -11,7 +11,10 @@
       name: form.elements["username"].value
     });
     socket.on("enter metagame", function(data) {
-      return console.log(data);
+      if (data.metagame_id != null) {
+        console.log("Connecting to " + data.metagame_id);
+        return socket = io.connect("/" + data.metagame_id);
+      }
     });
     return false;
   };
