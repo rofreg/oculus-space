@@ -10,7 +10,7 @@
     App.player = new App.Player(this.elements["username"].value);
     App.players.push(App.player);
     socket.emit("new player", {
-      name: App.player.name
+      player: App.player
     });
     socket.on("enter metagame", function(data) {
       if (data.metagame_id != null) {

@@ -4,7 +4,7 @@ App.players = []
 
 class App.Metagame
   constructor: ->
-    this.id = 1#Math.floor((Math.random()*10)+1)
+    this.id = 1   #Math.floor((Math.random()*10)+1)
 
   url: ->
     "/#{@id}"
@@ -13,22 +13,37 @@ class App.Metagame
     true
 
   serverInit: (io) ->
-    this.room = io
-      .of("/#{@id}")
-      .on('connection', (socket) ->
-        socket.on 'player added', (data) ->
-          console.log data
-          socket.broadcast.emit 'player added', data
+    this.players = []
+    this.room = io.of("/#{@id}")
+    this.room.on('connection', (socket) =>
+        socket.on 'player joining', this.addPlayer
       )
 
+  addPlayer: (data) =>
+    this.players.push(data.player)
+    this.room.emit 'player list updated', this.players
+
   clientInit: (io) ->
+    # create Metagame <div>
+    this.el = $("<div>").addClass('active view').attr("id","metagame").text("test")
+    $('.active.view').removeClass('active')
+    $('body').append(this.el)
+    App.Utilities.resizeViewport()
+
+    # connect to server and listen for players
     this.socket = io.connect("/#{@id}")
-    this.socket.emit('player added', {player: App.player.name})
-    this.socket.on 'player added', ->
-      console.log 'player added'
+    this.socket.emit('player joining', {player: App.player})
+    this.socket.on 'player list updated', (players) =>
+      this.players = players
+      this.drawPlayerList()
+
+  drawPlayerList: =>
+    console.log(this.players)
+    this.el.html(JSON.stringify(this.players))
 
 class App.Player
   constructor: (@name) ->
+    this.id = Math.random().toString(36).substring(2,8)  # random hex id
 
 class App.Minigame
 
