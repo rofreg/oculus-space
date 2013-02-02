@@ -12,5 +12,4 @@ class App.Metagame
 class Player
   constructor: (@name) ->
 
-if module?
-  module.exports = App
+module.exports = App if module?
