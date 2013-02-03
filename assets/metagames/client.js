@@ -54,7 +54,8 @@
         });
         _this.socket.on('minigame: load', _this.minigameLoad);
         return _this.socket.on('minigame: start', function() {
-          return _this.currentMinigame.start();
+          setTimeout(_this.currentMinigame.start, 5000);
+          return console.log("Starting " + _this.currentMinigame.constructor.NAME + " in 5 seconds!");
         });
       });
     };
@@ -70,11 +71,11 @@
       var _this = this;
       if (this.minigames[data.name]) {
         this.currentMinigame = new this.minigames[data.name];
-        return this.el.find("#instructions").html(this.currentMinigame.INSTRUCTIONS);
+        return this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS);
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
           _this.currentMinigame = new _this.minigames[data.name];
-          return _this.el.find("#instructions").html(_this.currentMinigame.INSTRUCTIONS);
+          return _this.el.find("#instructions").html(_this.currentMinigame.constructor.INSTRUCTIONS);
         });
       }
     };
@@ -89,10 +90,9 @@
     };
 
     Metagame.prototype.gameover = function(minigame) {
-      this.socket.emit('minigame: gameover', {
+      return this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
-      return this.drawPlayerList();
     };
 
     return Metagame;

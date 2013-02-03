@@ -28,20 +28,23 @@ class Server.Metagame
   ]
 
   init: (io) =>
-    console.log "New metagame with id #{this.id}"
     this.players = []
     this.room = io.of("/#{@id}")
     this.room.on 'connection', (socket) =>
       socket.on 'players: player joining', (data) => this.addPlayer(data.name, socket.id)
-      socket.on 'minigame: done loading', => this.minigameDoneLoading(socket.id)
+      socket.on 'metagame: player ready', => this.playerReady(socket.id)
       socket.on 'minigame: gameover', (data) => this.gameover(data.score, socket.id)
 
   addPlayer: (name, id) =>
     this.colorCount = 0 if not this.colorCount
     this.players.push({name: name, id: id, color: this.colors[this.colorCount++ % this.colors.length], score: 0})
     this.sendPlayerList()
-    if true #this.players.length >= 2
+
+    if this.readyToStart()
       this.loadRandomGame()
+  
+  readyToStart: ->
+    this.players.length > 1 and this.allPlayersNotInGame()
 
   removePlayer: (id) =>
     for index, player of this.players
@@ -50,7 +53,7 @@ class Server.Metagame
         this.sendPlayerList()
 
   sendPlayerList: =>
-    this.room.emit 'players: list updated', this.players
+    this.room.emit 'players: list updated', _.filter(this.players, (player) -> !player.in_game)
 
   isAcceptingPlayers: =>
     true
@@ -61,19 +64,27 @@ class Server.Metagame
         return player
     return null
 
-  minigameDoneLoading: (id) =>
+  playerReady: (id) =>
     #set this player to ready
     this.getPlayer(id).ready = true
     if this.allPlayersReady()
       this.start()
 
-  allPlayersReady: => #server side check
+  allPlayersNotInGame: =>
+    for player in this.players
+      if player.in_game
+        return false
+    return true
+
+  allPlayersReady: =>
     for player in this.players
       if !player.ready
         return false
     return true
 
   start: =>
+    for player in this.players
+      player.in_game = true
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
@@ -87,6 +98,11 @@ class Server.Metagame
 
   gameover: (score, id) =>
     this.getPlayer(id).score = score
+    this.getPlayer(id).in_game = false
     this.sendPlayerList()
+
+    if this.readyToStart()
+      this.loadRandomGame()
+  
 
 module.exports = Server.Metagame

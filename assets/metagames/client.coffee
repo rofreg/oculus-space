@@ -34,7 +34,8 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
 
       this.socket.on 'minigame: start', =>
-        this.currentMinigame.start()
+        setTimeout this.currentMinigame.start, 5000
+        console.log "Starting #{this.currentMinigame.constructor.NAME} in 5 seconds!"
 
   drawPlayerList: =>
     console.log(this.players)
@@ -44,12 +45,12 @@ class App.Metagame
     #display loading.gif
     if this.minigames[data.name]
       this.currentMinigame = new this.minigames[data.name]
-      this.el.find("#instructions").html(this.currentMinigame.INSTRUCTIONS)
+      this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS)
     else
       $.getScript(data.minigame.src).done (script, textStatus) =>
         #remove loading.gif
         this.currentMinigame = new this.minigames[data.name]
-        this.el.find("#instructions").html(this.currentMinigame.INSTRUCTIONS)
+        this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS)
 
   addMinigame: (minigame) ->
     this.minigames[minigame.NAME] = minigame
@@ -61,6 +62,3 @@ class App.Metagame
   gameover: (minigame) ->
     this.socket.emit 'minigame: gameover',
       score: minigame.score
-    this.drawPlayerList()
-    
-
