@@ -4,8 +4,10 @@
   App.Templates || (App.Templates = {});
 
   App.Templates.TapRace = {
-    main_view: '<table id=\'tap-board\'>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n</table>\n<div id=\'tap-race-players\'>\n</div>',
-    players_view: '<table class=\'player-table\'> \n  <tr>\n    <% _.each(players, function(player){ %>\n      <td>\n        <table class=\'score-table\' id=\'score-table-<%= player.id %>\' style=\'background-color: <%= player.color %>;\'>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n        </table>\n        <span class=\'player-name\'>\n          <%= player.name %>\n        </span>\n      </td>\n    <% }) %>\n  </tr>\n</table>'
+    main_view: '<div class=\'top-half\'>\n  <table id=\'tap-board\'>\n    <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n    <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n    <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n    <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  </table>\n</div>\n<div id=\'tap-race-players\'>\n</div>',
+    players_view: '<table class=\'player-table\'> \n  <tr>\n    <% _.each(players, function(player) { %>\n      <% if(player.id != currentPlayerId) { %>\n        <td class=\'player-td\'>\n          <div class=\'score-table-holder\' id=\'score-table-holder-<%= player.id %>\'>\n            <table class=\'score-table\' id=\'score-table-<%= player.id %>\' style=\'background-color: <%= player.color %>;\'>\n              <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n              <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n              <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n              <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n            </table>\n          </div>\n          <span class=\'player-name\'>\n            <%= player.name %>\n          </span>\n        </td>\n      <% } %>\n    <% }) %>\n  </tr>\n</table>',
+    done: '<div class=\'score\'><%= time %></div>\n<div class=\'explain\'>\n  seconds\n</div>\n<div class=\'else\'>Waiting for others...</div>',
+    other_done: '<div class=\'score\'><%= time %></div>\n<div class=\'explain\'>\n  seconds\n</div>'
   };
 
 }).call(this);

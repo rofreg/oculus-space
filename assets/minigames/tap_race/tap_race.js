@@ -39,6 +39,7 @@
 
     TapRace.prototype.start = function() {
       var numbers, player, tds, that, _i, _len, _ref;
+      this.startTime = new Date;
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
@@ -63,7 +64,7 @@
           that.currentNumber++;
           $(this).text('');
           if (that.currentNumber > 3) {
-            return that.showCongrats();
+            return that.done();
           }
         }
       });
@@ -71,13 +72,37 @@
 
     TapRace.prototype.render = function() {
       return this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
-        players: this.players
+        players: this.players,
+        currentPlayerId: App.player_id
       }));
     };
 
-    TapRace.prototype.showCongrats = function() {
-      alert("congrats!");
-      return this.gameover();
+    TapRace.prototype.done = function() {
+      var half, player, _i, _len, _ref,
+        _this = this;
+      _ref = this.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        if (player.id === App.player_id) {
+          player.done = true;
+        }
+      }
+      this.endTime = new Date;
+      this.time = this.endTime - this.startTime;
+      this.broadcast('player: done', {
+        time: this.time
+      });
+      half = this.el.find(".top-half");
+      return half.find("table").fadeOut(500, function() {
+        var elem;
+        elem = _.template(App.Templates.TapRace.done, {
+          time: _this.time / 1000
+        });
+        elem = $(elem);
+        elem.hide();
+        half.html(elem);
+        return elem.fadeIn(500);
+      });
     };
 
     TapRace.prototype.gameover = function() {
@@ -86,36 +111,80 @@
     };
 
     TapRace.prototype.receiveBroadcast = function(event, data, player_id) {
-      var player, rand, table, tds, _i, _len, _ref, _results;
-      console.log(data);
-      console.log(player_id);
+      var holder, player, rand, table, tds, _i, _j, _len, _len1, _ref, _ref1, _results,
+        _this = this;
       if (player_id != null) {
-        _ref = this.players;
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          player = _ref[_i];
-          if (player.id === player_id) {
-            table = this.el.find("#tap-race-players #score-table-" + player_id);
-            _results.push((function() {
-              var _results1;
-              _results1 = [];
-              while (data.number > player.currentNumber) {
-                tds = table.find("td").not(".no-background");
-                rand = Math.floor(Math.random() * tds.length);
-                console.log(rand);
-                console.log(tds.eq(rand));
-                tds.eq(Math.floor(Math.random() * tds.length)).addClass('no-background');
-                player.currentNumber++;
-                break;
-              }
-              return _results1;
-            })());
-          } else {
-            _results.push(void 0);
+        if (event === 'player: scored') {
+          _ref = this.players;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            player = _ref[_i];
+            if (player.id === player_id) {
+              table = this.el.find("#tap-race-players #score-table-" + player_id);
+              _results.push((function() {
+                var _results1;
+                _results1 = [];
+                while (data.number > player.currentNumber) {
+                  tds = table.find("td").not(".no-background");
+                  rand = Math.floor(Math.random() * tds.length);
+                  tds.eq(Math.floor(Math.random() * tds.length)).addClass('no-background');
+                  player.currentNumber++;
+                  break;
+                }
+                return _results1;
+              })());
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        } else if (event === 'player: done') {
+          _ref1 = this.players;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            player = _ref1[_j];
+            if (player.id === player_id) {
+              player.done = true;
+              holder = this.el.find("#score-table-holder-" + player_id);
+              holder.find("table").fadeOut(500, function() {
+                var elem;
+                elem = _.template(App.Templates.TapRace.other_done, {
+                  time: data.time / 1000
+                });
+                elem = $(elem);
+                elem.hide();
+                holder.html(elem);
+                return elem.fadeIn(500);
+              });
+            }
+          }
+          if (this.allPlayersDone()) {
+            return this.calculateScores();
           }
         }
-        return _results;
       }
+    };
+
+    TapRace.prototype.allPlayersDone = function() {
+      var player, _i, _len, _ref;
+      _ref = this.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        if (!player.done) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    TapRace.prototype.calculateScores = function() {
+      var player, _i, _len, _ref;
+      _ref = this.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        player.score = Math.floor(Math.random() * 50);
+      }
+      this.score = Math.floor(Math.random() * 50);
+      return this.gameover();
     };
 
     return TapRace;
