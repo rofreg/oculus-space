@@ -36,7 +36,6 @@
 
     Metagame.prototype.init = function(io, name) {
       var _this = this;
-      console.log(this.constructor.STYLESHEET);
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
         console.log("New metagame with id " + _this.id);

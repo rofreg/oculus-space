@@ -13,7 +13,6 @@ class App.Metagame
   minigames: []
 
   init: (io, name) =>
-    console.log(this.constructor.STYLESHEET);
     $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
       console.log "New metagame with id #{this.id}"
