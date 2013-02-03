@@ -25,36 +25,38 @@
 
     DoubleTapRace.STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css";
 
-    DoubleTapRace.prototype.init = function() {};
-
-    DoubleTapRace.prototype.start = function() {
+    DoubleTapRace.prototype.init = function() {
       var _this = this;
       this.score = 0;
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
-        var that;
         console.log("New minigame: " + _this.constructor.NAME);
-        _this.el = $("<div></div>").addClass('active view minigame').attr("id", "double-tap-race-minigame");
-        $('.active.view').removeClass('active').hide();
-        $('body').append(_this.el);
-        _this.render();
-        that = _this;
-        _this.el.find(".btn").bind('touchstart', function() {
-          if ($(this).hasClass("active")) {
-            $(this).siblings(".btn").addClass("active");
-            $(this).removeClass("active");
-            that.score++;
-            return that.render();
-          }
-        });
-        return setTimeout(_this.gameover, 15000);
+        _this.el = $("<div>").addClass('active view').attr("id", "double-tap-race-minigame");
+        return _this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
       });
     };
 
+    DoubleTapRace.prototype.start = function() {
+      var that,
+        _this = this;
+      $('body').append(this.el);
+      this.render();
+      that = this;
+      this.el.find(".btn").bind('touchstart', function() {
+        if ($(this).hasClass("active")) {
+          $(this).siblings(".btn").addClass("active");
+          $(this).removeClass("active");
+          that.score++;
+          return that.render();
+        }
+      });
+      return setTimeout((function() {
+        return _this.gameover();
+      }), 15000);
+    };
+
     DoubleTapRace.prototype.render = function() {
-      return this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view, {
-        score: this.score
-      }));
+      return $('.score').text('Distance = ' + this.score);
     };
 
     DoubleTapRace.prototype.gameover = function() {
