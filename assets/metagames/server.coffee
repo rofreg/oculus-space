@@ -6,7 +6,10 @@ class Server.Metagame
   constructor: (id) ->
     this.id = "#{this.names[id % this.names.length]}#{id}"
 
-  names: ["banana", "plum", "pear", "aardvark", "pie", "apple", "cheese", "egg"]
+  names: [
+    "banana", "plum", "pear", "aardvark", "pie",
+    "apple", "cheese", "egg", "pomegranite", "kiwi"
+  ]
 
   colors: [
     '#ff0000', #red

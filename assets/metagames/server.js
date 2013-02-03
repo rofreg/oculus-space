@@ -46,7 +46,7 @@
       this.id = "" + this.names[id % this.names.length] + id;
     }
 
-    Metagame.prototype.names = ["banana", "plum", "pear", "aardvark", "pie", "apple", "cheese", "egg"];
+    Metagame.prototype.names = ["banana", "plum", "pear", "aardvark", "pie", "apple", "cheese", "egg", "pomegranite", "kiwi"];
 
     Metagame.prototype.colors = ['#ff0000', '#ff6600', '#ffe500', '#00cc00', '#0033cc', '#9900cc', '#ff00cc'];
 
