@@ -1,18 +1,28 @@
 App.Templates or= {}
 App.Templates.TapRace =
   main_view: '''
-    <h1 class='score'>
-      0
-    </h1>
-    <a class='btn' href='#'>Run!</a>
+    <table id='tap-board'>
+      <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+      <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+      <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+      <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+    </table>
     <div id='tap-race-players'>
     </div>
   '''
   players_view: '''
-    <table> 
+    <table class='player-table'> 
       <tr>
         <% _.each(players, function(player){ %>
-          <td><strong><%= player.name %></strong><br><%= player.score %> points</td>
+          <td>
+            <table class='score-table' id='score-table-<%= player.id %>' style='background-color: <%= player.color %>;'>
+              <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+              <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+              <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+              <tr> <td></td> <td></td> <td></td> <td></td> </tr>
+            </table><br>
+            <strong><%= player.name %></strong>
+          </td>
         <% }) %>
       </tr>
     </table>

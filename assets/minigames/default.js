@@ -7,7 +7,29 @@
       this.id = Math.random().toString(36).substring(2, 8);
     }
 
+    Default.prototype.init = function() {
+      var new_player, player, _i, _len, _ref, _results;
+      this.players = [];
+      _ref = App.metagame.players;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        new_player = jQuery.extend(true, {}, player);
+        _results.push(this.players.push(new_player));
+      }
+      return _results;
+    };
+
     Default.prototype.playersUpdated = function() {};
+
+    Default.prototype.receiveBroadcast = function(event, data, player_id) {};
+
+    Default.prototype.broadcast = function(event, data) {
+      if (data == null) {
+        data = {};
+      }
+      return App.metagame.sendBroadcast(event, data);
+    };
 
     return Default;
 

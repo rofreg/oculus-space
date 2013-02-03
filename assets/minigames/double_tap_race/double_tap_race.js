@@ -27,6 +27,8 @@
 
     DoubleTapRace.prototype.init = function() {
       var _this = this;
+      DoubleTapRace.__super__.init.apply(this, arguments);
+      console.log(this.players);
       this.score = 0;
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
@@ -47,21 +49,43 @@
           $(this).siblings(".btn").addClass("active");
           $(this).removeClass("active");
           that.score++;
+          that.broadcast('player: scored', {
+            score: that.score
+          });
           return that.render();
         }
       });
       return setTimeout((function() {
         return _this.gameover();
-      }), 15000);
+      }), 5000);
     };
 
     DoubleTapRace.prototype.render = function() {
-      return $('.score').text('Distance = ' + this.score);
+      $('.score').text('Distance = ' + this.score);
+      return $('.runner').css('left', 10 * this.score);
     };
 
     DoubleTapRace.prototype.gameover = function() {
+      $(this.el).fadeOut();
       App.metagame.gameover(this);
       return this.el.fadeOut();
+    };
+
+    DoubleTapRace.prototype.receiveBroadcast = function(event, data, player_id) {
+      var player, _i, _len, _ref, _results;
+      if (player_id != null) {
+        _ref = this.players;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          player = _ref[_i];
+          if (player.id === player_id) {
+            _results.push(player.score = data.score);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
     };
 
     return DoubleTapRace;
