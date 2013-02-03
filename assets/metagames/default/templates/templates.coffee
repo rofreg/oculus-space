@@ -74,7 +74,11 @@ App.Metagame.Default.Templates = {
         </div>
       <% }) %>
     </div>
-    <button>I'm ready!</button>
+    <% if (ready){ %>
+      <button disabled='disabled'>Waiting...</button>
+    <% } else { %>
+      <button>I'm ready!</button>
+    <% } %>
   '''
 
   countdown: '''
@@ -101,14 +105,16 @@ App.Metagame.Default.Templates = {
         <th class="score">Total score</th>
         <th class="result">Result</th>
       </tr>
-      <% _.each(players, function(player){ %>
-        <tr>
-          <td><div class="color" style="background: <%= player.color %>"></div></td>
-          <td class="name"><%= player.name %></td>
-          <td class="score"><%= player.score %> points</td>
-          <td class="result">+ <%= player.minigame_score %></td>
-        <tr>
-      <% }) %>
+      <tbody>
+        <% _.each(players, function(player, index){ %>
+          <tr class="player_<%= index %>" data-id="<%= player.id %>">
+            <td><div class="color" style="background: <%= player.color %>"></div></td>
+            <td class="name"><%= player.name %></td>
+            <td class="score"><span><%= player.score %></span> points</td>
+            <td class="result">+ <%= player.minigame_score %></td>
+          <tr>
+        <% }) %>
+      </tbody>
     </table>
   '''
 }

@@ -127,7 +127,7 @@
   }
   table.scoreboard{
     width: 100%;
-    margin-top: 10px;
+    margin-top: 30px;
     td, th{
       font-size: 28px;
       white-space: nowrap;
@@ -144,11 +144,36 @@
     th{
       font-size: 24px;
     }
+    tr{
+      td.result{
+        font-weight: bold;
+        -webkit-animation-name: pulse;
+        -webkit-animation-timing-function: ease;
+        -webkit-animation-iteration-count: 1;
+        -webkit-animation-duration: 1s;
+        -webkit-animation-direction: normal;
+        -webkit-transform-origin: 100% 50%;
+        -webkit-animation-fill-mode: forwards;
+        -webkit-animation-delay: 2;
+      }
+      &.player_0 td.result{ -webkit-animation-delay: 2s; }
+      &.player_1 td.result{ -webkit-animation-delay: 3s; }
+      &.player_2 td.result{ -webkit-animation-delay: 4s; }
+      &.player_3 td.result{ -webkit-animation-delay: 5s; }
+    }
     div.color{
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       border-radius: 5px;
       border: 1px solid #ccc;
     }
   }
+}
+
+
+@-webkit-keyframes pulse {
+  0% {-webkit-transform: scale(1.0)}
+  25% {-webkit-transform: scale(1.3)}
+  50% {-webkit-transform: scale(1.0); opacity: 1.0;}
+  100% {-webkit-transform: translate(-200px); opacity: 0;}
 }
