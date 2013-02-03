@@ -10,6 +10,8 @@
 
     function Metagame(id) {
       this.id = id;
+      this.receiveBroadcast = __bind(this.receiveBroadcast, this);
+
       this.playerReady = __bind(this.playerReady, this);
 
       this.addMinigame = __bind(this.addMinigame, this);
@@ -66,13 +68,17 @@
           _this.players = players;
           _this.updateWaitingRoom();
           _this.updateInstructions();
-          return _this.updateScoreboard();
+          _this.updateScoreboard();
+          if (_this.currentMinigame != null) {
+            return _this.currentMinigame.playersUpdated();
+          }
         });
         _this.socket.on('metagame: start', _this.metagameStart);
         _this.socket.on('minigame: load', _this.minigameLoad);
-        return _this.socket.on('minigame: start', function() {
+        _this.socket.on('minigame: start', function() {
           return _this.minigameCountdown();
         });
+        return _this.socket.on('broadcast', _this.receiveBroadcast);
       });
     };
 
@@ -132,7 +138,7 @@
         return _this.el.find('#countdown span').text("0");
       }), 2000);
       setTimeout((function() {
-        return _this.el.fadeOut;
+        return _this.el.fadeOut();
       }), 2000);
       return setTimeout(this.currentMinigame.start, 2500);
     };
@@ -171,6 +177,19 @@
       return this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
+    };
+
+    Metagame.prototype.sendBroadcast = function(event, data) {
+      return this.socket.emit('broadcast', {
+        _event: event,
+        _data: data
+      });
+    };
+
+    Metagame.prototype.receiveBroadcast = function(data) {
+      if (this.currentMinigame != null) {
+        return this.currentMinigame.receiveBroadcast(data._event, data._data, data._player_id);
+      }
     };
 
     return Metagame;

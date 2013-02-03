@@ -35,6 +35,7 @@ class App.Metagame
         this.updateWaitingRoom()
         this.updateInstructions()
         this.updateScoreboard()
+        this.currentMinigame.playersUpdated() if this.currentMinigame?
 
       # metagame
       this.socket.on 'metagame: start', this.metagameStart
@@ -44,6 +45,8 @@ class App.Metagame
       this.socket.on 'minigame: start', =>
         this.minigameCountdown()
 
+      this.socket.on 'broadcast', this.receiveBroadcast
+
   updateWaitingRoom: =>
     # render the metagame window
     this.el.find('#waiting_room').html(
@@ -52,7 +55,7 @@ class App.Metagame
     )
 
     # start metagame by clicking "start"
-    this.el.find('#waiting_room button').click => 
+    this.el.find('#waiting_room button').click =>
       if this.players.length < 1
         alert("You need at least two people to play!")
       else
@@ -88,7 +91,7 @@ class App.Metagame
     this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown),{}).show()
     setTimeout (=> this.el.find('#countdown span').text("1")), 1000
     setTimeout (=> this.el.find('#countdown span').text("0")), 2000
-    setTimeout (=> this.el.fadeOut), 2000
+    setTimeout (=> this.el.fadeOut()), 2000
     setTimeout this.currentMinigame.start, 2500
 
   minigameLoad: (data) =>
@@ -117,3 +120,12 @@ class App.Metagame
   gameover: (minigame) ->
     this.socket.emit 'minigame: gameover',
       score: minigame.score
+
+  sendBroadcast: (event, data) ->
+    this.socket.emit 'broadcast',
+      _event: event
+      _data: data
+
+  receiveBroadcast: (data) =>
+    if this.currentMinigame?
+      this.currentMinigame.receiveBroadcast data._event, data._data, data._player_id

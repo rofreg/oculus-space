@@ -58,7 +58,7 @@
     Metagame.prototype.minigames = [
       {
         'name': 'TapRace',
-        'src': "/assets/minigames/tap_race.js"
+        'src': "/assets/minigames/tap_race/tap_race.js"
       }, {
         'name': 'DoubleTapRace',
         'src': "/assets/minigames/double_tap_race/double_tap_race.js"
@@ -77,8 +77,13 @@
         socket.on('metagame: player ready', function() {
           return _this.playerReady(socket.id);
         });
-        return socket.on('minigame: gameover', function(data) {
+        socket.on('minigame: gameover', function(data) {
           return _this.gameover(data.score, socket.id);
+        });
+        socket.on('players: refresh', _this.sendPlayerList);
+        return socket.on('broadcast', function(data) {
+          data._player_id = socket.id;
+          return _this.room.emit('broadcast', data);
         });
       });
     };
