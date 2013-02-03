@@ -22,7 +22,7 @@ class App.Metagame
     }
   ]
 
-  init: (io) =>
+  init: (io, name) =>
     console.log "New metagame with id #{this.id}"
     # create Metagame <div>
     this.el = $("<div>").addClass('active view').attr("id","metagame")
@@ -31,7 +31,7 @@ class App.Metagame
 
     # connect to server and listen for players
     this.socket = io.connect("/#{@id}")
-    this.socket.emit 'players: player joining', {player: App.player}
+    this.socket.emit 'players: player joining', {name: name}
     console.log 'sending JOINING'
 
     this.socket.on 'players: list updated', (players) =>
@@ -53,12 +53,11 @@ class App.Metagame
     $.getScript(data.src).done (script, textStatus) =>
       #remove loading.gif
       this.ready = true
-      this.socket.emit 'minigame: done loading', {player: App.player}
+      this.socket.emit 'minigame: done loading'
 
   gameover: (minigame) ->
-    this.getPlayer(App.player.id).score = minigame.score
     this.socket.emit 'minigame: gameover',
-      player: App.player
+      score: minigame.score
     this.drawPlayerList()
     
 

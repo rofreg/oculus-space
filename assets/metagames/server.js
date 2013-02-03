@@ -17,19 +17,25 @@
 
       this.allPlayersReady = __bind(this.allPlayersReady, this);
 
-      this.addPlayer = __bind(this.addPlayer, this);
-
       this.minigameDoneLoading = __bind(this.minigameDoneLoading, this);
 
       this.getPlayer = __bind(this.getPlayer, this);
 
       this.isAcceptingPlayers = __bind(this.isAcceptingPlayers, this);
 
+      this.sendPlayerList = __bind(this.sendPlayerList, this);
+
+      this.removePlayer = __bind(this.removePlayer, this);
+
+      this.addPlayer = __bind(this.addPlayer, this);
+
       this.init = __bind(this.init, this);
 
       this.getPlayer = __bind(this.getPlayer, this);
 
     }
+
+    Metagame.prototype.colors = ['#ff0000', '#ff6600', '#ffe500', '#00cc00', '#0033cc', '#9900cc', '#ff00cc'];
 
     Metagame.prototype.getPlayer = function(id) {
       var player, _i, _len, _ref;
@@ -63,10 +69,52 @@
       this.players = [];
       this.room = io.of("/" + this.id);
       return this.room.on('connection', function(socket) {
-        socket.on('players: player joining', _this.addPlayer);
-        socket.on('minigame: done loading', _this.minigameDoneLoading);
-        return socket.on('minigame: gameover', _this.gameover);
+        socket.on('players: player joining', function(data) {
+          return _this.addPlayer(data.name, socket.id);
+        });
+        socket.on('minigame: done loading', function() {
+          return _this.minigameDoneLoading(socket.id);
+        });
+        return socket.on('minigame: gameover', function(data) {
+          return _this.gameover(data.score, socket.id);
+        });
       });
+    };
+
+    Metagame.prototype.addPlayer = function(name, id) {
+      if (!this.colorCount) {
+        this.colorCount = 0;
+      }
+      this.players.push({
+        name: name,
+        id: id,
+        color: this.colors[this.colorCount++ % this.colors.length],
+        score: 0
+      });
+      this.sendPlayerList();
+      if (true) {
+        return this.loadGame(0);
+      }
+    };
+
+    Metagame.prototype.removePlayer = function(id) {
+      var index, player, _ref, _results;
+      _ref = this.players;
+      _results = [];
+      for (index in _ref) {
+        player = _ref[index];
+        if (player.id === id) {
+          this.players.splice(index, 1);
+          _results.push(this.sendPlayerList());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Metagame.prototype.sendPlayerList = function() {
+      return this.room.emit('players: list updated', this.players);
     };
 
     Metagame.prototype.isAcceptingPlayers = function() {
@@ -85,27 +133,10 @@
       return null;
     };
 
-    Metagame.prototype.minigameDoneLoading = function(data) {
-      var player, _i, _len, _ref;
-      _ref = this.players;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        player = _ref[_i];
-        if (player.id === data.player.id) {
-          player.ready = true;
-          break;
-        }
-      }
+    Metagame.prototype.minigameDoneLoading = function(id) {
+      this.getPlayer(id).ready = true;
       if (this.allPlayersReady()) {
         return this.start();
-      }
-    };
-
-    Metagame.prototype.addPlayer = function(data) {
-      console.log('####################### PLAYER JOINING');
-      this.players.push(data.player);
-      this.room.emit('players: list updated', this.players);
-      if (true) {
-        return this.loadGame(0);
       }
     };
 
@@ -128,6 +159,8 @@
     Metagame.prototype.loadGame = function(index) {
       var player, _i, _len, _ref;
       this.currentMinigame = index;
+      console.log('############################');
+      console.log(this.players);
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
@@ -138,8 +171,9 @@
       });
     };
 
-    Metagame.prototype.gameover = function(data) {
-      return this.getPlayer(data.player.id).score = data.score;
+    Metagame.prototype.gameover = function(score, id) {
+      this.getPlayer(id).score = score;
+      return this.sendPlayerList();
     };
 
     return Metagame;

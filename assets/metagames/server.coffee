@@ -3,6 +3,15 @@ Server = {}
 class Server.Metagame
 
   constructor: (@id) ->
+  colors: [
+    '#ff0000', #red
+    '#ff6600', #orange
+    '#ffe500', #yellow
+    '#00cc00', #green
+    '#0033cc', #blue
+    '#9900cc', #purple
+    '#ff00cc', #pink
+  ]
 
   getPlayer: (id) =>
     for player in this.players
@@ -29,9 +38,25 @@ class Server.Metagame
     this.players = []
     this.room = io.of("/#{@id}")
     this.room.on 'connection', (socket) =>
-      socket.on 'players: player joining', this.addPlayer
-      socket.on 'minigame: done loading', this.minigameDoneLoading
-      socket.on 'minigame: gameover', this.gameover
+      socket.on 'players: player joining', (data) => this.addPlayer(data.name, socket.id)
+      socket.on 'minigame: done loading', => this.minigameDoneLoading(socket.id)
+      socket.on 'minigame: gameover', (data) => this.gameover(data.score, socket.id)
+
+  addPlayer: (name, id) =>
+    this.colorCount = 0 if not this.colorCount
+    this.players.push({name: name, id: id, color: this.colors[this.colorCount++ % this.colors.length], score: 0})
+    this.sendPlayerList()
+    if true #this.players.length >= 2
+      this.loadGame(0)
+
+  removePlayer: (id) =>
+    for index, player of this.players
+      if (player.id == id)
+        this.players.splice(index, 1)
+        this.sendPlayerList()
+
+  sendPlayerList: =>
+    this.room.emit 'players: list updated', this.players
 
   isAcceptingPlayers: =>
     true
@@ -42,21 +67,11 @@ class Server.Metagame
         return player
     return null
 
-  minigameDoneLoading: (data) =>
+  minigameDoneLoading: (id) =>
     #set this player to ready
-    for player in this.players
-      if player.id == data.player.id
-        player.ready = true
-        break
+    this.getPlayer(id).ready = true
     if this.allPlayersReady()
       this.start()
-
-  addPlayer: (data) =>
-    console.log '####################### PLAYER JOINING'
-    this.players.push(data.player)
-    this.room.emit 'players: list updated', this.players
-    if true #this.players.length >= 2
-      this.loadGame(0)
 
   allPlayersReady: => #server side check
     for player in this.players
@@ -69,12 +84,15 @@ class Server.Metagame
 
   loadGame: (index) =>
     this.currentMinigame = index
+    console.log '############################'
+    console.log this.players
     for player in this.players
       player.ready = false
     this.room.emit 'minigame: load', {src: this.minigames[index].src}
 
-  gameover: (data) =>
-    this.getPlayer(data.player.id).score = data.score
+  gameover: (score, id) =>
+    this.getPlayer(id).score = score
+    this.sendPlayerList()
 
 
 module.exports = Server.Metagame

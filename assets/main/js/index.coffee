@@ -5,14 +5,12 @@ window.App =
 socket = io.connect('/')
 
 $("#user-form").submit ->
-  App.player = {name: this.elements["username"].value}
   socket.emit 'server: new player'
   socket.on "server: enter metagame", (data) ->
     if data.metagame_id?
       App.metagame = new App.Metagame(data.metagame_id)
-      App.metagame.init(io)
       console.log "Connecting to #{data.metagame_id}"
-      # socket.disconnect()
+      App.metagame.init(io, $(".username").val())
   $("button").attr('disabled', 'disabled')
   false
 

@@ -10,15 +10,12 @@
   socket = io.connect('/');
 
   $("#user-form").submit(function() {
-    App.player = {
-      name: this.elements["username"].value
-    };
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
         App.metagame = new App.Metagame(data.metagame_id);
-        App.metagame.init(io);
-        return console.log("Connecting to " + data.metagame_id);
+        console.log("Connecting to " + data.metagame_id);
+        return App.metagame.init(io, $(".username").val());
       }
     });
     $("button").attr('disabled', 'disabled');

@@ -12,7 +12,7 @@ app.get '/', (req, res) ->
   res.sendfile(__dirname + '/index.html')
 
 app.get '/:id', (req, res) ->
-  console.log "Connecting to game #{req.params.id}"
+  console.log "Accessed URL: /#{req.params.id}"
 
 Server =
   metagames: []
@@ -35,3 +35,8 @@ io.sockets.on 'connection', (socket) ->
       Server.metagames.push game
 
     socket.emit 'server: enter metagame', {metagame_id: game.id}
+
+  socket.on 'disconnect', =>
+    console.log("PLAYER DROPPED: removing #{socket.id} from all games")
+    for metagame in App.metagames
+      metagame.removePlayer(socket.id)

@@ -42,7 +42,7 @@
       }
     ];
 
-    Metagame.prototype.init = function(io) {
+    Metagame.prototype.init = function(io, name) {
       var _this = this;
       console.log("New metagame with id " + this.id);
       this.el = $("<div>").addClass('active view').attr("id", "metagame");
@@ -50,7 +50,7 @@
       $('body').append(this.el);
       this.socket = io.connect("/" + this.id);
       this.socket.emit('players: player joining', {
-        player: App.player
+        name: name
       });
       console.log('sending JOINING');
       this.socket.on('players: list updated', function(players) {
@@ -73,16 +73,13 @@
       var _this = this;
       return $.getScript(data.src).done(function(script, textStatus) {
         _this.ready = true;
-        return _this.socket.emit('minigame: done loading', {
-          player: App.player
-        });
+        return _this.socket.emit('minigame: done loading');
       });
     };
 
     Metagame.prototype.gameover = function(minigame) {
-      this.getPlayer(App.player.id).score = minigame.score;
       this.socket.emit('minigame: gameover', {
-        player: App.player
+        score: minigame.score
       });
       return this.drawPlayerList();
     };
