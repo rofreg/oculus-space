@@ -42,14 +42,17 @@ class App.Metagame
 
   minigameLoad: (data) =>
     #display loading.gif
-    if this.minigames[data.name]
-      this.currentMinigame = new this.minigames[data.name]
+    console.log(data)
+    if this.minigames[data.minigame.name]
+      this.currentMinigame = new this.minigames[data.minigame.name]
       this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS)
+      this.playerReady()
     else
       $.getScript(data.minigame.src).done (script, textStatus) =>
         #remove loading.gif
-        this.currentMinigame = new this.minigames[data.name]
+        this.currentMinigame = new this.minigames[data.minigame.name]
         this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS)
+        this.playerReady()
 
   addMinigame: (minigame) ->
     this.minigames[minigame.NAME] = minigame

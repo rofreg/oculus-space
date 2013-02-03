@@ -68,13 +68,16 @@
 
     Metagame.prototype.minigameLoad = function(data) {
       var _this = this;
-      if (this.minigames[data.name]) {
-        this.currentMinigame = new this.minigames[data.name];
-        return this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS);
+      console.log(data);
+      if (this.minigames[data.minigame.name]) {
+        this.currentMinigame = new this.minigames[data.minigame.name];
+        this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS);
+        return this.playerReady();
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
-          _this.currentMinigame = new _this.minigames[data.name];
-          return _this.el.find("#instructions").html(_this.currentMinigame.constructor.INSTRUCTIONS);
+          _this.currentMinigame = new _this.minigames[data.minigame.name];
+          _this.el.find("#instructions").html(_this.currentMinigame.constructor.INSTRUCTIONS);
+          return _this.playerReady();
         });
       }
     };
