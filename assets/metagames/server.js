@@ -194,7 +194,7 @@
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(0);
+      return this.loadGame(1);
     };
 
     Metagame.prototype.loadGame = function(index) {

@@ -15,6 +15,15 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
       # create Minigame <div>
       this.el = $("<div>").addClass('active view').attr("id","double-tap-race-minigame")
       this.el.html _.template App.Minigames.DoubleTapRace.Templates.main_view
+      this.el.find(".progress").html _.template App.Minigames.DoubleTapRace.Templates.player_view, {players: this.players}
+
+
+  getPlayerRep:  (id) =>
+    for player, i in this.players
+      if player.id == id
+        return $('.runner')[i]
+    []
+
 
   start: =>
     $('body').append(this.el)
@@ -31,10 +40,19 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
     )
     #setTimeout((=> this.gameover()), 5000)
 
+  animateFeet: (rep) =>
+      console.log rep
+      $left = $($(rep).find('.left-foot'))
+      $right = $($(rep).find('.right-foot'))
+      if parseInt($left.css('left')) == 10
+        $left.css('left', '30px')
+        $right.css('left', '10px')
+      else
+        $left.css('left', '10px')
+        $right.css('left', '30px')
+
   render: =>
     $('.score').text 'Distance = ' + this.dist
-    #$('.runner').css 'left', 10*this.dist
-    this.el.find(".progress").html _.template App.Minigames.DoubleTapRace.Templates.player_view, {players: this.players}
 
   gameover: =>
     $(this.el).fadeOut()
@@ -47,6 +65,8 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
       for player in this.players
         if player.id == player_id
           player.dist = data.dist
+          $(this.getPlayerRep(player_id)).css 'left', player.dist + 20;
+          this.animateFeet(this.getPlayerRep(player_id))
           this.gameover() if player.dist + 50 == parseInt(this.el.css('width'))
           this.render()
           break

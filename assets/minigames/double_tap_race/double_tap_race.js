@@ -15,7 +15,11 @@
 
       this.render = __bind(this.render, this);
 
+      this.animateFeet = __bind(this.animateFeet, this);
+
       this.start = __bind(this.start, this);
+
+      this.getPlayerRep = __bind(this.getPlayerRep, this);
       return DoubleTapRace.__super__.constructor.apply(this, arguments);
     }
 
@@ -37,8 +41,23 @@
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
         _this.el = $("<div>").addClass('active view').attr("id", "double-tap-race-minigame");
-        return _this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
+        _this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
+        return _this.el.find(".progress").html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
+          players: _this.players
+        }));
       });
+    };
+
+    DoubleTapRace.prototype.getPlayerRep = function(id) {
+      var i, player, _i, _len, _ref;
+      _ref = this.players;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        player = _ref[i];
+        if (player.id === id) {
+          return $('.runner')[i];
+        }
+      }
+      return [];
     };
 
     DoubleTapRace.prototype.start = function() {
@@ -59,11 +78,22 @@
       });
     };
 
+    DoubleTapRace.prototype.animateFeet = function(rep) {
+      var $left, $right;
+      console.log(rep);
+      $left = $($(rep).find('.left-foot'));
+      $right = $($(rep).find('.right-foot'));
+      if (parseInt($left.css('left')) === 10) {
+        $left.css('left', '30px');
+        return $right.css('left', '10px');
+      } else {
+        $left.css('left', '10px');
+        return $right.css('left', '30px');
+      }
+    };
+
     DoubleTapRace.prototype.render = function() {
-      $('.score').text('Distance = ' + this.dist);
-      return this.el.find(".progress").html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
-        players: this.players
-      }));
+      return $('.score').text('Distance = ' + this.dist);
     };
 
     DoubleTapRace.prototype.gameover = function() {
@@ -82,6 +112,8 @@
           player = _ref[_i];
           if (player.id === player_id) {
             player.dist = data.dist;
+            $(this.getPlayerRep(player_id)).css('left', player.dist + 20);
+            this.animateFeet(this.getPlayerRep(player_id));
             if (player.dist + 50 === parseInt(this.el.css('width'))) {
               this.gameover();
             }

@@ -9,7 +9,11 @@ App.Minigames.DoubleTapRace.Templates = {
   player_view: '''
     <% _.each(players, function(player){ %>
       <div class="runner-lane">
-        <div class="runner" id="runner-<%= player.id %>" style="background-color: <%= player.color %>; left: <%= player.dist + 20%>px;"></div>
+        <div class="runner" style="left: <%= player.dist + 20 %>px">
+          <div class="runner-body" id="body-<%= player.id %>" style="background-color: <%= player.color %>;"></div>
+          <div class="left-foot" id="left-<%= player.id %>" style="background-color: <%= player.color %>;"></div>
+          <div class="right-foot" id="right-<%= player.id %>" style="background-color: <%= player.color %>;"></div>
+        </div>
       </div>
     <% }) %>
   '''
