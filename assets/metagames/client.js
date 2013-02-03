@@ -136,9 +136,12 @@
     };
 
     Metagame.prototype.showResults = function() {
+      var _this = this;
       this.updateScoreboard();
       this.el.find('#scoreboard').show();
-      return setTimeout(this.el.find('#pregame').slideDown, 5000);
+      return setTimeout((function() {
+        return _this.el.find('#pregame').slideDown();
+      }), 10000);
     };
 
     Metagame.prototype.minigameCountdown = function() {

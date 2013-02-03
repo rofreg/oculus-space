@@ -95,7 +95,7 @@ class App.Metagame
   showResults: =>
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
-    setTimeout this.el.find('#pregame').slideDown, 5000
+    setTimeout (=> this.el.find('#pregame').slideDown()), 10000
 
   minigameCountdown: =>
     console.log "Starting #{this.currentMinigame.constructor.NAME} in 2 seconds!"

@@ -125,4 +125,29 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
+  table.scoreboard{
+    width: 100%;
+    td, th{
+      font-size: 28px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &.name{
+        max-width: 300px;
+        text-align: left;
+      }
+      &.score, &.result{
+        text-align: right;
+      }
+    }
+    th{
+      font-size: 24px;
+    }
+    div.color{
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  }
 }
