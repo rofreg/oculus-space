@@ -15,7 +15,7 @@
 
     TapRace.NAME = 'TapRace';
 
-    TapRace.INSTRUCTIONS = "It's a counting race! Click the numbers in order from 1-16 as fast as you can!!";
+    TapRace.INSTRUCTIONS = "In this game, you'll see a grid of numbers.<br>\n<br>\n16 digits are randomly shuffled on the page, and it's your job\nto click them in order, from 1 to 16. <br>\n<br>\nRemember, it's a race, so move quickly!";
 
     TapRace.TEMPLATES = "/assets/minigames/tap_race/templates.js";
 

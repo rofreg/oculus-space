@@ -82,7 +82,7 @@ App.Metagame.Default.Templates = {
   '''
 
   countdown: '''
-    1...
+    Game starting in <span>3</span>...
   '''
 
   next_game_headers: ["Another game, coming up!","The battle rages on!","Ready for more?"]
