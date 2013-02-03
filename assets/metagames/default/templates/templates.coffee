@@ -5,6 +5,7 @@ App.Metagame.Default.Templates = {
     <div id="intro"></div>
     <div id="pregame"></div>
     <div id="scoreboard"></div>
+    <div id="next_game"></div>
     <div id="countdown"></div>
   '''
 
@@ -80,6 +81,17 @@ App.Metagame.Default.Templates = {
     Game starting in <span>3</span>...
   '''
 
+  next_game_headers: ["Another game, coming up!","The battle rages on!","Ready for more?"]
+
+  next_game: '''
+    <h1><%= App.Metagame.Default.Templates.next_game_headers[Math.floor(Math.random()*App.Metagame.Default.Templates.next_game_headers.length)] %></h1>
+    <h4>Loading your next game...</h4>
+    <img src="/assets/metagames/default/images/ajax.gif" style="margin: 40px 0 90px">
+    <div class="next_game">
+      <%= currentMinigame ? currentMinigame.constructor.NAME : "" %>
+    </div>
+  '''
+
   scoreboard: '''
     <h1>Scoreboard</h1>
     <table class="scoreboard">
@@ -97,6 +109,6 @@ App.Metagame.Default.Templates = {
           <td class="result">+ <%= player.minigame_score %></td>
         <tr>
       <% }) %>
-    </ul>
+    </table>
   '''
 }

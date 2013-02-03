@@ -213,7 +213,9 @@
 
     Metagame.prototype.gameover = function(score, id) {
       var player, _i, _len, _ref;
-      this.minigameScores;
+      if (!score) {
+        score = 0;
+      }
       this.getPlayer(id).minigame_score = score;
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();

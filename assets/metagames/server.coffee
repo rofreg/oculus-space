@@ -113,7 +113,8 @@ class Server.Metagame
     this.room.emit 'minigame: load', {minigame: this.minigames[index]}
 
   gameover: (score, id) =>
-    this.minigameScores
+    if !score
+      score = 0
     this.getPlayer(id).minigame_score = score
     this.getPlayer(id).in_game = false
     this.sendPlayerList()
