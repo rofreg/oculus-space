@@ -5,6 +5,7 @@ App.Templates.HideAndSeek =
     </div>
   '''
   grid: '''
+    <div class='notif'></div>
     <table id='HAS-grid'>
       <% forest_index = 0 %>
       <% for(var x = 0; x <= 3; x++) { %>
@@ -21,7 +22,7 @@ App.Templates.HideAndSeek =
                   <% } else { %>
                     <img src="<%= memes[x * 4 + y] %>" />
                   <% } %>
-                <% } else if (!player.seeking) { %>
+                <% } else if (!player.seeker) { %>
                   <% if (grid[x][y].players.length) { %>
                     <div class='color-fill' style="background: <%= grid[x][y].players[0].color %>;"></div>
                   <% } else { %>
@@ -43,14 +44,15 @@ App.Templates.HideAndSeek =
   seekerIntro: '''
     <div class='HAS-intro'>
       <div class='title'>You're it! </div>
-      <div>Waiting for everyone else to hide...</div>
+      <div class='explain'>Waiting for everyone else to hide...</div>
+      <a href='#' class='confirm' style='display:none;'>Let's do it!</a>
     </div>
   '''
   hiderIntro: '''
     <div class='HAS-intro'>
       <div class='title'>Time to hide! </div>
-      <div>Click a cell on the next screen to hide in.</div>
-      <a href='#' class='hider-confirm'>Sounds Good</a>
+      <div class='explain'>Click a cell on the next screen to hide in.</div>
+      <a href='#' class='confirm'>Sounds Good</a>
     </div>
   '''
 

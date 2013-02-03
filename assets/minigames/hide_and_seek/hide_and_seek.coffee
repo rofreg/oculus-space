@@ -1,7 +1,7 @@
 class App.Minigames.HideAndSeek extends App.Minigames.Default
 
   @NAME: 'HideAndSeek'
-  @INSTRUCTIONS: 'HideAndSeek is a fun game. Explain yourself!!!!!.'
+  @INSTRUCTIONS: "HideAndSeek is a game about avoiding the intertubes! Avoid the randomly generated memes, and try to get outside! You're either a seeker or a hider in this one."
   @TEMPLATES = "/assets/minigames/hide_and_seek/templates.js"
   @STYLESHEET = "/assets/minigames/hide_and_seek/styles.css"
 
@@ -14,6 +14,7 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
     this.forests = ["/assets/minigames/hide_and_seek/images/forest1.jpg",
                     "/assets/minigames/hide_and_seek/images/forest2.jpg",
                     "/assets/minigames/hide_and_seek/images/forest3.jpg"]
+    this.taunts = ["more t00bs for you!", "get off that damn computer!", "a sad, sad, habit..."]
     super
 
   start: =>
@@ -22,29 +23,30 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
       for y in [0..3]
         this.grid[x][y] = { name: "#{x}, #{y}", players: [] }
 
-    this.player = this.getCurrentPlayer()
     this.el = $(_.template(App.Templates.HideAndSeek.main)())
     $("body").append this.el
 
     #figure out if I am seeker
     for player in this.players
-      player.hiding = true
-    this.players.sort (a,b) ->
-      return a.name.localeCompare(b.name)
-    this.players[0].discovered = true
-    if this.player == this.players[0]
-      this.player.seeking = true
-      this.player.hiding = false
-      this.player.discovered = true
+      player.hider = true
+      player.hiddenYet = false
 
-    if this.player.seeking
+    this.players.sort (a,b) ->
+      return a.id.localeCompare(b.id)
+
+    this.players[0].seeker = true
+    this.players[0].hider = false
+    this.player = this.getCurrentPlayer()
+    
+    if this.player.seeker
       this.el.html _.template App.Templates.HideAndSeek.seekerIntro
     else
-      this.player.hiding = true
-      this.player.hidden = false
       this.el.html _.template App.Templates.HideAndSeek.hiderIntro
-      this.el.find(".hider-confirm").bind "touchstart click", =>
+      this.el.find(".confirm").bind "touchstart click", =>
         this.renderGrid()
+
+  notify: (string) ->
+    this.el.find(".notif").html(string)
 
   randomlyPopulate: ->
     for i in [0..2]
@@ -54,8 +56,8 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
           y: Math.floor(Math.random() * 4)
         id: Math.floor(Math.random() * 500)
         name: Math.floor(Math.random() * 500)
-        hiding: false
-        hidden: true
+        hider: true
+        hiddenYet: true
         color: ["black", "red", "green"][i]
     this.renderGrid()
 
@@ -77,11 +79,11 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
       forests: this.forests
 
     #touch events for grid, based on player states
-    if this.player.hiding
+    if this.player.hider and !this.player.hiddenYet
       that = this
       this.el.find(".HAS-cell").bind "touchstart click", ->
         that.hideInCell($(this).closest('.HAS-cell'))
-    else if this.player.seeking
+    else if this.player.seeker
       that = this
       this.el.find(".HAS-cell").bind "touchstart click", ->
         cell = $(this).closest('.HAS-cell')
@@ -91,8 +93,7 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
         that.broadcast "board: inspect", { location : {x:x, y:y}}
 
   hideInCell: (cell) ->
-    this.player.hiding = false
-    this.player.hidden = true
+    this.player.hiddenYet = true
     this.player.location = {x: cell.attr('data-x'), y: cell.attr('data-y')}
     this.broadcast "player: hidden", { location : this.player.location }
     this.renderGrid()
@@ -100,49 +101,64 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
   inspectCell: (x, y) ->
     cell = this.grid[x][y]
     cell.inspected = true
-    if cell.players.length
-      for player in cell.players
-        player.discovered = true
     this.renderGrid()
     if this.allPlayersDiscovered()
-      console.log 'gameover'
       this.gameover()
+    if cell.players.length
+      this.notify("#{cell.players[0].name} bit the dust!")
+    else if Math.floor Math.random() < 0.5
+      this.notify(this.taunts[Math.floor(Math.random()*this.taunts.length)])
 
   allPlayersDiscovered: ->
     for player in this.players
-      if !player.discovered
+      if player.hider and !this.grid[player.location.x][player.location.y].inspected
         return false
     return true
 
   receiveBroadcast: (event, data, player_id) =>
     if player_id?
       if event == 'player: hidden'
-        this.getPlayer(player_id).location = data.location
-        this.getPlayer(player_id).hiding = false
-        if this.player.seeking
+        player = this.getPlayer(player_id)
+        player.location = data.location
+        player.hiddenYet = true
+        if this.player.seeker
           if this.allHidersHidden()
-            this.renderGrid()
-        else
+            this.seekerReady()
+        else if this.player.hiddenYet
           this.renderGrid()
       else if event == "board: inspect"
         this.inspectCell data.location.x, data.location.y
 
+  seekerReady: ->
+    this.el.find(".explain").text("Ready to go!")
+    this.el.find(".confirm").show().bind "touchstart click", =>
+      this.renderGrid()
+      this.el.find(".notif").text("Start searching!")
+
   allHidersHidden: ->
     for player in this.players
-      if player.hiding
+      if player.hider and !player.hiddenYet
         return false
     return true
 
   proxyFetchReturn: (json) ->
     this.memes = _.map json.body.result, (item) -> item.instanceImageUrl
-    console.log this.memes
 
   gameover: ->
-    this.el.remove()
-    if this.player.seeker
-      App.metagame.gameover 10
-    else
-      App.metagame.gameover 0
+    inspected = 0
+    for x in [0..3]
+      for y in [0..3]
+        if this.grid[x][y].inspected
+          inspected++
+
+    this.notify("Exposed! In only #{inspected} shots")
+    setTimeout((=>
+      this.el.fadeOut 500, =>
+        if this.player.seeker
+          App.metagame.gameover 16 - inspected
+        else
+          App.metagame.gameover inspected
+    ), 2000)
 
 
 App.metagame.addMinigame App.Minigames.HideAndSeek

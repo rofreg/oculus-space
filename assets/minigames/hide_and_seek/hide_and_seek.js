@@ -19,7 +19,7 @@
 
     HideAndSeek.NAME = 'HideAndSeek';
 
-    HideAndSeek.INSTRUCTIONS = 'HideAndSeek is a fun game. Explain yourself!!!!!.';
+    HideAndSeek.INSTRUCTIONS = "HideAndSeek is a game about avoiding the intertubes! Avoid the randomly generated memes, and try to get outside! You're either a seeker or a hider in this one.";
 
     HideAndSeek.TEMPLATES = "/assets/minigames/hide_and_seek/templates.js";
 
@@ -33,6 +33,7 @@
       this.grid = [[], [], [], []];
       this.proxyFetch("http://version1.api.memegenerator.net/Instances_Select_ByPopular?languageCode=en&pageIndex=0&pageSize=16&days=7");
       this.forests = ["/assets/minigames/hide_and_seek/images/forest1.jpg", "/assets/minigames/hide_and_seek/images/forest2.jpg", "/assets/minigames/hide_and_seek/images/forest3.jpg"];
+      this.taunts = ["more t00bs for you!", "get off that damn computer!", "a sad, sad, habit..."];
       return HideAndSeek.__super__.init.apply(this, arguments);
     };
 
@@ -47,33 +48,32 @@
           };
         }
       }
-      this.player = this.getCurrentPlayer();
       this.el = $(_.template(App.Templates.HideAndSeek.main)());
       $("body").append(this.el);
       _ref = this.players;
       for (_k = 0, _len = _ref.length; _k < _len; _k++) {
         player = _ref[_k];
-        player.hiding = true;
+        player.hider = true;
+        player.hiddenYet = false;
       }
       this.players.sort(function(a, b) {
-        return a.name.localeCompare(b.name);
+        return a.id.localeCompare(b.id);
       });
-      this.players[0].discovered = true;
-      if (this.player === this.players[0]) {
-        this.player.seeking = true;
-        this.player.hiding = false;
-        this.player.discovered = true;
-      }
-      if (this.player.seeking) {
+      this.players[0].seeker = true;
+      this.players[0].hider = false;
+      this.player = this.getCurrentPlayer();
+      if (this.player.seeker) {
         return this.el.html(_.template(App.Templates.HideAndSeek.seekerIntro));
       } else {
-        this.player.hiding = true;
-        this.player.hidden = false;
         this.el.html(_.template(App.Templates.HideAndSeek.hiderIntro));
-        return this.el.find(".hider-confirm").bind("touchstart click", function() {
+        return this.el.find(".confirm").bind("touchstart click", function() {
           return _this.renderGrid();
         });
       }
+    };
+
+    HideAndSeek.prototype.notify = function(string) {
+      return this.el.find(".notif").html(string);
     };
 
     HideAndSeek.prototype.randomlyPopulate = function() {
@@ -86,8 +86,8 @@
           },
           id: Math.floor(Math.random() * 500),
           name: Math.floor(Math.random() * 500),
-          hiding: false,
-          hidden: true,
+          hider: true,
+          hiddenYet: true,
           color: ["black", "red", "green"][i]
         });
       }
@@ -114,12 +114,12 @@
         memes: this.memes,
         forests: this.forests
       }));
-      if (this.player.hiding) {
+      if (this.player.hider && !this.player.hiddenYet) {
         that = this;
         return this.el.find(".HAS-cell").bind("touchstart click", function() {
           return that.hideInCell($(this).closest('.HAS-cell'));
         });
-      } else if (this.player.seeking) {
+      } else if (this.player.seeker) {
         that = this;
         return this.el.find(".HAS-cell").bind("touchstart click", function() {
           var cell;
@@ -138,8 +138,7 @@
     };
 
     HideAndSeek.prototype.hideInCell = function(cell) {
-      this.player.hiding = false;
-      this.player.hidden = true;
+      this.player.hiddenYet = true;
       this.player.location = {
         x: cell.attr('data-x'),
         y: cell.attr('data-y')
@@ -151,20 +150,17 @@
     };
 
     HideAndSeek.prototype.inspectCell = function(x, y) {
-      var cell, player, _i, _len, _ref;
+      var cell;
       cell = this.grid[x][y];
       cell.inspected = true;
-      if (cell.players.length) {
-        _ref = cell.players;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          player = _ref[_i];
-          player.discovered = true;
-        }
-      }
       this.renderGrid();
       if (this.allPlayersDiscovered()) {
-        console.log('gameover');
-        return this.gameover();
+        this.gameover();
+      }
+      if (cell.players.length) {
+        return this.notify("" + cell.players[0].name + " bit the dust!");
+      } else if (Math.floor(Math.random() < 0.5)) {
+        return this.notify(this.taunts[Math.floor(Math.random() * this.taunts.length)]);
       }
     };
 
@@ -173,7 +169,7 @@
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
-        if (!player.discovered) {
+        if (player.hider && !this.grid[player.location.x][player.location.y].inspected) {
           return false;
         }
       }
@@ -181,15 +177,17 @@
     };
 
     HideAndSeek.prototype.receiveBroadcast = function(event, data, player_id) {
+      var player;
       if (player_id != null) {
         if (event === 'player: hidden') {
-          this.getPlayer(player_id).location = data.location;
-          this.getPlayer(player_id).hiding = false;
-          if (this.player.seeking) {
+          player = this.getPlayer(player_id);
+          player.location = data.location;
+          player.hiddenYet = true;
+          if (this.player.seeker) {
             if (this.allHidersHidden()) {
-              return this.renderGrid();
+              return this.seekerReady();
             }
-          } else {
+          } else if (this.player.hiddenYet) {
             return this.renderGrid();
           }
         } else if (event === "board: inspect") {
@@ -198,12 +196,21 @@
       }
     };
 
+    HideAndSeek.prototype.seekerReady = function() {
+      var _this = this;
+      this.el.find(".explain").text("Ready to go!");
+      return this.el.find(".confirm").show().bind("touchstart click", function() {
+        _this.renderGrid();
+        return _this.el.find(".notif").text("Start searching!");
+      });
+    };
+
     HideAndSeek.prototype.allHidersHidden = function() {
       var player, _i, _len, _ref;
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
-        if (player.hiding) {
+        if (player.hider && !player.hiddenYet) {
           return false;
         }
       }
@@ -211,19 +218,32 @@
     };
 
     HideAndSeek.prototype.proxyFetchReturn = function(json) {
-      this.memes = _.map(json.body.result, function(item) {
+      return this.memes = _.map(json.body.result, function(item) {
         return item.instanceImageUrl;
       });
-      return console.log(this.memes);
     };
 
     HideAndSeek.prototype.gameover = function() {
-      this.el.remove();
-      if (this.player.seeker) {
-        return App.metagame.gameover(10);
-      } else {
-        return App.metagame.gameover(0);
+      var inspected, x, y, _i, _j,
+        _this = this;
+      inspected = 0;
+      for (x = _i = 0; _i <= 3; x = ++_i) {
+        for (y = _j = 0; _j <= 3; y = ++_j) {
+          if (this.grid[x][y].inspected) {
+            inspected++;
+          }
+        }
       }
+      this.notify("Exposed! In only " + inspected + " shots");
+      return setTimeout((function() {
+        return _this.el.fadeOut(500, function() {
+          if (_this.player.seeker) {
+            return App.metagame.gameover(16 - inspected);
+          } else {
+            return App.metagame.gameover(inspected);
+          }
+        });
+      }), 2000);
     };
 
     return HideAndSeek;
