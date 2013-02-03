@@ -6,6 +6,11 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
 
   init: ->
     this.score = 0
+    this.players = []
+    for player in App.metagame.players
+      new_player = jQuery.extend(true, {}, player)
+      new_player.score = 0
+      this.players.push new_player
     
     $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
@@ -26,13 +31,15 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
         that.score++
         that.render()
     )
-    setTimeout((=> this.gameover()), 15000)
+    setTimeout((=> this.gameover()), 5000)
 
   render: =>
     $('.score').text 'Distance = ' + this.score
+    $('.runner').css 'left', 10*this.score
 
 
   gameover: =>
+    $(this.el).fadeOut()
     App.metagame.gameover(this)
 
 App.metagame.addMinigame App.Minigames.DoubleTapRace

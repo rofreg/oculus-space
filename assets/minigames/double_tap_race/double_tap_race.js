@@ -26,8 +26,17 @@
     DoubleTapRace.STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css";
 
     DoubleTapRace.prototype.init = function() {
-      var _this = this;
+      var new_player, player, _i, _len, _ref,
+        _this = this;
       this.score = 0;
+      this.players = [];
+      _ref = App.metagame.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        new_player = jQuery.extend(true, {}, player);
+        new_player.score = 0;
+        this.players.push(new_player);
+      }
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
         console.log("New minigame: " + _this.constructor.NAME);
@@ -52,14 +61,16 @@
       });
       return setTimeout((function() {
         return _this.gameover();
-      }), 15000);
+      }), 5000);
     };
 
     DoubleTapRace.prototype.render = function() {
-      return $('.score').text('Distance = ' + this.score);
+      $('.score').text('Distance = ' + this.score);
+      return $('.runner').css('left', 10 * this.score);
     };
 
     DoubleTapRace.prototype.gameover = function() {
+      $(this.el).fadeOut();
       return App.metagame.gameover(this);
     };
 
