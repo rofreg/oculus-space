@@ -50,7 +50,8 @@ class App.Metagame
 
   drawPlayerList: =>
     console.log(this.players)
-    this.el.html(JSON.stringify(this.players))
+    this.el.html(_.template(App.Metagame.Default.Templates.main_view, {players: this.players}))
+    # this.el.html(JSON.stringify(this.players))
 
 class App.Minigame
 

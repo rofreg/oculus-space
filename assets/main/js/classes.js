@@ -89,7 +89,9 @@
 
     Metagame.prototype.drawPlayerList = function() {
       console.log(this.players);
-      return this.el.html(JSON.stringify(this.players));
+      return this.el.html(_.template(App.Metagame.Default.Templates.main_view, {
+        players: this.players
+      }));
     };
 
     return Metagame;

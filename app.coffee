@@ -1,15 +1,25 @@
 express = require('express')
-app = express()
-server = require('http').createServer(app)
-io = require('socket.io').listen(server)
+less    = require('less-middleware');
+app     = express()
+server  = require('http').createServer(app)
+io      = require('socket.io').listen(server)
 
 app.configure () ->
+  app.use(less({
+    src: __dirname + '/assets',
+    dest   : __dirname + "/assets",
+    compress: true,
+    prefix : '/assets'
+  }));
   app.use '/assets', express.static(__dirname + "/assets")
 
 server.listen(80)
 
 app.get '/', (req, res) ->
   res.sendfile(__dirname + '/index.html')
+
+app.get '/favicon.ico', (req, res) ->
+  res.sendfile(__dirname + '/assets/favicon.ico')
 
 app.get '/:id', (req, res) ->
   console.log "Accessed URL: /#{req.params.id}"
