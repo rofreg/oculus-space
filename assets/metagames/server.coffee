@@ -53,7 +53,7 @@ class Server.Metagame
         this.sendPlayerList()
 
   sendPlayerList: =>
-    this.room.emit 'players: list updated', _.filter(this.players, (player) -> !player.in_game)
+    this.room.emit 'players: list updated', this.players
 
   isAcceptingPlayers: =>
     true
