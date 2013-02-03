@@ -23,15 +23,18 @@
 
     DoubleTapRace.TEMPLATES = "/assets/minigames/double_tap_race/templates/templates.js";
 
+    DoubleTapRace.STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css";
+
     DoubleTapRace.prototype.init = function() {};
 
     DoubleTapRace.prototype.start = function() {
       var _this = this;
       this.score = 0;
+      $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
         var that;
         console.log("New minigame: " + _this.constructor.NAME);
-        _this.el = $("<div>").addClass('active view').attr("id", "minigame");
+        _this.el = $("<div></div>").addClass('active view minigame').attr("id", "double-tap-race-minigame");
         $('.active.view').removeClass('active').hide();
         $('body').append(_this.el);
         _this.render();

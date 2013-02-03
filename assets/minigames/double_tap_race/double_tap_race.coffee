@@ -2,16 +2,18 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
   @NAME: 'DoubleTapRace'
   @INSTRUCTIONS: 'DoubleTapRace is a fun game. Click the buttons to move legs.'
   @TEMPLATES: "/assets/minigames/double_tap_race/templates/templates.js"
+  @STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css"
 
   init: ->
 
   start: =>
     this.score = 0
     
+    $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
       console.log "New minigame: #{this.constructor.NAME}"
       # create Minigame <div>
-      this.el = $("<div>").addClass('active view').attr("id","minigame")
+      this.el = $("<div></div>").addClass('active view minigame').attr("id","double-tap-race-minigame")
       $('.active.view').removeClass('active').hide()
       $('body').append(this.el)
       this.render()
