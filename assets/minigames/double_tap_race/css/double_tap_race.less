@@ -10,6 +10,7 @@
 
   .btn {
     font-size: 32px;
+    margin: 0 40px;
     padding: 10px;
     color: #bab4b4;
   }
@@ -25,11 +26,39 @@
   .progress {
     height : 60%;
 
-    .runner {
-      position: absolute;
-      background-color: red;
-      width: 50px;
-      height: 50px;
+    .runner-lane {
+
+      width: 100%;
+      height: 60px;
+
+      .runner {
+        position: absolute;
+        left: 0;
+        width: 50px;
+        height: 45px;
+        -webkit-transition: all 0.5s linear;
+
+        .runner-body {
+          width: 50px;
+          height: 45px;
+        }
+
+        .left-foot, .right-foot {
+          position: absolute;
+          top: 45px;
+          width: 10px;
+          height: 10px;
+          -webkit-transition: all 0.5s linear;
+        }
+
+        .left-foot {
+          left: 10px;
+        }
+
+        .right-foot {
+          left: 30px;
+        }
+      }
     }
   }
 }

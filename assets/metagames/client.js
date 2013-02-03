@@ -257,13 +257,12 @@
       return this.socket.emit('metagame: player ready');
     };
 
-    Metagame.prototype.gameover = function(minigame) {
+    Metagame.prototype.gameover = function(score) {
       this.ready = false;
       $('#backgrounds').fadeIn(1000);
       $('#overlay').fadeOut(1000);
-      console.log(minigame.score);
       this.socket.emit('minigame: gameover', {
-        score: minigame.score
+        score: score
       });
       return this.el.fadeIn();
     };

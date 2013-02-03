@@ -179,13 +179,12 @@ class App.Metagame
     this.ready = true
     this.socket.emit 'metagame: player ready'
       
-  gameover: (minigame) ->
+  gameover: (score) ->
     this.ready = false
     $('#backgrounds').fadeIn(1000)
     $('#overlay').fadeOut(1000)
-    console.log minigame.score
     this.socket.emit 'minigame: gameover',
-      score: minigame.score
+      score: score
     this.el.fadeIn()
 
   sendBroadcast: (event, data) ->
