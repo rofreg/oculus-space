@@ -22,6 +22,7 @@
   });
 
   $("#user-form").submit(function() {
+    $('#music-player')[0].play()
     $("button").attr('disabled', 'disabled');
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
@@ -35,9 +36,11 @@
   });
 
   App.Utilities = {
+    warningGiven: false,
     checkOrientation: function() {
-      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) && $(window).width() > $(window).height()) {
-        return alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
+      if (!App.Utilities.warningGiven && /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) && $(window).width() > $(window).height()) {
+        alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
+        return App.Utilities.warningGiven = true;
       }
     }
   };
