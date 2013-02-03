@@ -9,6 +9,15 @@
 
     Default.prototype.playersUpdated = function() {};
 
+    Default.prototype.receiveBroadcast = function(event, data, player_id) {};
+
+    Default.prototype.broadcast = function(event, data) {
+      if (data == null) {
+        data = {};
+      }
+      return App.metagame.sendBroadcast(event, data);
+    };
+
     return Default;
 
   })();

@@ -24,7 +24,7 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
     this.render()
 
     that = this
-    this.el.find(".btn").bind('touchstart', ->
+    this.el.find(".btn").bind('click touchstart', ->
       if $(this).hasClass "active"
         $(this).siblings(".btn").addClass "active"
         $(this).removeClass "active"
@@ -41,5 +41,6 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
   gameover: =>
     $(this.el).fadeOut()
     App.metagame.gameover(this)
+    this.el.fadeOut()
 
 App.metagame.addMinigame App.Minigames.DoubleTapRace

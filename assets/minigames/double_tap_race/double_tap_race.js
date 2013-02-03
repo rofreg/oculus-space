@@ -51,7 +51,7 @@
       $('body').append(this.el);
       this.render();
       that = this;
-      this.el.find(".btn").bind('touchstart', function() {
+      this.el.find(".btn").bind('click touchstart', function() {
         if ($(this).hasClass("active")) {
           $(this).siblings(".btn").addClass("active");
           $(this).removeClass("active");
@@ -71,7 +71,8 @@
 
     DoubleTapRace.prototype.gameover = function() {
       $(this.el).fadeOut();
-      return App.metagame.gameover(this);
+      App.metagame.gameover(this);
+      return this.el.fadeOut();
     };
 
     return DoubleTapRace;

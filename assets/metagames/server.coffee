@@ -116,7 +116,7 @@ class Server.Metagame
     this.sendPlayerList()
 
     if this.readyToStart()
-      this.loadRandomGame()
+      setTimeout (=> this.loadRandomGame()), 2000
   
 
 module.exports = Server.Metagame

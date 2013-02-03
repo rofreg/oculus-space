@@ -22,44 +22,68 @@
     TapRace.STYLESHEET = "/assets/minigames/tap_race/styles.css";
 
     TapRace.prototype.init = function() {
-      var new_player, player, _i, _len, _ref,
-        _this = this;
-      this.score = 0;
+      var new_player, player, _i, _len, _ref;
       this.players = [];
       _ref = App.metagame.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
         new_player = jQuery.extend(true, {}, player);
-        new_player.score = 0;
         this.players.push(new_player);
       }
-      $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
-      return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
-        _this.el = $("<div>").attr({
-          "id": "tap-race-minigame"
+      this.currentNumber = 1;
+      Array.prototype.shuffle = function() {
+        return this.sort(function() {
+          return 0.5 - Math.random();
         });
-        _this.el.html(_.template(App.Templates.TapRace.main_view));
-        return _this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
-          players: _this.players
-        }));
-      });
+      };
+      this.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].shuffle();
+      console.log(this.numbers);
+      if (!(App.Templates.TapRace != null)) {
+        $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
+        return $.getScript(this.constructor.TEMPLATES);
+      }
     };
 
     TapRace.prototype.start = function() {
-      var _this = this;
-      $('body').append(this.el);
-      this.el.find(".btn").bind('click', function() {
-        _this.score++;
-        _this.render();
-        return _this.broadcast("updateScore");
+      var numbers, player, tds, that, _i, _len, _ref;
+      _ref = this.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        player.currentNumber = 0;
+      }
+      this.el = $("<div>").attr({
+        "id": "tap-race-minigame"
       });
-      return setTimeout((function() {
-        return _this.gameover();
-      }), 5000);
+      this.el.html(_.template(App.Templates.TapRace.main_view));
+      numbers = this.numbers;
+      tds = this.el.find("#tap-board td").each(function(i) {
+        return $(this).text(numbers[i]);
+      });
+      this.render();
+      $('body').append(this.el);
+      that = this;
+      return this.el.find("#tap-board td").bind("touchstart click", function() {
+        if (parseInt($(this).text()) === that.currentNumber) {
+          that.broadcast('player: scored', {
+            number: that.currentNumber
+          });
+          that.currentNumber++;
+          $(this).text('');
+          if (that.currentNumber > 2) {
+            return that.showCongrats();
+          }
+        }
+      });
     };
 
     TapRace.prototype.render = function() {
-      return $('.score').text(this.score);
+      return this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
+        players: this.players
+      }));
+    };
+
+    TapRace.prototype.showCongrats = function() {
+      return alert("congrats!");
     };
 
     TapRace.prototype.gameover = function() {
@@ -67,26 +91,26 @@
       return App.metagame.gameover(this);
     };
 
-    TapRace.prototype.broadcast = function(event, data) {
-      if (data == null) {
-        data = {};
-      }
-      return App.metagame.sendBroadcast(event, data);
-    };
-
     TapRace.prototype.receiveBroadcast = function(event, data, player_id) {
-      var player, _i, _len, _ref, _results;
+      var player, table, _i, _len, _ref, _results;
       if (player_id != null) {
         _ref = this.players;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           player = _ref[_i];
           if (player.id === player_id) {
-            player.score++;
-            this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
-              players: this.players
-            }));
-            break;
+            player.currentNumber = data.currentNumber;
+            table = this.el.find("#tap-race-players #score-table-" + player_id);
+            _results.push((function() {
+              var _results1;
+              _results1 = [];
+              while (data.currentNumber > player.currentNumber) {
+                table.find("td").first().addClass('no-background');
+                player.currentNumber++;
+                break;
+              }
+              return _results1;
+            })());
           } else {
             _results.push(void 0);
           }

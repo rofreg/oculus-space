@@ -134,6 +134,7 @@ class App.Metagame
     this.socket.emit 'minigame: gameover',
       score: minigame.score
     this.el.fadeIn()
+    this.showScoreboard()
 
   sendBroadcast: (event, data) ->
     this.socket.emit 'broadcast',

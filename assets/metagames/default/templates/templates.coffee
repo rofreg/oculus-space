@@ -50,15 +50,7 @@ App.Metagame.Default.Templates = {
 
   intro: '''
     <h1>Let's get started!</h1>
-    Here are the players:
-    <ul>
-      <% _.each(players, function(player){ %>
-        <li>
-          <strong><%= player.name %></strong>
-        </li>
-      <% }) %>
-    </ul>
-    Get ready for your first game!
+    Loading your first game!
   '''
 
   pregame: '''

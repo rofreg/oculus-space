@@ -42,6 +42,23 @@ input, button{
   font-family: inherit;
 }
 
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input, button {
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
 
 /*
  * Remove text-shadow in selection highlight: h5bp.com/i
@@ -346,6 +363,25 @@ textarea {
   margin-top: -300px;
   margin-left: -300px;
 }
+
+@-webkit-keyframes fall-in {
+  0% {
+    height: 0px;
+  }
+  30% {
+    height: 260px;
+  }
+  40% {
+    height: 250px;
+  }
+  60% {
+    height: 245px;
+  }
+  100% {
+    height: 240px;
+  }
+}
+
 #signin{
   margin-top: 0;
   top: 0;
@@ -355,6 +391,13 @@ textarea {
   background: rgba(255,255,255,0.8);
   text-align: center;
   box-shadow: 0 3px 20px rgba(0,0,0,0.3);
+  overflow: hidden;
+
+  -webkit-animation-name: fall-in;
+  -webkit-animation-duration: 1.0s;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-direction: normal;
 }
 #signin h1{
   margin: 0;
@@ -375,6 +418,9 @@ textarea {
 }
 #signin button:hover{
   background: #B8CDE6;
+}
+#signin button[disabled=disabled] {
+  background: #eee;
 }
 
 #disconnected{
