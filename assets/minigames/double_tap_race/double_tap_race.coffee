@@ -7,16 +7,23 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
   init: ->
     super
 
-    console.log this.players
+    this.dist= 0
+    _.each this.players, (player) -> player.dist = 0
 
-    this.score = 0
-    
     $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
-      console.log "New minigame: #{this.constructor.NAME}"
       # create Minigame <div>
       this.el = $("<div>").addClass('active view').attr("id","double-tap-race-minigame")
       this.el.html _.template App.Minigames.DoubleTapRace.Templates.main_view
+      this.el.find(".progress").html _.template App.Minigames.DoubleTapRace.Templates.player_view, {players: this.players}
+
+
+  getPlayerRep:  (id) =>
+    for player, i in this.players
+      if player.id == id
+        return $('.runner')[i]
+    []
+
 
   start: =>
     $('body').append(this.el)
@@ -27,26 +34,41 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
       if $(this).hasClass "active"
         $(this).siblings(".btn").addClass "active"
         $(this).removeClass "active"
-        that.score++
-        that.broadcast('player: scored', {score: that.score})
+        that.dist+= 10
+        that.broadcast('player: scored', {dist: that.dist})
         that.render()
     )
-    setTimeout((=> this.gameover()), 5000)
+    #setTimeout((=> this.gameover()), 5000)
+
+  animateFeet: (rep) =>
+      console.log rep
+      $left = $($(rep).find('.left-foot'))
+      $right = $($(rep).find('.right-foot'))
+      if parseInt($left.css('left')) == 10
+        $left.css('left', '30px')
+        $right.css('left', '10px')
+      else
+        $left.css('left', '10px')
+        $right.css('left', '30px')
 
   render: =>
-    $('.score').text 'Distance = ' + this.score
-    $('.runner').css 'left', 10*this.score
-
+    $('.score').text 'Distance = ' + this.dist
 
   gameover: =>
     $(this.el).fadeOut()
+    this.score = this.dist
     App.metagame.gameover(this)
     this.el.fadeOut()
 
-  receiveBroadcast: (event, data, player_id) ->
+  receiveBroadcast: (event, data, player_id) =>
     if player_id?
       for player in this.players
         if player.id == player_id
-          player.score = data.score
+          player.dist = data.dist
+          $(this.getPlayerRep(player_id)).css 'left', player.dist + 20;
+          this.animateFeet(this.getPlayerRep(player_id))
+          this.gameover() if player.dist + 50 == parseInt(this.el.css('width'))
+          this.render()
+          break
 
 App.metagame.addMinigame App.Minigames.DoubleTapRace

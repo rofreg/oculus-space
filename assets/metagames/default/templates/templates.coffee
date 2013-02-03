@@ -37,7 +37,7 @@ App.Metagame.Default.Templates = {
               + <%= (players.length - 4) %> others
             <% } else { %>
               <div class="color" style="background: <%= player.color%>">
-                <img src="http://cdn1.iconfinder.com/data/icons/gnome-desktop-icons-png/PNG/64/Gnome-Stock-Person-64.png">
+                <img src="/assets/metagames/default/images/person.png">
               </div>
               <%= player.name %>
             <% } %>

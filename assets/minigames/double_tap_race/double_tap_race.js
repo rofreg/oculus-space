@@ -9,11 +9,17 @@
     __extends(DoubleTapRace, _super);
 
     function DoubleTapRace() {
+      this.receiveBroadcast = __bind(this.receiveBroadcast, this);
+
       this.gameover = __bind(this.gameover, this);
 
       this.render = __bind(this.render, this);
 
+      this.animateFeet = __bind(this.animateFeet, this);
+
       this.start = __bind(this.start, this);
+
+      this.getPlayerRep = __bind(this.getPlayerRep, this);
       return DoubleTapRace.__super__.constructor.apply(this, arguments);
     }
 
@@ -28,45 +34,71 @@
     DoubleTapRace.prototype.init = function() {
       var _this = this;
       DoubleTapRace.__super__.init.apply(this, arguments);
-      console.log(this.players);
-      this.score = 0;
+      this.dist = 0;
+      _.each(this.players, function(player) {
+        return player.dist = 0;
+      });
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
-        console.log("New minigame: " + _this.constructor.NAME);
         _this.el = $("<div>").addClass('active view').attr("id", "double-tap-race-minigame");
-        return _this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
+        _this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
+        return _this.el.find(".progress").html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
+          players: _this.players
+        }));
       });
     };
 
+    DoubleTapRace.prototype.getPlayerRep = function(id) {
+      var i, player, _i, _len, _ref;
+      _ref = this.players;
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        player = _ref[i];
+        if (player.id === id) {
+          return $('.runner')[i];
+        }
+      }
+      return [];
+    };
+
     DoubleTapRace.prototype.start = function() {
-      var that,
-        _this = this;
+      var that;
       $('body').append(this.el);
       this.render();
       that = this;
-      this.el.find(".btn").bind('click touchstart', function() {
+      return this.el.find(".btn").bind('click touchstart', function() {
         if ($(this).hasClass("active")) {
           $(this).siblings(".btn").addClass("active");
           $(this).removeClass("active");
-          that.score++;
+          that.dist += 10;
           that.broadcast('player: scored', {
-            score: that.score
+            dist: that.dist
           });
           return that.render();
         }
       });
-      return setTimeout((function() {
-        return _this.gameover();
-      }), 5000);
+    };
+
+    DoubleTapRace.prototype.animateFeet = function(rep) {
+      var $left, $right;
+      console.log(rep);
+      $left = $($(rep).find('.left-foot'));
+      $right = $($(rep).find('.right-foot'));
+      if (parseInt($left.css('left')) === 10) {
+        $left.css('left', '30px');
+        return $right.css('left', '10px');
+      } else {
+        $left.css('left', '10px');
+        return $right.css('left', '30px');
+      }
     };
 
     DoubleTapRace.prototype.render = function() {
-      $('.score').text('Distance = ' + this.score);
-      return $('.runner').css('left', 10 * this.score);
+      return $('.score').text('Distance = ' + this.dist);
     };
 
     DoubleTapRace.prototype.gameover = function() {
       $(this.el).fadeOut();
+      this.score = this.dist;
       App.metagame.gameover(this);
       return this.el.fadeOut();
     };
@@ -79,7 +111,14 @@
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           player = _ref[_i];
           if (player.id === player_id) {
-            _results.push(player.score = data.score);
+            player.dist = data.dist;
+            $(this.getPlayerRep(player_id)).css('left', player.dist + 20);
+            this.animateFeet(this.getPlayerRep(player_id));
+            if (player.dist + 50 === parseInt(this.el.css('width'))) {
+              this.gameover();
+            }
+            this.render();
+            break;
           } else {
             _results.push(void 0);
           }
