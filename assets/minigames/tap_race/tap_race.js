@@ -23,13 +23,11 @@
 
     TapRace.prototype.init = function() {
       TapRace.__super__.init.apply(this, arguments);
-      this.currentNumber = 1;
       Array.prototype.shuffle = function() {
         return this.sort(function() {
           return 0.5 - Math.random();
         });
       };
-      this.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].shuffle();
       if (!(App.Templates.TapRace != null)) {
         $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
         return $.getScript(this.constructor.TEMPLATES);
@@ -38,6 +36,8 @@
 
     TapRace.prototype.start = function() {
       var numbers, player, tds, that, _i, _len, _ref;
+      this.currentNumber = 1;
+      this.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].shuffle();
       this.startTime = new Date;
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -62,7 +62,7 @@
           });
           that.currentNumber++;
           $(this).text('');
-          if (that.currentNumber > 16) {
+          if (that.currentNumber > 3) {
             return that.done();
           }
         }
@@ -106,8 +106,7 @@
 
     TapRace.prototype.gameover = function() {
       $(this.el).fadeOut();
-      console.log(this.players);
-      return App.metagame.gameover(this);
+      return App.metagame.gameover(this.minigame_score);
     };
 
     TapRace.prototype.receiveBroadcast = function(event, data, player_id) {
@@ -179,18 +178,15 @@
       return true;
     };
 
+    TapRace.prototype.sortPlayers = function() {
+      return this.players.sort(function(a, b) {
+        return a.time - b.time;
+      });
+    };
+
     TapRace.prototype.calculateScores = function() {
       var _this = this;
-      this.players.sort(function(a, b) {
-        if (a.time < b.time) {
-          -1;
-        }
-        if (a.time > b.time) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortPlayers();
       this.el.find(".top-half > div").fadeOut(500);
       this.el.find(".score-table-holder > div").fadeOut(500);
       setTimeout((function() {
@@ -209,19 +205,19 @@
         player = _ref[index];
         player.spot = index + 1;
         if (player.spot === 1) {
-          player.score = 10;
+          player.minigame_score = 10;
         }
         if (player.spot === 2) {
-          player.score = 5;
+          player.minigame_score = 5;
         }
         if (player.spot === 3) {
-          player.score = 3;
+          player.minigame_score = 3;
         }
         if (player.spot === 4) {
-          player.score = 1;
+          player.minigame_score = 1;
         }
         if (player.id === App.player_id) {
-          this.score = player.score;
+          this.minigame_score = player.minigame_score;
           half = this.el.find(".top-half");
           elem = _.template(App.Templates.TapRace.final, {
             spot: player.spot

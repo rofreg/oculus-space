@@ -6,15 +6,15 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
   init: ->
     super
-    this.currentNumber = 1
     Array::shuffle = -> @sort -> 0.5 - Math.random()
-    this.numbers = [1..16].shuffle()
 
     if !App.Templates.TapRace?
       $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
       $.getScript(this.constructor.TEMPLATES)
 
   start: =>
+    this.currentNumber = 1
+    this.numbers = [1..16].shuffle()
     this.startTime = new Date
     for player in this.players
       player.currentNumber = 0
@@ -34,7 +34,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
         that.broadcast('player: scored', {number: that.currentNumber})
         that.currentNumber++
         $(this).text('')
-        if that.currentNumber > 16
+        if that.currentNumber > 3#16
           that.done()
 
   render: ->
@@ -62,8 +62,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
   gameover: ->
     $(this.el).fadeOut()
-    console.log this.players
-    App.metagame.gameover(this)
+    App.metagame.gameover(this.minigame_score)
 
   receiveBroadcast: (event, data, player_id) ->
     if player_id?
@@ -99,14 +98,13 @@ class App.Minigames.TapRace extends App.Minigames.Default
         return false
     return true
           
-  calculateScores: ->
+  sortPlayers: ->
     this.players.sort (a,b) ->
-      if a.time < b.time
-        -1
-      if a.time > b.time
-        1
-      else
-        0
+      return a.time - b.time
+
+  calculateScores: ->
+    this.sortPlayers()
+    #alert(JSON.stringify(this.players))
 
     this.el.find(".top-half > div").fadeOut 500
     this.el.find(".score-table-holder > div").fadeOut 500
@@ -117,12 +115,15 @@ class App.Minigames.TapRace extends App.Minigames.Default
   fillSpots: ->
     for player, index in this.players
       player.spot = index + 1
-      player.score = 10 if player.spot == 1
-      player.score = 5  if player.spot == 2
-      player.score = 3  if player.spot == 3
-      player.score = 1  if player.spot == 4
+      player.minigame_score = 10 if player.spot == 1
+      player.minigame_score = 5  if player.spot == 2
+      player.minigame_score = 3  if player.spot == 3
+      player.minigame_score = 1  if player.spot == 4
+      #console.log player
+      #console.log player.spot
+      #console.log player.minigame_score
       if player.id == App.player_id
-        this.score = player.score
+        this.minigame_score = player.minigame_score
         half = this.el.find(".top-half")
         elem = _.template App.Templates.TapRace.final,
           spot: player.spot
