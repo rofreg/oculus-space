@@ -22,6 +22,7 @@
     TapRace.STYLESHEET = "/assets/minigames/tap_race/styles.css";
 
     TapRace.prototype.init = function() {
+      TapRace.__super__.init.apply(this, arguments);
       this.currentNumber = 1;
       Array.prototype.shuffle = function() {
         return this.sort(function() {

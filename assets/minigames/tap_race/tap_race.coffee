@@ -5,7 +5,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
   @STYLESHEET = "/assets/minigames/tap_race/styles.css"
 
   init: ->
-
+    super
     this.currentNumber = 1
     Array::shuffle = -> @sort -> 0.5 - Math.random()
     this.numbers = [1..16].shuffle()
