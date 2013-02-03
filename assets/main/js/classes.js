@@ -7,8 +7,6 @@
 
   App.metagames = [];
 
-  App.players = [];
-
   App.Metagame = (function() {
 
     function Metagame(id) {
@@ -95,17 +93,6 @@
     };
 
     return Metagame;
-
-  })();
-
-  App.Player = (function() {
-
-    function Player(name) {
-      this.name = name;
-      this.id = Math.random().toString(36).substring(2, 6);
-    }
-
-    return Player;
 
   })();
 
