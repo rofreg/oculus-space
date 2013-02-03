@@ -88,5 +88,4 @@ class Server.Metagame
     this.getPlayer(id).score = score
     this.sendPlayerList()
 
-
 module.exports = Server.Metagame
