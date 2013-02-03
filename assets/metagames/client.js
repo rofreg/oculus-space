@@ -145,17 +145,29 @@
     };
 
     Metagame.prototype.showResults = function() {
-      var index, player, top, _fn, _i, _len, _ref,
+      var index, player, sorted_player, top, _fn, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2,
         _this = this;
       if (!this.sorted_players) {
         this.sorted_players = this.players;
+      }
+      _ref = this.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        _ref1 = this.sorted_players;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          sorted_player = _ref1[_j];
+          if (sorted_player.id === player.id) {
+            sorted_player.minigame_score = player.minigame_score;
+            break;
+          }
+        }
       }
       this.updateScoreboard();
       this.el.find('#scoreboard').show();
       setTimeout((function() {
         return _this.showNextGameIntro();
       }), 5500 + (this.players.length * 1000));
-      _ref = this.sorted_players;
+      _ref2 = this.sorted_players;
       _fn = function() {
         var score, temp;
         player.score += player.minigame_score;
@@ -165,8 +177,8 @@
           return temp.text(score);
         }), 3000 + index * 1000);
       };
-      for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
-        player = _ref[index];
+      for (index = _k = 0, _len2 = _ref2.length; _k < _len2; index = ++_k) {
+        player = _ref2[index];
         _fn();
       }
       this.sorted_players = this.players.sort(function(s1, s2) {

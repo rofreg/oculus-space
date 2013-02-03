@@ -50,6 +50,16 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
         that.broadcast('player: scored', {dist: that.dist})
         that.render()
     )
+    this.raceCountdown()
+
+  raceCountdown: =>
+    setTimeout (=> $('.score').text("Set")), 2000
+    setTimeout (=> $('.score').text("GOOOOOOO!")), 4000
+    setTimeout this.raceStart, 4000
+
+  raceStart: =>
+    $(this.el.find('.btn')[0]).addClass('active')
+
 
   getPlayerRep:  (id) =>
     for player, i in this.players
@@ -68,14 +78,30 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
         $right.css('left', '30px')
 
   render: =>
-    console.log "click count: " + this.clickCount
-    if this.clickCount % 15 == 0
+    if this.clickCount > 0 && this.clickCount % 15 == 0
       $('.score').text this.inspirations[Math.floor(this.inspirations.length * Math.random())]
+
+
+  sortPlayers: ->
+    this.players.sort (a, b) ->
+      return b.dist - a.dist
+
+  updatePlayers: ->
+    this.sortPlayers()
+    for player, index in this.players
+      player.spot = index + 1
+      player.minigame_score = 10 if player.spot == 1
+      player.minigame_score = 5  if player.spot == 2
+      player.minigame_score = 3  if player.spot == 3
+      player.minigame_score = 1  if player.spot == 4
+      if player.id == App.player_id
+        this.minigame_score = player.minigame_score
 
   gameover: =>
     $(this.el).fadeOut()
     $('#double-tap-race-minigame').remove()
-    App.metagame.gameover(this.dist)
+    this.updatePlayers()
+    App.metagame.gameover(this.minigame_score)
 
   receiveBroadcast: (event, data, player_id) =>
     if player_id?

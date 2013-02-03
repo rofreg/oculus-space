@@ -101,6 +101,12 @@ class App.Metagame
   showResults: =>
     if !this.sorted_players
       this.sorted_players = this.players
+    for player in this.players
+      for sorted_player in this.sorted_players
+        if sorted_player.id == player.id
+          sorted_player.minigame_score = player.minigame_score
+          break
+
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
     setTimeout (=> this.showNextGameIntro()), 5500 + (this.players.length * 1000)

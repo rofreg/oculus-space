@@ -19,6 +19,10 @@
 
       this.getPlayerRep = __bind(this.getPlayerRep, this);
 
+      this.raceStart = __bind(this.raceStart, this);
+
+      this.raceCountdown = __bind(this.raceCountdown, this);
+
       this.start = __bind(this.start, this);
       return DoubleTapRace.__super__.constructor.apply(this, arguments);
     }
@@ -68,7 +72,7 @@
           return that.render();
         }
       });
-      return this.el.find(".btn").bind('touchstart', function(e) {
+      this.el.find(".btn").bind('touchstart', function(e) {
         e.preventDefault();
         that.clickCount++;
         if ($(this).hasClass("active")) {
@@ -81,6 +85,22 @@
           return that.render();
         }
       });
+      return this.raceCountdown();
+    };
+
+    DoubleTapRace.prototype.raceCountdown = function() {
+      var _this = this;
+      setTimeout((function() {
+        return $('.score').text("Set");
+      }), 2000);
+      setTimeout((function() {
+        return $('.score').text("GOOOOOOO!");
+      }), 4000);
+      return setTimeout(this.raceStart, 4000);
+    };
+
+    DoubleTapRace.prototype.raceStart = function() {
+      return $(this.el.find('.btn')[0]).addClass('active');
     };
 
     DoubleTapRace.prototype.getPlayerRep = function(id) {
@@ -109,16 +129,51 @@
     };
 
     DoubleTapRace.prototype.render = function() {
-      console.log("click count: " + this.clickCount);
-      if (this.clickCount % 15 === 0) {
+      if (this.clickCount > 0 && this.clickCount % 15 === 0) {
         return $('.score').text(this.inspirations[Math.floor(this.inspirations.length * Math.random())]);
       }
+    };
+
+    DoubleTapRace.prototype.sortPlayers = function() {
+      return this.players.sort(function(a, b) {
+        return b.dist - a.dist;
+      });
+    };
+
+    DoubleTapRace.prototype.updatePlayers = function() {
+      var index, player, _i, _len, _ref, _results;
+      this.sortPlayers();
+      _ref = this.players;
+      _results = [];
+      for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+        player = _ref[index];
+        player.spot = index + 1;
+        if (player.spot === 1) {
+          player.minigame_score = 10;
+        }
+        if (player.spot === 2) {
+          player.minigame_score = 5;
+        }
+        if (player.spot === 3) {
+          player.minigame_score = 3;
+        }
+        if (player.spot === 4) {
+          player.minigame_score = 1;
+        }
+        if (player.id === App.player_id) {
+          _results.push(this.minigame_score = player.minigame_score);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     DoubleTapRace.prototype.gameover = function() {
       $(this.el).fadeOut();
       $('#double-tap-race-minigame').remove();
-      return App.metagame.gameover(this.dist);
+      this.updatePlayers();
+      return App.metagame.gameover(this.minigame_score);
     };
 
     DoubleTapRace.prototype.receiveBroadcast = function(event, data, player_id) {
