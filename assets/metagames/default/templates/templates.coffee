@@ -60,7 +60,5 @@ App.Metagame.Default.Templates = {
         <li><%= player.name %>: <%= player.score %> points</li>
       <% }) %>
     </ul>
-    waiting for more players...<br>
-    <button>Start!</button>
   '''
 }

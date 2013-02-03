@@ -9,7 +9,7 @@
     intro: '<h1>Let\'s get started!</h1>\nHere are the players:\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><strong><%= player.name %></strong></li>\n  <% }) %>\n</ul>\nGet ready for your first game!',
     pregame: '<h1>Instructions for <%= name %></h1>\n<div>\n  <%= instructions %>\n</div>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li>\n      <% if (player.ready) { %>\n        <strong><%= player.name %> is ready!</strong>\n      <% } else { %>\n        Waiting for <%= player.name %>...\n      <% } %>\n    </li>\n  <% }) %>\n</ul>\n<button>I\'m ready!</button>',
     countdown: 'Game starting in <span>3</span>...',
-    scoreboard: '<h1>Scoreboard</h1>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><%= player.name %>: <%= player.score %> points</li>\n  <% }) %>\n</ul>\nwaiting for more players...<br>\n<button>Start!</button>'
+    scoreboard: '<h1>Scoreboard</h1>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><%= player.name %>: <%= player.score %> points</li>\n  <% }) %>\n</ul>'
   };
 
 }).call(this);
