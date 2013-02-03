@@ -15,15 +15,15 @@
   });
 
   socket.on("disconnect", function(data) {
-    console.log('test');
     $('#disconnected').fadeIn(500);
     $('#overlay').fadeIn(500).css('z-index', 9999);
     return setTimeout("location.href = '/'", 6000);
   });
 
   $("#user-form").submit(function() {
-    $('#music-player')[0].play()
-    $("button").attr('disabled', 'disabled').text('Connecting...')
+    $("button").attr('disabled', 'disabled').text("Connecting...");
+    $(".username").blur();
+    $("#music-player")[0].play();
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
@@ -39,7 +39,7 @@
     warningGiven: false,
     checkOrientation: function() {
       if (!App.Utilities.warningGiven && /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) && $(window).width() > $(window).height()) {
-        alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
+        alert('To play Thumb War, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
         return App.Utilities.warningGiven = true;
       }
     }

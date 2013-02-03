@@ -1,6 +1,6 @@
-# Mobile Party
+# Thumb War
 
-Mobile Party is a totally awesome JavaScript-based video game platform. Think Mario Party for mobile.
+Thumb War is a totally awesome JavaScript-based video game platform. Think Mario Party for mobile.
 
 ## How it works
 
@@ -35,4 +35,4 @@ Built by [@rofreg](http://twitter.com/rofreg), [@lizneu08](http://twitter.com/li
 
 ## License
 
-Mobile Party is released under a dual license. You may choose either the GPL or MIT license, depending on the project you are using it in and how you wish to use it. Have fun!
+Thumb War is released under a dual license. You may choose either the GPL or MIT license, depending on the project you are using it in and how you wish to use it. Have fun!
