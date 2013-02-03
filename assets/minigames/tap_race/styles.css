@@ -4,3 +4,4 @@
 #tap-race-minigame table#tap-board{height:400px;width:580px;margin:10px;border-collapse:collapse;border:1px dotted #333;font-size:60px;}#tap-race-minigame table#tap-board td{border:1px dotted #333;width:25%;}
 #tap-race-minigame #tap-race-players table.player-table{font-size:20px;margin:0 auto;}
 #tap-race-minigame #tap-race-players table.score-table{border-collapse:collapse;border:1px solid #ddd;}#tap-race-minigame #tap-race-players table.score-table td{width:10px;height:10px;border:1px solid #ddd;}
+#tap-race-minigame #tap-race-players table.score-table td.no-background{background:#ddd;}

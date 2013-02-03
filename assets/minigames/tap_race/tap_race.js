@@ -22,14 +22,6 @@
     TapRace.STYLESHEET = "/assets/minigames/tap_race/styles.css";
 
     TapRace.prototype.init = function() {
-      var new_player, player, _i, _len, _ref;
-      this.players = [];
-      _ref = App.metagame.players;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        player = _ref[_i];
-        new_player = jQuery.extend(true, {}, player);
-        this.players.push(new_player);
-      }
       this.currentNumber = 1;
       Array.prototype.shuffle = function() {
         return this.sort(function() {

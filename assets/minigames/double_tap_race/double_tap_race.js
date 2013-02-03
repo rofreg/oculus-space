@@ -26,17 +26,10 @@
     DoubleTapRace.STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css";
 
     DoubleTapRace.prototype.init = function() {
-      var new_player, player, _i, _len, _ref,
-        _this = this;
+      var _this = this;
+      DoubleTapRace.__super__.init.apply(this, arguments);
+      console.log(this.players);
       this.score = 0;
-      this.players = [];
-      _ref = App.metagame.players;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        player = _ref[_i];
-        new_player = jQuery.extend(true, {}, player);
-        new_player.score = 0;
-        this.players.push(new_player);
-      }
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
         console.log("New minigame: " + _this.constructor.NAME);
@@ -56,6 +49,9 @@
           $(this).siblings(".btn").addClass("active");
           $(this).removeClass("active");
           that.score++;
+          that.broadcast('player: scored', {
+            score: that.score
+          });
           return that.render();
         }
       });
@@ -73,6 +69,23 @@
       $(this.el).fadeOut();
       App.metagame.gameover(this);
       return this.el.fadeOut();
+    };
+
+    DoubleTapRace.prototype.receiveBroadcast = function(event, data, player_id) {
+      var player, _i, _len, _ref, _results;
+      if (player_id != null) {
+        _ref = this.players;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          player = _ref[_i];
+          if (player.id === player_id) {
+            _results.push(player.score = data.score);
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
     };
 
     return DoubleTapRace;

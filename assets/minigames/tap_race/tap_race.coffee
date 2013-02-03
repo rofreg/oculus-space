@@ -5,10 +5,6 @@ class App.Minigames.TapRace extends App.Minigames.Default
   @STYLESHEET = "/assets/minigames/tap_race/styles.css"
 
   init: ->
-    this.players = []
-    for player in App.metagame.players
-      new_player = jQuery.extend(true, {}, player)
-      this.players.push new_player
 
     this.currentNumber = 1
     Array::shuffle = -> @sort -> 0.5 - Math.random()

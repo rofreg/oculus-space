@@ -5,12 +5,11 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
   @STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css"
 
   init: ->
+    super
+
+    console.log this.players
+
     this.score = 0
-    this.players = []
-    for player in App.metagame.players
-      new_player = jQuery.extend(true, {}, player)
-      new_player.score = 0
-      this.players.push new_player
     
     $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
@@ -29,6 +28,7 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
         $(this).siblings(".btn").addClass "active"
         $(this).removeClass "active"
         that.score++
+        that.broadcast('player: scored', {score: that.score})
         that.render()
     )
     setTimeout((=> this.gameover()), 5000)
@@ -42,5 +42,11 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
     $(this.el).fadeOut()
     App.metagame.gameover(this)
     this.el.fadeOut()
+
+  receiveBroadcast: (event, data, player_id) ->
+    if player_id?
+      for player in this.players
+        if player.id == player_id
+          player.score = data.score
 
 App.metagame.addMinigame App.Minigames.DoubleTapRace
