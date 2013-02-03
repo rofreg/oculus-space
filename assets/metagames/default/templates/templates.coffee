@@ -82,9 +82,18 @@ App.Metagame.Default.Templates = {
 
   scoreboard: '''
     <h1>Scoreboard</h1>
-    <ul>
+    <table>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>This minigame</th>
+      </tr>
       <% _.each(players, function(player){ %>
-        <li><%= player.name %>: <%= player.score %> points</li>
+        <tr>
+          <td><%= player.name %></td>
+          <td><%= player.score %> points</td>
+          <td><%= player.minigame_Score %> points</td>
+        <tr>
       <% }) %>
     </ul>
   '''

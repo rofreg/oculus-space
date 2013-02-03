@@ -9,7 +9,7 @@
     intro: '<h1>Let\'s get started!</h1>\n<h4>Loading your first game...</h4>\n<img src="/assets/metagames/default/images/ajax.gif" style="margin: 40px 0 90px">\n<div class="next_game" style="display: none"></div>',
     pregame: '<h1><%= name %></h1>\n<div class="instructions">\n  <h4>Instructions</h4>\n  <%= instructions %>\n</div>\n<div style="font-size: 24px">\n  Waiting for players...\n</div>\n<div class="ready-for-minigame">\n  <% _.each(players, function(player){ %>\n    <div class="player <%= player.ready ? "ready" : "" %>" style="background: <%= player.color %>">\n      <%= player.ready ? "&#10003;" : "&times;" %>\n    </div>\n  <% }) %>\n</div>\n<button>I\'m ready!</button>',
     countdown: 'Game starting in <span>3</span>...',
-    scoreboard: '<h1>Scoreboard</h1>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><%= player.name %>: <%= player.score %> points</li>\n  <% }) %>\n</ul>'
+    scoreboard: '<h1>Scoreboard</h1>\n<table>\n  <tr>\n    <th></th>\n    <th></th>\n    <th>This minigame</th>\n  </tr>\n  <% _.each(players, function(player){ %>\n    <tr>\n      <td><%= player.name %></td>\n      <td><%= player.score %> points</td>\n      <td><%= player.minigame_Score %> points</td>\n    <tr>\n  <% }) %>\n</ul>'
   };
 
 }).call(this);

@@ -44,6 +44,8 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
       this.socket.on 'minigame: start', =>
         this.minigameCountdown()
+      this.socket.on 'minigame: gameover', =>
+        this.showResults()
 
       this.socket.on 'broadcast', this.receiveBroadcast
 
@@ -90,6 +92,11 @@ class App.Metagame
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
 
+  showResults: =>
+    this.updateScoreboard()
+    this.el.find('#scoreboard').show()
+    setTimeout this.el.find('#pregame').slideDown, 5000
+
   minigameCountdown: =>
     console.log "Starting #{this.currentMinigame.constructor.NAME} in 2 seconds!"
     this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown),{}).show()
@@ -123,7 +130,7 @@ class App.Metagame
 
   minigameShowInstructions: =>
     this.updateInstructions()
-    this.el.find('#pregame').slideDown()
+    # this.el.find('#pregame').slideDown()
 
   addMinigame: (minigame) =>
     this.minigames[minigame.NAME] = minigame
@@ -138,7 +145,6 @@ class App.Metagame
     this.socket.emit 'minigame: gameover',
       score: minigame.score
     this.el.fadeIn()
-    this.showScoreboard()
 
   sendBroadcast: (event, data) ->
     this.socket.emit 'broadcast',

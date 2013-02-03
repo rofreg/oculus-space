@@ -22,6 +22,8 @@
 
       this.minigameCountdown = __bind(this.minigameCountdown, this);
 
+      this.showResults = __bind(this.showResults, this);
+
       this.showScoreboard = __bind(this.showScoreboard, this);
 
       this.updateScoreboard = __bind(this.updateScoreboard, this);
@@ -80,6 +82,9 @@
         _this.socket.on('minigame: start', function() {
           return _this.minigameCountdown();
         });
+        _this.socket.on('minigame: gameover', function() {
+          return _this.showResults();
+        });
         return _this.socket.on('broadcast', _this.receiveBroadcast);
       });
     };
@@ -130,6 +135,12 @@
       return this.el.find('#scoreboard').show();
     };
 
+    Metagame.prototype.showResults = function() {
+      this.updateScoreboard();
+      this.el.find('#scoreboard').show();
+      return setTimeout(this.el.find('#pregame').slideDown, 5000);
+    };
+
     Metagame.prototype.minigameCountdown = function() {
       var _this = this;
       console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
@@ -175,8 +186,7 @@
     };
 
     Metagame.prototype.minigameShowInstructions = function() {
-      this.updateInstructions();
-      return this.el.find('#pregame').slideDown();
+      return this.updateInstructions();
     };
 
     Metagame.prototype.addMinigame = function(minigame) {
@@ -194,8 +204,7 @@
       this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
-      this.el.fadeIn();
-      return this.showScoreboard();
+      return this.el.fadeIn();
     };
 
     Metagame.prototype.sendBroadcast = function(event, data) {
