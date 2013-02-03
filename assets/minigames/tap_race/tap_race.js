@@ -9,6 +9,8 @@
     __extends(TapRace, _super);
 
     function TapRace() {
+      this.receiveBroadcast = __bind(this.receiveBroadcast, this);
+
       this.gameover = __bind(this.gameover, this);
 
       this.render = __bind(this.render, this);
@@ -21,18 +23,33 @@
 
     TapRace.INSTRUCTIONS = 'TapRace is a fun game. Click link, plz.';
 
-    TapRace.prototype.init = function() {};
+    TapRace.TEMPLATES = "/assets/minigames/tap_race/templates.js";
+
+    TapRace.STYLESHEET = "/assets/minigames/tap_race/styles.css";
+
+    TapRace.prototype.init = function() {
+      var _this = this;
+      this.score = 0;
+      console.log(this.contructor.TEMPLATES);
+      return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
+        return _this.el = _.template(App.Templates.TapRace.main_view, {
+          players: _this.players
+        });
+      });
+    };
 
     TapRace.prototype.start = function() {
       var _this = this;
-      this.score = 0;
-      $(".view").html("<div class='minigame' style='width:100%; height:100%;'></div>");
-      this.el = $(".minigame");
-      this.el.append("<a href='#' class='btn'>Click me!</a>");
-      this.el.append("<div class='score'>0</div>");
+      this.el = _.template(App.Templates.TapRace.main_view, {
+        players: this.players
+      });
+      $(".view").html(this.el);
       this.el.find(".btn").bind('click', function() {
         _this.score++;
-        return _this.render();
+        _this.render();
+        return App.metagame.broadcast({
+          name: "score++"
+        });
       });
       return setTimeout(this.gameover, 5000);
     };
@@ -43,6 +60,10 @@
 
     TapRace.prototype.gameover = function() {
       return App.metagame.gameover(this);
+    };
+
+    TapRace.prototype.receiveBroadcast = function(data) {
+      return console.log(data);
     };
 
     return TapRace;

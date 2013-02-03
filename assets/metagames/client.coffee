@@ -36,6 +36,9 @@ class App.Metagame
         setTimeout this.currentMinigame.start, 5000
         console.log "Starting #{this.currentMinigame.constructor.NAME} in 5 seconds!"
 
+      this.socket.on 'broadcast', (data) =>
+        this.currentMinigame.receiveBroadcast(data) if this.currentMinigame?
+
   drawPlayerList: =>
     console.log(this.players)
     this.el.html(_.template(App.Metagame.Default.Templates.main_view, {players: this.players}))
@@ -64,3 +67,8 @@ class App.Metagame
   gameover: (minigame) ->
     this.socket.emit 'minigame: gameover',
       score: minigame.score
+
+  broadcast: (data) ->
+    data.player_id = this.socket.id
+    console.log "bcing #{data}"
+    this.socket.emit 'broadcast', data

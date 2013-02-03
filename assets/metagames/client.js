@@ -52,9 +52,14 @@
           return _this.drawPlayerList();
         });
         _this.socket.on('minigame: load', _this.minigameLoad);
-        return _this.socket.on('minigame: start', function() {
+        _this.socket.on('minigame: start', function() {
           setTimeout(_this.currentMinigame.start, 5000);
           return console.log("Starting " + _this.currentMinigame.constructor.NAME + " in 5 seconds!");
+        });
+        return _this.socket.on('broadcast', function(data) {
+          if (_this.currentMinigame != null) {
+            return _this.currentMinigame.receiveBroadcast(data);
+          }
         });
       });
     };
@@ -95,6 +100,12 @@
       return this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
+    };
+
+    Metagame.prototype.broadcast = function(data) {
+      data.player_id = this.socket.id;
+      console.log("bcing " + data);
+      return this.socket.emit('broadcast', data);
     };
 
     return Metagame;

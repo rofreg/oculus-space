@@ -56,7 +56,7 @@
     Metagame.prototype.minigames = [
       {
         'name': 'TapRace',
-        'src': "/assets/minigames/tap_race.js"
+        'src': "/assets/minigames/tap_race/tap_race.js"
       }
     ];
 
@@ -71,8 +71,11 @@
         socket.on('metagame: player ready', function() {
           return _this.playerReady(socket.id);
         });
-        return socket.on('minigame: gameover', function(data) {
+        socket.on('minigame: gameover', function(data) {
           return _this.gameover(data.score, socket.id);
+        });
+        return socket.on('broadcast', function(data) {
+          return _this.room.emit('broadcast', data);
         });
       });
     };
@@ -94,7 +97,7 @@
     };
 
     Metagame.prototype.readyToStart = function() {
-      return this.players.length > 0 && this.allPlayersNotInGame();
+      return this.players.length > 1 && this.allPlayersNotInGame();
     };
 
     Metagame.prototype.removePlayer = function(id) {
