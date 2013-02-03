@@ -32,6 +32,7 @@ class Server.Metagame
     this.room = io.of("/#{@id}")
     this.room.on 'connection', (socket) =>
       socket.on 'players: player joining', (data) => this.addPlayer(data.name, socket.id)
+      socket.on 'metagame: start', this.startMetagame
       socket.on 'metagame: player ready', => this.playerReady(socket.id)
       socket.on 'minigame: gameover', (data) => this.gameover(data.score, socket.id)
 
@@ -39,12 +40,15 @@ class Server.Metagame
     this.colorCount = 0 if not this.colorCount
     this.players.push({name: name, id: id, color: this.colors[this.colorCount++ % this.colors.length], score: 0})
     this.sendPlayerList()
-
-    if this.readyToStart()
-      this.loadRandomGame()
   
+  startMetagame: =>
+    if this.players.length >= 1
+      console.log('STARTING METAGAME!')
+      this.room.emit 'metagame: start'
+      this.loadRandomGame()
+
   readyToStart: ->
-    this.players.length > 1 and this.allPlayersNotInGame()
+    this.players.length >= 1 and this.allPlayersNotInGame()
 
   removePlayer: (id) =>
     for index, player of this.players
@@ -67,8 +71,9 @@ class Server.Metagame
   playerReady: (id) =>
     #set this player to ready
     this.getPlayer(id).ready = true
+    this.sendPlayerList()
     if this.allPlayersReady()
-      this.start()
+      this.startMinigame()
 
   allPlayersNotInGame: =>
     for player in this.players
@@ -82,7 +87,7 @@ class Server.Metagame
         return false
     return true
 
-  start: =>
+  startMinigame: =>
     for player in this.players
       player.in_game = true
     this.room.emit('minigame: start')
@@ -94,10 +99,11 @@ class Server.Metagame
     this.currentMinigameIndex = index
     for player in this.players
       player.ready = false
+    console.log("LOADING GAME: #{this.minigames[index]['name']}")
     this.room.emit 'minigame: load', {minigame: this.minigames[index]}
 
   gameover: (score, id) =>
-    this.getPlayer(id).score = score
+    this.getPlayer(id).score += score
     this.getPlayer(id).in_game = false
     this.sendPlayerList()
 
