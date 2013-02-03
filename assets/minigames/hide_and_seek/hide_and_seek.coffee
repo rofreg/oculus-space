@@ -1,7 +1,7 @@
 class App.Minigames.HideAndSeek extends App.Minigames.Default
 
   @NAME: 'HideAndSeek'
-  @INSTRUCTIONS: 'HideAndSeek is a fun game. Explain yourself!!!!!.'
+  @INSTRUCTIONS: "HideAndSeek is a game about avoiding the intertubes! Avoid the randomly generated memes, and try to get outside! You're either a seeker or a hider in this one."
   @TEMPLATES = "/assets/minigames/hide_and_seek/templates.js"
   @STYLESHEET = "/assets/minigames/hide_and_seek/styles.css"
 

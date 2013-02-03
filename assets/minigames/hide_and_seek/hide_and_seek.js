@@ -19,7 +19,7 @@
 
     HideAndSeek.NAME = 'HideAndSeek';
 
-    HideAndSeek.INSTRUCTIONS = 'HideAndSeek is a fun game. Explain yourself!!!!!.';
+    HideAndSeek.INSTRUCTIONS = "HideAndSeek is a game about avoiding the intertubes! Avoid the randomly generated memes, and try to get outside! You're either a seeker or a hider in this one.";
 
     HideAndSeek.TEMPLATES = "/assets/minigames/hide_and_seek/templates.js";
 

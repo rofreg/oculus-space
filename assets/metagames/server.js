@@ -67,6 +67,9 @@
         'name': 'DoubleTapRace',
         'src': "/assets/minigames/double_tap_race/double_tap_race.js"
       }, {
+        'name': 'HotPotato',
+        'src': "/assets/minigames/hot_potato/hot_potato.js"
+      }, {
         'name': 'HideAndSeek',
         'src': "/assets/minigames/hide_and_seek/hide_and_seek.js"
       }
