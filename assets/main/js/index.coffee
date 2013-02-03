@@ -6,6 +6,11 @@ window.App =
 socket = io.connect('/')
 socket.on "player: your id", (data) ->
   App.player_id = data.id
+socket.on "disconnect", (data) ->
+  console.log('test');
+  $('#disconnected').fadeIn(500)
+  $('#overlay').fadeIn(500).css('z-index', 9999)
+  setTimeout("location.href = '/'", 6000)
 
 $("#user-form").submit ->
   $("button").attr('disabled', 'disabled')
@@ -16,6 +21,8 @@ $("#user-form").submit ->
       console.log "Connecting to #{data.metagame_id}"
       App.metagame.init(io, $(".username").val())
   false
+
+
 
 App.Utilities =
   checkOrientation: ->

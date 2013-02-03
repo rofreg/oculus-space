@@ -104,6 +104,7 @@
     Metagame.prototype.startMetagame = function() {
       if (this.players.length >= 1) {
         console.log('STARTING METAGAME!');
+        this.gameStarted = true;
         this.room.emit('metagame: start');
         return this.loadRandomGame();
       }
@@ -134,7 +135,7 @@
     };
 
     Metagame.prototype.isAcceptingPlayers = function() {
-      return this.players.length < 4;
+      return this.players.length < 4 && !this.gameStarted;
     };
 
     Metagame.prototype.getPlayer = function(id) {

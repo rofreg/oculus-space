@@ -58,10 +58,12 @@ class App.Metagame
 
     # start metagame by clicking "start"
     this.el.find('#waiting_room button').click =>
-      if this.players.length < 1
-        alert("You need at least two people to play!")
-      else
-        this.socket.emit 'metagame: start'
+      if this.el.find('#waiting_room button').attr('disabled') != "disabled"
+        if this.players.length < 1
+          alert("You need at least two people to play!")
+        else
+          this.el.find('#waiting_room button').attr('disabled', 'disabled').text("Working...")
+          this.socket.emit 'metagame: start'
 
   metagameStart: =>
     this.el.find('#intro').html(
@@ -77,15 +79,19 @@ class App.Metagame
       this.el.find('#pregame').html(_.template(App.Metagame.Default.Templates.pregame, {
         name: this.currentMinigame.constructor.NAME,
         instructions: this.currentMinigame.constructor.INSTRUCTIONS,
-        players: this.players
+        players: this.players,
+        ready: this.ready
       }))
-      this.el.find('#pregame button').click => this.playerReady()
+      this.el.find('#pregame button').click =>
+        if this.el.find('#pregame button').attr('disabled') != "disabled"
+          this.el.find('#pregame button').attr('disabled', 'disabled').text("Waiting...")
+          this.playerReady()
 
   updateScoreboard: =>
     # render the scoreboard screen
     this.el.find('#scoreboard').html(
       _.template(App.Metagame.Default.Templates.scoreboard,
-      {players: this.players})
+      {players: this.sorted_players})
     )
 
   showScoreboard: =>
@@ -93,10 +99,30 @@ class App.Metagame
     this.el.find('#scoreboard').show()
 
   showResults: =>
+    if !this.sorted_players
+      this.sorted_players = this.players
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
-    setTimeout (=> this.showNextGameIntro()), 5000
-    # setTimeout (=> this.el.find('#pregame').slideDown()), 10000
+    setTimeout (=> this.showNextGameIntro()), 5500 + (this.players.length * 1000)
+    for player, index in this.sorted_players
+      (=>
+        player.score += player.minigame_score
+        temp = $("tr[data-id=#{player.id}] td.score span")
+        score = player.score
+        setTimeout (=> temp.text(score)), 3000 + index * 1000
+      )()
+    this.sorted_players = this.players.sort (s1, s2) =>
+      s1.score <= s2.score
+    top = 60
+    setTimeout (=>
+      top = 60
+      $.each this.sorted_players, (index, player) =>
+        $("#scoreboard tr[data-id=#{player.id}]").animate({
+          position: 'absolute',
+          top: top + 'px'
+        }, 500)
+        top += 60
+      ), 3500 + (this.players.length * 1000)
 
   showNextGameIntro: =>
     this.el.find('#next_game').html(
@@ -127,7 +153,6 @@ class App.Metagame
   minigameLoad: (data) =>
     this.el.find(".next_game").text(data.minigame.name)
     this.el.find(".next_game").fadeIn(300)
-    setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
 
     console.log("LOADING MINIGAME: #{data.minigame.name}")
     this.el.find('#instructions').show()
@@ -135,11 +160,13 @@ class App.Metagame
       this.currentMinigame = new this.minigames[data.minigame.name]
       this.currentMinigame.init()
       this.minigameShowInstructions()
+      setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
     else
       $.getScript(data.minigame.src).done (script, textStatus) =>
         this.currentMinigame = new this.minigames[data.minigame.name]
         this.currentMinigame.init()
         this.minigameShowInstructions()
+        setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
 
   minigameShowInstructions: =>
     this.updateInstructions()
@@ -153,8 +180,10 @@ class App.Metagame
     this.socket.emit 'metagame: player ready'
       
   gameover: (minigame) ->
+    this.ready = false
     $('#backgrounds').fadeIn(1000)
     $('#overlay').fadeOut(1000)
+    console.log minigame.score
     this.socket.emit 'minigame: gameover',
       score: minigame.score
     this.el.fadeIn()

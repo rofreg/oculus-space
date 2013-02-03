@@ -52,6 +52,7 @@ class Server.Metagame
   startMetagame: =>
     if this.players.length >= 1
       console.log('STARTING METAGAME!')
+      this.gameStarted = true
       this.room.emit 'metagame: start'
       this.loadRandomGame()
 
@@ -68,7 +69,7 @@ class Server.Metagame
     this.room.emit 'players: list updated', this.players
 
   isAcceptingPlayers: =>
-    this.players.length < 4
+    this.players.length < 4 && !this.gameStarted
 
   getPlayer: (id) =>
     for player in this.players
