@@ -130,6 +130,7 @@
 
     DoubleTapRace.prototype.render = function() {
       if (this.clickCount > 0 && this.clickCount % 15 === 0) {
+        this.clickCount++;
         return $('.score').text(this.inspirations[Math.floor(this.inspirations.length * Math.random())]);
       }
     };
@@ -187,7 +188,7 @@
             player.dist = data.dist;
             $(this.getPlayerRep(player_id)).css('left', player.dist + 20);
             this.animateFeet(this.getPlayerRep(player_id));
-            if (player.dist + 50 === 560) {
+            if (player.dist + 50 === 500) {
               this.gameover();
             }
             this.render();

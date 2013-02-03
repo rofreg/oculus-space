@@ -79,6 +79,7 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
 
   render: =>
     if this.clickCount > 0 && this.clickCount % 15 == 0
+      this.clickCount++
       $('.score').text this.inspirations[Math.floor(this.inspirations.length * Math.random())]
 
 
@@ -110,7 +111,7 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
           player.dist = data.dist
           $(this.getPlayerRep(player_id)).css 'left', player.dist + 20;
           this.animateFeet(this.getPlayerRep(player_id))
-          this.gameover() if player.dist + 50 == 560
+          this.gameover() if player.dist + 50 == 500
           this.render()
           break
 
