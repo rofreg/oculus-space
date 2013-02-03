@@ -128,23 +128,31 @@
   table.scoreboard{
     width: 100%;
     margin-top: 30px;
+    position: relative;
+    tr{
+      position: absolute;
+    }
     td, th{
       font-size: 28px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      width: 40px;
+      text-align: left;
+      padding-right: 5px;
       &.name{
-        max-width: 300px;
-        text-align: left;
+        width: 295px;
       }
       &.score, &.result{
         text-align: right;
+        width: 95px;
       }
     }
     th{
       font-size: 24px;
     }
     tr{
+      width: 100%;
       td.result{
         font-weight: bold;
         -webkit-animation-name: pulse;
@@ -156,10 +164,22 @@
         -webkit-animation-fill-mode: forwards;
         -webkit-animation-delay: 2;
       }
-      &.player_0 td.result{ -webkit-animation-delay: 2s; }
-      &.player_1 td.result{ -webkit-animation-delay: 3s; }
-      &.player_2 td.result{ -webkit-animation-delay: 4s; }
-      &.player_3 td.result{ -webkit-animation-delay: 5s; }
+      &.player_0{
+        top: 60px;
+        td.result{ -webkit-animation-delay: 2s; }
+      }
+      &.player_1{
+        top: 120px;
+        td.result{ -webkit-animation-delay: 3s; }
+      }
+      &.player_2{
+        top: 180px;
+        td.result{ -webkit-animation-delay: 4s; }
+      }
+      &.player_3{
+        top: 240px;
+        td.result{ -webkit-animation-delay: 5s; }
+      }
     }
     div.color{
       width: 40px;
