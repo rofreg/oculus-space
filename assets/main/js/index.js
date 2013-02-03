@@ -16,7 +16,7 @@
 
   $("#user-form").submit(function() {
     $('#music-player')[0].play()
-    $("button").attr('disabled', 'disabled');
+    $("button").attr('disabled', 'disabled').text("Connecting...");
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {

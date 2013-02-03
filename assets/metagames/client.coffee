@@ -103,7 +103,7 @@ class App.Metagame
       this.sorted_players = this.players
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
-    setTimeout (=> this.showNextGameIntro()), 6000 + (this.players.length * 1000)
+    setTimeout (=> this.showNextGameIntro()), 5500 + (this.players.length * 1000)
     for player, index in this.sorted_players
       (=>
         player.score += player.minigame_score

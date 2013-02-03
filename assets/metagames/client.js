@@ -154,7 +154,7 @@
       this.el.find('#scoreboard').show();
       setTimeout((function() {
         return _this.showNextGameIntro();
-      }), 6000 + (this.players.length * 1000));
+      }), 5500 + (this.players.length * 1000));
       _ref = this.sorted_players;
       _fn = function() {
         var score, temp;
