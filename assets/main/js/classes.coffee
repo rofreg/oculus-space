@@ -1,6 +1,5 @@
 App = {}
 App.metagames = []
-App.players = []
 
 class App.Metagame
   constructor: (id) ->
@@ -52,10 +51,6 @@ class App.Metagame
   drawPlayerList: =>
     console.log(this.players)
     this.el.html(JSON.stringify(this.players))
-
-class App.Player
-  constructor: (@name) ->
-    this.id = Math.random().toString(36).substring(2,6)  # random hex id
 
 class App.Minigame
 
