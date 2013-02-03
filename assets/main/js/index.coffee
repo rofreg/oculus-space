@@ -14,8 +14,6 @@ $("#user-form").submit ->
   $("button").attr('disabled', 'disabled')
   false
 
-
-
 App.Utilities =
   checkOrientation: ->
     if /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) and $(window).width() > $(window).height()

@@ -10,7 +10,6 @@
   socket = io.connect('/');
 
   $("#user-form").submit(function() {
-    $('#user-form buttom').attr('disabled', 'disabled');
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
@@ -19,13 +18,7 @@
         return App.metagame.init(io, $(".username").val());
       }
     });
-
-    socket.on("disconnect", function(data) {
-      // alert('The server disconnected! You should refresh the page and try again.');
-      $('#disconnected').fadeIn();
-      $('#overlay').css('zIndex',9999999).fadeIn();
-      setTimeout(function(){ location.href = "/" }, 6000);
-    })
+    $("button").attr('disabled', 'disabled');
     return false;
   });
 
