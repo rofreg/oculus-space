@@ -14,9 +14,15 @@
     return App.player_id = data.id;
   });
 
+  socket.on("disconnect", function(data) {
+    console.log('test');
+    $('#disconnected').fadeIn(500);
+    $('#overlay').fadeIn(500).css('z-index', 9999);
+    return setTimeout("location.href = '/'", 6000);
+  });
+
   $("#user-form").submit(function() {
-    $('#music-player')[0].play()
-    $("button").attr('disabled', 'disabled').text("Connecting...");
+    $("button").attr('disabled', 'disabled');
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
