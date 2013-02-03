@@ -44,8 +44,8 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
       this.socket.on 'minigame: start', =>
         this.minigameCountdown()
-      this.socket.on 'minigame: gameover', (players) =>
-        this.players = players
+      this.socket.on 'minigame: gameover', (data) =>
+        this.players = data.players
         this.showResults()
 
       this.socket.on 'broadcast', this.receiveBroadcast
@@ -119,8 +119,10 @@ class App.Metagame
         score = player.score
         setTimeout (=> temp.text(score)), 3000 + index * 1000
       )()
+
     this.sorted_players = this.players.sort (s1, s2) =>
       s1.score <= s2.score
+
     top = 60
     setTimeout (=>
       top = 60

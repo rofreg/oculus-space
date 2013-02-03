@@ -31,6 +31,10 @@ class Server.Metagame
       'src': "/assets/minigames/double_tap_race/double_tap_race.js"
     },
     {
+      'name': 'HotPotato'
+      'src': "/assets/minigames/hot_potato/hot_potato.js"
+    },
+    {
       'name': 'HideAndSeek'
       'src': "/assets/minigames/hide_and_seek/hide_and_seek.js"
     }
@@ -116,7 +120,7 @@ class Server.Metagame
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
-    this.loadGame(2)#Math.floor(this.minigames.length * Math.random()))
+    this.loadGame(Math.floor(this.minigames.length * Math.random()))
     
   loadGame: (index) =>
     this.currentMinigameIndex = index

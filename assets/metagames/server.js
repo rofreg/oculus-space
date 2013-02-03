@@ -67,6 +67,9 @@
         'name': 'DoubleTapRace',
         'src': "/assets/minigames/double_tap_race/double_tap_race.js"
       }, {
+        'name': 'HotPotato',
+        'src': "/assets/minigames/hot_potato/hot_potato.js"
+      }, {
         'name': 'HideAndSeek',
         'src': "/assets/minigames/hide_and_seek/hide_and_seek.js"
       }
@@ -218,7 +221,7 @@
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(2);
+      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
     };
 
     Metagame.prototype.loadGame = function(index) {
