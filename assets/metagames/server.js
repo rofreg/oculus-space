@@ -10,10 +10,11 @@
   Server.Metagame = (function() {
 
     function Metagame(id) {
-      this.id = id;
       this.gameover = __bind(this.gameover, this);
 
       this.loadGame = __bind(this.loadGame, this);
+
+      this.buildName = __bind(this.buildName, this);
 
       this.loadRandomGame = __bind(this.loadRandomGame, this);
 
@@ -42,8 +43,10 @@
       this.init = __bind(this.init, this);
 
       this.getPlayer = __bind(this.getPlayer, this);
-
+      this.id = "" + this.names[id % this.names.length] + id;
     }
+
+    Metagame.prototype.names = ["banana", "plum", "pear", "aardvark", "pie", "apple", "cheese", "egg"];
 
     Metagame.prototype.colors = ['#ff0000', '#ff6600', '#ffe500', '#00cc00', '#0033cc', '#9900cc', '#ff00cc'];
 
@@ -115,6 +118,9 @@
     };
 
     Metagame.prototype.addPlayer = function(name, id) {
+      if (!name || !(name != null) || name === '') {
+        name = this.buildName();
+      }
       if (!this.colorCount) {
         this.colorCount = 0;
       }
@@ -221,7 +227,13 @@
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(3);
+      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
+    };
+
+    Metagame.prototype.buildName = function() {
+      this.nouns || (this.nouns = ["Pickle", "Banana", "Ocelot", "Turnip", "Tuna", "Thumb"]);
+      this.adjs || (this.adjs = ["Spicy", "Wet", "Sassy", "Grumpy", "Scumbag", "Sad", "Stanky"]);
+      return "" + this.adjs[Math.floor(Math.random() * this.adjs.length)] + " " + this.nouns[Math.floor(Math.random() * this.nouns.length)];
     };
 
     Metagame.prototype.loadGame = function(index) {

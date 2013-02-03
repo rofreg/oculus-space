@@ -29,11 +29,13 @@ app.get '/apple-touch-icon-precomposed.png', (req, res) ->
 
 app.get '/:id', (req, res) ->
   res.sendfile(__dirname + '/index.html')
-  console.log "Accessed URL: /#{req.params.id}"
 
 Server =
   metagames: []
   metagame_index: 0
+
+#utility
+Array::shuffle = -> @sort -> 0.5 - Math.random()
 
 Server.Metagame = require('./assets/metagames/server.coffee')
 
@@ -43,13 +45,24 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'server: new player', (data) ->
     #find game
     game = null
-    for metagame in Server.metagames
-      if metagame.isAcceptingPlayers()
-        game = metagame
-        break
 
+    #passed in a game id?
+    if data? and data.path
+      for metagame in Server.metagames
+        if "#{metagame.id}" == "#{data.path}" and metagame.isAcceptingPlayers()
+          game = metagame
+          break
+      
+    #empty room?
+    if !game
+      for metagame in Server.metagames
+        if metagame.isAcceptingPlayers()
+          game = metagame
+          break
+
+    #build new :(
     if !game #still haven't found a game for them
-      game = new Server.Metagame(Server.metagame_index++)
+      game = new Server.Metagame(Server.metagame_index++, Server.metagames)
       game.init(io)
       Server.metagames.push game
 
