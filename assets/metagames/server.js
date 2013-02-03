@@ -134,7 +134,7 @@
     };
 
     Metagame.prototype.isAcceptingPlayers = function() {
-      return true;
+      return this.players.length < 4;
     };
 
     Metagame.prototype.getPlayer = function(id) {
@@ -187,12 +187,14 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
         player.in_game = true;
+        player.ready = false;
+        player.minigame_score = 0;
       }
       return this.room.emit('minigame: start');
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
+      return this.loadGame(0);
     };
 
     Metagame.prototype.loadGame = function(index) {
@@ -210,14 +212,23 @@
     };
 
     Metagame.prototype.gameover = function(score, id) {
-      var _this = this;
-      this.getPlayer(id).score += score;
+      var player, _i, _len, _ref;
+      if (!score) {
+        score = 0;
+      }
+      this.getPlayer(id).minigame_score = score;
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();
       if (this.readyToStart()) {
-        return setTimeout((function() {
-          return _this.loadRandomGame();
-        }), 2000);
+        this.room.emit('minigame: gameover', {
+          players: this.players
+        });
+        _ref = this.players;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          player = _ref[_i];
+          player.score += player.minigame_score;
+        }
+        return this.loadRandomGame();
       }
     };
 

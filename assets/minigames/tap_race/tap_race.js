@@ -22,6 +22,7 @@
     TapRace.STYLESHEET = "/assets/minigames/tap_race/styles.css";
 
     TapRace.prototype.init = function() {
+      TapRace.__super__.init.apply(this, arguments);
       this.currentNumber = 1;
       Array.prototype.shuffle = function() {
         return this.sort(function() {
@@ -61,7 +62,7 @@
           });
           that.currentNumber++;
           $(this).text('');
-          if (that.currentNumber > 2) {
+          if (that.currentNumber > 3) {
             return that.showCongrats();
           }
         }
@@ -75,7 +76,8 @@
     };
 
     TapRace.prototype.showCongrats = function() {
-      return alert("congrats!");
+      alert("congrats!");
+      return this.gameover();
     };
 
     TapRace.prototype.gameover = function() {
@@ -84,20 +86,25 @@
     };
 
     TapRace.prototype.receiveBroadcast = function(event, data, player_id) {
-      var player, table, _i, _len, _ref, _results;
+      var player, rand, table, tds, _i, _len, _ref, _results;
+      console.log(data);
+      console.log(player_id);
       if (player_id != null) {
         _ref = this.players;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           player = _ref[_i];
           if (player.id === player_id) {
-            player.currentNumber = data.currentNumber;
             table = this.el.find("#tap-race-players #score-table-" + player_id);
             _results.push((function() {
               var _results1;
               _results1 = [];
-              while (data.currentNumber > player.currentNumber) {
-                table.find("td").first().addClass('no-background');
+              while (data.number > player.currentNumber) {
+                tds = table.find("td").not(".no-background");
+                rand = Math.floor(Math.random() * tds.length);
+                console.log(rand);
+                console.log(tds.eq(rand));
+                tds.eq(Math.floor(Math.random() * tds.length)).addClass('no-background');
                 player.currentNumber++;
                 break;
               }

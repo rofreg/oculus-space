@@ -44,6 +44,8 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
       this.socket.on 'minigame: start', =>
         this.minigameCountdown()
+      this.socket.on 'minigame: gameover', =>
+        this.showResults()
 
       this.socket.on 'broadcast', this.receiveBroadcast
 
@@ -67,7 +69,7 @@ class App.Metagame
       {players: this.players})
     )
     this.el.find('#waiting_room').slideUp(500)
-    setTimeout((=> this.el.find('#intro').slideUp(1000)), 1500)
+    # setTimeout((=> this.el.find('#intro').slideUp(500)), 3500)
     
   updateInstructions: =>
     # render the instructions screen
@@ -90,6 +92,24 @@ class App.Metagame
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
 
+  showResults: =>
+    this.updateScoreboard()
+    this.el.find('#scoreboard').show()
+    setTimeout (=> this.showNextGameIntro()), 5000
+    # setTimeout (=> this.el.find('#pregame').slideDown()), 10000
+
+  showNextGameIntro: =>
+    this.el.find('#next_game').html(
+      _.template(App.Metagame.Default.Templates.next_game, {
+        players: this.players,
+        currentMinigame: this.currentMinigame
+      })
+    ).show()
+    this.el.find('#scoreboard').slideUp(500)
+    setTimeout (=>
+      this.el.find('#pregame').slideDown(500)
+    ), 3000
+
   minigameCountdown: =>
     console.log "Starting #{this.currentMinigame.constructor.NAME} in 2 seconds!"
     this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown),{}).show()
@@ -105,6 +125,10 @@ class App.Metagame
     setTimeout this.currentMinigame.start, 3000
 
   minigameLoad: (data) =>
+    this.el.find(".next_game").text(data.minigame.name)
+    this.el.find(".next_game").fadeIn(300)
+    setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
+
     console.log("LOADING MINIGAME: #{data.minigame.name}")
     this.el.find('#instructions').show()
     if this.minigames[data.minigame.name]
@@ -119,7 +143,7 @@ class App.Metagame
 
   minigameShowInstructions: =>
     this.updateInstructions()
-    this.el.find('#pregame').slideDown()
+    # this.el.find('#pregame').slideDown()
 
   addMinigame: (minigame) =>
     this.minigames[minigame.NAME] = minigame
@@ -134,7 +158,6 @@ class App.Metagame
     this.socket.emit 'minigame: gameover',
       score: minigame.score
     this.el.fadeIn()
-    this.showScoreboard()
 
   sendBroadcast: (event, data) ->
     this.socket.emit 'broadcast',

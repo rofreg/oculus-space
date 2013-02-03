@@ -22,6 +22,10 @@
 
       this.minigameCountdown = __bind(this.minigameCountdown, this);
 
+      this.showNextGameIntro = __bind(this.showNextGameIntro, this);
+
+      this.showResults = __bind(this.showResults, this);
+
       this.showScoreboard = __bind(this.showScoreboard, this);
 
       this.updateScoreboard = __bind(this.updateScoreboard, this);
@@ -80,6 +84,9 @@
         _this.socket.on('minigame: start', function() {
           return _this.minigameCountdown();
         });
+        _this.socket.on('minigame: gameover', function() {
+          return _this.showResults();
+        });
         return _this.socket.on('broadcast', _this.receiveBroadcast);
       });
     };
@@ -99,14 +106,10 @@
     };
 
     Metagame.prototype.metagameStart = function() {
-      var _this = this;
       this.el.find('#intro').html(_.template(App.Metagame.Default.Templates.intro, {
         players: this.players
       }));
-      this.el.find('#waiting_room').slideUp(500);
-      return setTimeout((function() {
-        return _this.el.find('#intro').slideUp(1000);
-      }), 1500);
+      return this.el.find('#waiting_room').slideUp(500);
     };
 
     Metagame.prototype.updateInstructions = function() {
@@ -134,6 +137,27 @@
       return this.el.find('#scoreboard').show();
     };
 
+    Metagame.prototype.showResults = function() {
+      var _this = this;
+      this.updateScoreboard();
+      this.el.find('#scoreboard').show();
+      return setTimeout((function() {
+        return _this.showNextGameIntro();
+      }), 5000);
+    };
+
+    Metagame.prototype.showNextGameIntro = function() {
+      var _this = this;
+      this.el.find('#next_game').html(_.template(App.Metagame.Default.Templates.next_game, {
+        players: this.players,
+        currentMinigame: this.currentMinigame
+      })).show();
+      this.el.find('#scoreboard').slideUp(500);
+      return setTimeout((function() {
+        return _this.el.find('#pregame').slideDown(500);
+      }), 3000);
+    };
+
     Metagame.prototype.minigameCountdown = function() {
       var _this = this;
       console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
@@ -158,6 +182,11 @@
 
     Metagame.prototype.minigameLoad = function(data) {
       var _this = this;
+      this.el.find(".next_game").text(data.minigame.name);
+      this.el.find(".next_game").fadeIn(300);
+      setTimeout((function() {
+        return _this.el.find('#intro').slideUp(500);
+      }), 2000);
       console.log("LOADING MINIGAME: " + data.minigame.name);
       this.el.find('#instructions').show();
       if (this.minigames[data.minigame.name]) {
@@ -174,8 +203,7 @@
     };
 
     Metagame.prototype.minigameShowInstructions = function() {
-      this.updateInstructions();
-      return this.el.find('#pregame').slideDown();
+      return this.updateInstructions();
     };
 
     Metagame.prototype.addMinigame = function(minigame) {
@@ -193,8 +221,7 @@
       this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
-      this.el.fadeIn();
-      return this.showScoreboard();
+      return this.el.fadeIn();
     };
 
     Metagame.prototype.sendBroadcast = function(event, data) {
