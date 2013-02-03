@@ -135,6 +135,7 @@ class App.Metagame
   gameover: (minigame) ->
     $('#backgrounds').fadeIn(1000)
     $('#overlay').fadeOut(1000)
+    console.log minigame.score
     this.socket.emit 'minigame: gameover',
       score: minigame.score
     this.el.fadeIn()
