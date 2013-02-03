@@ -22,14 +22,14 @@
 }());
 
 // Prevent scrolling on mobile
-document.ontouchstart = function(e){
-  e.preventDefault();
+document.ontouchmove = function(e){
+  // e.preventDefault();
+  viewport = document.querySelector("meta[name=viewport]")
 }
 
-// On window resize/rotation, recalculate screen dimensions
 window.onresize = function(e){
   try {
-    App.Utilities.resizeViewport();
+    App.Utilities.checkOrientation();
   } catch (e) {
     // App not loaded yet
   }
@@ -37,7 +37,12 @@ window.onresize = function(e){
 
 window.onload = function(e){
   try {
-    App.Utilities.resizeViewport();
+    setTimeout(function(){
+      // Hide the address bar!
+      window.scrollTo(0, 1);
+      // window.scrollTo(0, 0);
+    }, 0);
+    App.Utilities.checkOrientation();
   } catch (e) {
     // App not loaded yet
   }

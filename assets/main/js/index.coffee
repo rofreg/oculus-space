@@ -7,7 +7,7 @@ form.onsubmit = ->
   socket.emit "new player", { player: App.player }
   socket.on "enter metagame", (data) ->
     if data.metagame_id?
-      App.currentMetagame = new App.Metagame
+      App.currentMetagame = new App.Metagame(data.metagame_id)
       App.currentMetagame.clientInit(io)
       console.log "Connecting to #{data.metagame_id}"
       # socket.disconnect()

@@ -20,8 +20,6 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'new player', (data) ->
     console.log(data)
     player = data
-    #add player to global collection
-    App.players.push player
 
     #find game
     game = null
@@ -31,7 +29,7 @@ io.sockets.on 'connection', (socket) ->
         break
 
     if !game #still haven't found a game for them
-      game = new App.Metagame
+      game = new App.Metagames.Default.Server
       game.serverInit(io)
       App.metagames.push game
 
