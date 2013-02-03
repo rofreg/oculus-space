@@ -1,10 +1,12 @@
 #tap-race-minigame{position:absolute;top:50%;left:50%;width:600px;height:600px;margin:-300px 0 0 -300px;background:#ddd;text-align:center;}#tap-race-minigame .top-half{height:400px;width:580px;margin:10px 10px 0;}#tap-race-minigame .top-half .score{font-size:170px;line-height:153px;padding-top:40px;}
 #tap-race-minigame .top-half .explain{font-size:95px;}
 #tap-race-minigame .top-half .else{font-size:40px;}
+#tap-race-minigame .top-half .place{font-size:275px;}
 #tap-race-minigame table#tap-board{height:400px;width:580px;margin:0;border-collapse:collapse;border:1px dotted #333;font-size:60px;}#tap-race-minigame table#tap-board td{height:99px;border:1px dotted #333;width:25%;padding:0;}
 #tap-race-minigame #tap-race-players table.player-table{font-size:20px;width:100%;}
 #tap-race-minigame #tap-race-players .score-table-holder{margin:5px auto 5px;height:123px;}#tap-race-minigame #tap-race-players .score-table-holder .score{font-size:50px;line-height:50px;padding-top:20px;}
 #tap-race-minigame #tap-race-players .score-table-holder .explain{font-size:30px;}
+#tap-race-minigame #tap-race-players .score-table-holder .place{font-size:80px;}
 #tap-race-minigame #tap-race-players .score-table-holder table.score-table{border-collapse:collapse;border:3px solid #ddd;margin:0 auto;}#tap-race-minigame #tap-race-players .score-table-holder table.score-table td{width:40px;height:25px;border:3px solid #ddd;}
 #tap-race-minigame #tap-race-players .score-table-holder table.score-table td.no-background{background:#ddd;}
 #tap-race-minigame #tap-race-players .score-table-holder .player-name{font-size:30px;}

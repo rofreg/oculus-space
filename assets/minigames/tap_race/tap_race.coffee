@@ -9,7 +9,6 @@ class App.Minigames.TapRace extends App.Minigames.Default
     this.currentNumber = 1
     Array::shuffle = -> @sort -> 0.5 - Math.random()
     this.numbers = [1..16].shuffle()
-    console.log this.numbers
 
     if !App.Templates.TapRace?
       $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
@@ -35,7 +34,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
         that.broadcast('player: scored', {number: that.currentNumber})
         that.currentNumber++
         $(this).text('')
-        if that.currentNumber > 3#16
+        if that.currentNumber > 16
           that.done()
 
   render: ->
@@ -60,10 +59,10 @@ class App.Minigames.TapRace extends App.Minigames.Default
       elem.hide()
       half.html elem
       elem.fadeIn 500
-    #this.gameover()
 
   gameover: ->
     $(this.el).fadeOut()
+    console.log this.players
     App.metagame.gameover(this)
 
   receiveBroadcast: (event, data, player_id) ->
@@ -82,6 +81,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
         for player in this.players
           if player.id == player_id
             player.done = true
+            player.time = data.time
             holder = this.el.find("#score-table-holder-#{player_id}")
             holder.find("table").fadeOut 500, =>
               elem = _.template App.Templates.TapRace.other_done,
@@ -91,7 +91,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
               holder.html elem
               elem.fadeIn 500
         if this.allPlayersDone()
-          this.calculateScores()
+          setTimeout((=> this.calculateScores()), 3000)
 
   allPlayersDone: ->
     for player in this.players
@@ -100,11 +100,44 @@ class App.Minigames.TapRace extends App.Minigames.Default
     return true
           
   calculateScores: ->
-    for player in this.players
-      player.score = Math.floor Math.random() * 50
-    this.score = Math.floor Math.random() * 50
-    this.gameover()
-    
+    this.players.sort (a,b) ->
+      if a.time < b.time
+        -1
+      if a.time > b.time
+        1
+      else
+        0
+
+    this.el.find(".top-half > div").fadeOut 500
+    this.el.find(".score-table-holder > div").fadeOut 500
+
+    setTimeout (=> this.fillSpots()), 500
+    setTimeout (=> this.gameover()), 2500
+
+  fillSpots: ->
+    for player, index in this.players
+      player.spot = index + 1
+      player.score = 10 if player.spot == 1
+      player.score = 5  if player.spot == 2
+      player.score = 3  if player.spot == 3
+      player.score = 1  if player.spot == 4
+      if player.id == App.player_id
+        this.score = player.score
+        half = this.el.find(".top-half")
+        elem = _.template App.Templates.TapRace.final,
+          spot: player.spot
+        elem = $(elem)
+        elem.hide()
+        half.html elem
+        elem.fadeIn 500
+      else
+        holder = this.el.find("#score-table-holder-#{player.id}")
+        elem = _.template App.Templates.TapRace.final,
+          spot: player.spot
+        elem = $(elem)
+        elem.hide()
+        holder.html elem
+        elem.fadeIn 500
 
 App.metagame.addMinigame App.Minigames.TapRace
 

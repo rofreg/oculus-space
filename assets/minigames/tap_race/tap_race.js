@@ -30,7 +30,6 @@
         });
       };
       this.numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].shuffle();
-      console.log(this.numbers);
       if (!(App.Templates.TapRace != null)) {
         $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
         return $.getScript(this.constructor.TEMPLATES);
@@ -63,7 +62,7 @@
           });
           that.currentNumber++;
           $(this).text('');
-          if (that.currentNumber > 3) {
+          if (that.currentNumber > 16) {
             return that.done();
           }
         }
@@ -107,6 +106,7 @@
 
     TapRace.prototype.gameover = function() {
       $(this.el).fadeOut();
+      console.log(this.players);
       return App.metagame.gameover(this);
     };
 
@@ -144,6 +144,7 @@
             player = _ref1[_j];
             if (player.id === player_id) {
               player.done = true;
+              player.time = data.time;
               holder = this.el.find("#score-table-holder-" + player_id);
               holder.find("table").fadeOut(500, function() {
                 var elem;
@@ -158,7 +159,9 @@
             }
           }
           if (this.allPlayersDone()) {
-            return this.calculateScores();
+            return setTimeout((function() {
+              return _this.calculateScores();
+            }), 3000);
           }
         }
       }
@@ -177,14 +180,68 @@
     };
 
     TapRace.prototype.calculateScores = function() {
-      var player, _i, _len, _ref;
+      var _this = this;
+      this.players.sort(function(a, b) {
+        if (a.time < b.time) {
+          -1;
+        }
+        if (a.time > b.time) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      this.el.find(".top-half > div").fadeOut(500);
+      this.el.find(".score-table-holder > div").fadeOut(500);
+      setTimeout((function() {
+        return _this.fillSpots();
+      }), 500);
+      return setTimeout((function() {
+        return _this.gameover();
+      }), 2500);
+    };
+
+    TapRace.prototype.fillSpots = function() {
+      var elem, half, holder, index, player, _i, _len, _ref, _results;
       _ref = this.players;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        player = _ref[_i];
-        player.score = Math.floor(Math.random() * 50);
+      _results = [];
+      for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+        player = _ref[index];
+        player.spot = index + 1;
+        if (player.spot === 1) {
+          player.score = 10;
+        }
+        if (player.spot === 2) {
+          player.score = 5;
+        }
+        if (player.spot === 3) {
+          player.score = 3;
+        }
+        if (player.spot === 4) {
+          player.score = 1;
+        }
+        if (player.id === App.player_id) {
+          this.score = player.score;
+          half = this.el.find(".top-half");
+          elem = _.template(App.Templates.TapRace.final, {
+            spot: player.spot
+          });
+          elem = $(elem);
+          elem.hide();
+          half.html(elem);
+          _results.push(elem.fadeIn(500));
+        } else {
+          holder = this.el.find("#score-table-holder-" + player.id);
+          elem = _.template(App.Templates.TapRace.final, {
+            spot: player.spot
+          });
+          elem = $(elem);
+          elem.hide();
+          holder.html(elem);
+          _results.push(elem.fadeIn(500));
+        }
       }
-      this.score = Math.floor(Math.random() * 50);
-      return this.gameover();
+      return _results;
     };
 
     return TapRace;
