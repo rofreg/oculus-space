@@ -29,7 +29,7 @@
 
     DoubleTapRace.NAME = 'DoubleTapRace';
 
-    DoubleTapRace.INSTRUCTIONS = 'DoubleTapRace is a fun game. Click the buttons to move legs.';
+    DoubleTapRace.INSTRUCTIONS = "DoubleTapRace is a race to the finish. Tap the buttons to move your player's legs so they can run. First one to the finish line wins!";
 
     DoubleTapRace.TEMPLATES = "/assets/minigames/double_tap_race/templates/templates.js";
 
