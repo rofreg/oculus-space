@@ -21,6 +21,9 @@ app.get '/', (req, res) ->
 app.get '/favicon.ico', (req, res) ->
   res.sendfile(__dirname + '/assets/favicon.ico')
 
+app.get '/apple-touch-icon-114x114-precomposed.png', (req, res) ->
+  res.sendfile(__dirname + '/assets/apple-touch-icon-precomposed.png')
+
 app.get '/apple-touch-icon-precomposed.png', (req, res) ->
   res.sendfile(__dirname + '/assets/apple-touch-icon-precomposed.png')
 
