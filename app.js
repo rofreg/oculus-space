@@ -1,2 +1,2 @@
 require('coffee-script');
-module.exports = require('./app.coffee');
+require('./app.coffee');
