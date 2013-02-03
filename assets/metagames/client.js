@@ -10,9 +10,23 @@
 
     function Metagame(id) {
       this.id = id;
+      this.playerReady = __bind(this.playerReady, this);
+
+      this.addMinigame = __bind(this.addMinigame, this);
+
+      this.minigameShowInstructions = __bind(this.minigameShowInstructions, this);
+
       this.minigameLoad = __bind(this.minigameLoad, this);
 
-      this.drawPlayerList = __bind(this.drawPlayerList, this);
+      this.minigameCountdown = __bind(this.minigameCountdown, this);
+
+      this.updateScoreboard = __bind(this.updateScoreboard, this);
+
+      this.updateInstructions = __bind(this.updateInstructions, this);
+
+      this.metagameStart = __bind(this.metagameStart, this);
+
+      this.updateWaitingRoom = __bind(this.updateWaitingRoom, this);
 
       this.init = __bind(this.init, this);
 
@@ -39,47 +53,109 @@
       $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
         console.log("New metagame with id " + _this.id);
-        _this.el = $("<div>").addClass('active view').attr("id", "metagame");
-        $('.active.view').removeClass('active').hide();
+        _this.el = $("<div>").addClass('active view').attr("id", "metagame").hide();
+        _this.el.html(_.template(App.Metagame.Default.Templates.main_view));
         $('body').append(_this.el);
+        $('.active.view').removeClass('active').fadeOut();
+        _this.el.fadeIn();
         _this.socket = io.connect("/" + _this.id);
         _this.socket.emit('players: player joining', {
           name: name
         });
-        console.log('sending JOINING');
         _this.socket.on('players: list updated', function(players) {
           _this.players = players;
-          return _this.drawPlayerList();
+          _this.updateWaitingRoom();
+          _this.updateInstructions();
+          return _this.updateScoreboard();
         });
+        _this.socket.on('metagame: start', _this.metagameStart);
         _this.socket.on('minigame: load', _this.minigameLoad);
         return _this.socket.on('minigame: start', function() {
-          setTimeout(_this.currentMinigame.start, 5000);
-          return console.log("Starting " + _this.currentMinigame.constructor.NAME + " in 5 seconds!");
+          return _this.minigameCountdown();
         });
       });
     };
 
-    Metagame.prototype.drawPlayerList = function() {
-      console.log(this.players);
-      return this.el.html(_.template(App.Metagame.Default.Templates.main_view, {
+    Metagame.prototype.updateWaitingRoom = function() {
+      var _this = this;
+      this.el.find('#waiting_room').html(_.template(App.Metagame.Default.Templates.waiting_room, {
+        players: this.players
+      }));
+      return this.el.find('#waiting_room button').click(function() {
+        if (_this.players.length < 1) {
+          return alert("You need at least two people to play!");
+        } else {
+          return _this.socket.emit('metagame: start');
+        }
+      });
+    };
+
+    Metagame.prototype.metagameStart = function() {
+      var _this = this;
+      this.el.find('#intro').html(_.template(App.Metagame.Default.Templates.intro, {
+        players: this.players
+      }));
+      this.el.find('#waiting_room').slideUp(500);
+      return setTimeout((function() {
+        return _this.el.find('#intro').slideUp(1000);
+      }), 1500);
+    };
+
+    Metagame.prototype.updateInstructions = function() {
+      var _this = this;
+      if (this.currentMinigame) {
+        this.el.find('#pregame').html(_.template(App.Metagame.Default.Templates.pregame, {
+          name: this.currentMinigame.constructor.NAME,
+          instructions: this.currentMinigame.constructor.INSTRUCTIONS,
+          players: this.players
+        }));
+        return this.el.find('#pregame button').click(function() {
+          return _this.playerReady();
+        });
+      }
+    };
+
+    Metagame.prototype.updateScoreboard = function() {
+      return this.el.find('#scoreboard').html(_.template(App.Metagame.Default.Templates.scoreboard, {
         players: this.players
       }));
     };
 
+    Metagame.prototype.minigameCountdown = function() {
+      var _this = this;
+      console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
+      this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown), {}).show();
+      setTimeout((function() {
+        return _this.el.find('#countdown span').text("1");
+      }), 1000);
+      setTimeout((function() {
+        return _this.el.find('#countdown span').text("0");
+      }), 2000);
+      setTimeout((function() {
+        return _this.el.fadeOut;
+      }), 2000);
+      return setTimeout(this.currentMinigame.start, 2500);
+    };
+
     Metagame.prototype.minigameLoad = function(data) {
       var _this = this;
-      console.log(data);
+      console.log("LOADING MINIGAME: " + data.minigame.name);
+      this.el.find('#instructions').show();
       if (this.minigames[data.minigame.name]) {
         this.currentMinigame = new this.minigames[data.minigame.name];
-        this.el.find("#instructions").html(this.currentMinigame.constructor.INSTRUCTIONS);
-        return this.playerReady();
+        this.currentMinigame.init();
+        return this.updateInstructions();
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
           _this.currentMinigame = new _this.minigames[data.minigame.name];
-          _this.el.find("#instructions").html(_this.currentMinigame.constructor.INSTRUCTIONS);
-          return _this.playerReady();
+          _this.currentMinigame.init();
+          return _this.updateInstructions();
         });
       }
+    };
+
+    Metagame.prototype.minigameShowInstructions = function() {
+      return this.updateInstructions();
     };
 
     Metagame.prototype.addMinigame = function(minigame) {

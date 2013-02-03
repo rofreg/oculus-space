@@ -15,7 +15,7 @@
 
       this.loadRandomGame = __bind(this.loadRandomGame, this);
 
-      this.start = __bind(this.start, this);
+      this.startMinigame = __bind(this.startMinigame, this);
 
       this.allPlayersReady = __bind(this.allPlayersReady, this);
 
@@ -30,6 +30,8 @@
       this.sendPlayerList = __bind(this.sendPlayerList, this);
 
       this.removePlayer = __bind(this.removePlayer, this);
+
+      this.startMetagame = __bind(this.startMetagame, this);
 
       this.addPlayer = __bind(this.addPlayer, this);
 
@@ -71,6 +73,7 @@
         socket.on('players: player joining', function(data) {
           return _this.addPlayer(data.name, socket.id);
         });
+        socket.on('metagame: start', _this.startMetagame);
         socket.on('metagame: player ready', function() {
           return _this.playerReady(socket.id);
         });
@@ -90,14 +93,19 @@
         color: this.colors[this.colorCount++ % this.colors.length],
         score: 0
       });
-      this.sendPlayerList();
-      if (this.readyToStart()) {
-        return this.loadGame(1);
+      return this.sendPlayerList();
+    };
+
+    Metagame.prototype.startMetagame = function() {
+      if (this.players.length >= 1) {
+        console.log('STARTING METAGAME!');
+        this.room.emit('metagame: start');
+        return this.loadRandomGame();
       }
     };
 
     Metagame.prototype.readyToStart = function() {
-      return this.players.length > 1 && this.allPlayersNotInGame();
+      return this.players.length >= 1 && this.allPlayersNotInGame();
     };
 
     Metagame.prototype.removePlayer = function(id) {
@@ -138,8 +146,9 @@
 
     Metagame.prototype.playerReady = function(id) {
       this.getPlayer(id).ready = true;
+      this.sendPlayerList();
       if (this.allPlayersReady()) {
-        return this.start();
+        return this.startMinigame();
       }
     };
 
@@ -167,7 +176,7 @@
       return true;
     };
 
-    Metagame.prototype.start = function() {
+    Metagame.prototype.startMinigame = function() {
       var player, _i, _len, _ref;
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -189,13 +198,14 @@
         player = _ref[_i];
         player.ready = false;
       }
+      console.log("LOADING GAME: " + this.minigames[index]['name']);
       return this.room.emit('minigame: load', {
         minigame: this.minigames[index]
       });
     };
 
     Metagame.prototype.gameover = function(score, id) {
-      this.getPlayer(id).score = score;
+      this.getPlayer(id).score += score;
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();
       if (this.readyToStart()) {
