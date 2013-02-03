@@ -47,7 +47,6 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
         that.broadcast('player: scored', {dist: that.dist})
         that.render()
     )
-    #setTimeout((=> this.gameover()), 5000)
 
   animateFeet: (rep) =>
       console.log rep
@@ -64,9 +63,7 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
     $('.score').text 'Distance = ' + this.dist
 
   gameover: =>
-    $(this.el).fadeOut()
-    this.score = this.dist
-    App.metagame.gameover(this)
+    App.metagame.gameover(this.dist)
     this.el.fadeOut()
 
   receiveBroadcast: (event, data, player_id) =>

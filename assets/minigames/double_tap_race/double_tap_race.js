@@ -109,9 +109,7 @@
     };
 
     DoubleTapRace.prototype.gameover = function() {
-      $(this.el).fadeOut();
-      this.score = this.dist;
-      App.metagame.gameover(this);
+      App.metagame.gameover(this.dist);
       return this.el.fadeOut();
     };
 
