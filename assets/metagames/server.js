@@ -134,7 +134,7 @@
     };
 
     Metagame.prototype.isAcceptingPlayers = function() {
-      return true;
+      return this.players.length < 4;
     };
 
     Metagame.prototype.getPlayer = function(id) {

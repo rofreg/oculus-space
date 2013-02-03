@@ -99,14 +99,10 @@
     };
 
     Metagame.prototype.metagameStart = function() {
-      var _this = this;
       this.el.find('#intro').html(_.template(App.Metagame.Default.Templates.intro, {
         players: this.players
       }));
-      this.el.find('#waiting_room').slideUp(500);
-      return setTimeout((function() {
-        return _this.el.find('#intro').slideUp(1000);
-      }), 1500);
+      return this.el.find('#waiting_room').slideUp(500);
     };
 
     Metagame.prototype.updateInstructions = function() {
@@ -158,6 +154,11 @@
 
     Metagame.prototype.minigameLoad = function(data) {
       var _this = this;
+      this.el.find(".next_game").text(data.minigame.name);
+      this.el.find(".next_game").fadeIn(300);
+      setTimeout((function() {
+        return _this.el.find('#intro').slideUp(500);
+      }), 2000);
       console.log("LOADING MINIGAME: " + data.minigame.name);
       this.el.find('#instructions').show();
       if (this.minigames[data.minigame.name]) {

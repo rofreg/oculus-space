@@ -67,7 +67,7 @@ class App.Metagame
       {players: this.players})
     )
     this.el.find('#waiting_room').slideUp(500)
-    setTimeout((=> this.el.find('#intro').slideUp(1000)), 1500)
+    # setTimeout((=> this.el.find('#intro').slideUp(500)), 3500)
     
   updateInstructions: =>
     # render the instructions screen
@@ -105,6 +105,10 @@ class App.Metagame
     setTimeout this.currentMinigame.start, 3000
 
   minigameLoad: (data) =>
+    this.el.find(".next_game").text(data.minigame.name)
+    this.el.find(".next_game").fadeIn(300)
+    setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
+
     console.log("LOADING MINIGAME: #{data.minigame.name}")
     this.el.find('#instructions').show()
     if this.minigames[data.minigame.name]
