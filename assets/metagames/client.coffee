@@ -34,7 +34,7 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
 
       this.socket.on 'minigame: start', =>
-        this.minigames[0].instance.start()
+        this.currentMinigame.start()
 
   drawPlayerList: =>
     console.log(this.players)
@@ -58,11 +58,6 @@ class App.Metagame
     this.ready = true
     this.socket.emit 'metagame: player ready'
       
-# for minigame in App.Metagame.minigames
-#   if minigame.name == 'TapRace'
-#     minigame.instance = new App.Minigames.TapRace
-#     #App.metagame.currentMinigame = 
-
   gameover: (minigame) ->
     this.socket.emit 'minigame: gameover',
       score: minigame.score

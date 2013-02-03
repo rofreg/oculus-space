@@ -54,7 +54,7 @@
         });
         _this.socket.on('minigame: load', _this.minigameLoad);
         return _this.socket.on('minigame: start', function() {
-          return _this.minigames[0].instance.start();
+          return _this.currentMinigame.start();
         });
       });
     };
