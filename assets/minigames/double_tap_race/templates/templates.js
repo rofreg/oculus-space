@@ -4,7 +4,8 @@
   App.Minigames.DoubleTapRace = {};
 
   App.Minigames.DoubleTapRace.Templates = {
-    main_view: '<div class="score">Distance: 0</div>\n<div class="progress">\n  <div class="runner"></div>\n</div>\n<button type="button" class="active btn">Left!</button>\n<button type="button" class="btn">Right!</button>'
+    main_view: '<div class="score">Distance: 0</div>\n<div class="progress"></div>\n<button type="button" class="active btn">Left!</button>\n<button type="button" class="btn">Right!</button>',
+    player_view: '<% _.each(players, function(player){ %>\n  <div class="runner-lane">\n    <div class="runner" id="runner-<%= player.id %>" style="background-color: <%= player.color %>; left: <%= player.dist + 20%>px;"></div>\n  </div>\n<% }) %>'
   };
 
 }).call(this);
