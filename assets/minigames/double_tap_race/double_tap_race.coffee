@@ -1,6 +1,6 @@
 class App.Minigames.DoubleTapRace extends App.Minigames.Default
   @NAME: 'DoubleTapRace'
-  @INSTRUCTIONS: 'DoubleTapRace is a fun game. Click the buttons to move legs.'
+  @INSTRUCTIONS: "DoubleTapRace is a race to the finish. Tap the buttons to move your player's legs so they can run. First one to the finish line wins!"
   @TEMPLATES: "/assets/minigames/double_tap_race/templates/templates.js"
   @STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css"
 
