@@ -29,7 +29,16 @@ class App.Minigames.TapRace extends App.Minigames.Default
     this.render()
     $('body').append(this.el)
     that = this
-    this.el.find("#tap-board td").bind "touchstart click", ->
+    this.el.find("#tap-board td").bind "click", ->
+      if parseInt($(this).text()) == that.currentNumber
+        that.broadcast('player: scored', {number: that.currentNumber})
+        that.currentNumber++
+        $(this).text('')
+        if that.currentNumber > 16
+          that.done()
+
+    this.el.find("#tap-board td").bind "touchstart", (e) ->
+      e.preventDefault()
       if parseInt($(this).text()) == that.currentNumber
         that.broadcast('player: scored', {number: that.currentNumber})
         that.currentNumber++

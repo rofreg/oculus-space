@@ -55,7 +55,20 @@
       this.render();
       $('body').append(this.el);
       that = this;
-      return this.el.find("#tap-board td").bind("touchstart click", function() {
+      this.el.find("#tap-board td").bind("click", function() {
+        if (parseInt($(this).text()) === that.currentNumber) {
+          that.broadcast('player: scored', {
+            number: that.currentNumber
+          });
+          that.currentNumber++;
+          $(this).text('');
+          if (that.currentNumber > 16) {
+            return that.done();
+          }
+        }
+      });
+      return this.el.find("#tap-board td").bind("touchstart", function(e) {
+        e.preventDefault();
         if (parseInt($(this).text()) === that.currentNumber) {
           that.broadcast('player: scored', {
             number: that.currentNumber
