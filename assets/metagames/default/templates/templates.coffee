@@ -5,6 +5,7 @@ App.Metagame.Default.Templates = {
     <div id="intro"></div>
     <div id="pregame"></div>
     <div id="scoreboard"></div>
+    <div id="next_game"></div>
     <div id="countdown"></div>
   '''
 
@@ -73,19 +74,47 @@ App.Metagame.Default.Templates = {
         </div>
       <% }) %>
     </div>
-    <button>I'm ready!</button>
+    <% if (ready){ %>
+      <button disabled='disabled'>Waiting...</button>
+    <% } else { %>
+      <button>I'm ready!</button>
+    <% } %>
   '''
 
   countdown: '''
     Game starting in <span>3</span>...
   '''
 
+  next_game_headers: ["Another game, coming up!","The battle rages on!","Ready for more?"]
+
+  next_game: '''
+    <h1><%= App.Metagame.Default.Templates.next_game_headers[Math.floor(Math.random()*App.Metagame.Default.Templates.next_game_headers.length)] %></h1>
+    <h4>Loading your next game...</h4>
+    <img src="/assets/metagames/default/images/ajax.gif" style="margin: 40px 0 90px">
+    <div class="next_game">
+      <%= currentMinigame ? currentMinigame.constructor.NAME : "" %>
+    </div>
+  '''
+
   scoreboard: '''
     <h1>Scoreboard</h1>
-    <ul>
-      <% _.each(players, function(player){ %>
-        <li><%= player.name %>: <%= player.score %> points</li>
-      <% }) %>
-    </ul>
+    <table class="scoreboard">
+      <tr>
+        <th></th>
+        <th class="name">Player</th>
+        <th class="score">Total score</th>
+        <th class="result">Result</th>
+      </tr>
+      <tbody>
+        <% _.each(players, function(player, index){ %>
+          <tr class="player_<%= index %>" data-id="<%= player.id %>">
+            <td><div class="color" style="background: <%= player.color %>"></div></td>
+            <td class="name"><%= player.name %></td>
+            <td class="score"><span><%= player.score %></span> points</td>
+            <td class="result">+ <%= player.minigame_score %></td>
+          <tr>
+        <% }) %>
+      </tbody>
+    </table>
   '''
 }

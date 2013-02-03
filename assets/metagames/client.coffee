@@ -44,6 +44,8 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
       this.socket.on 'minigame: start', =>
         this.minigameCountdown()
+      this.socket.on 'minigame: gameover', =>
+        this.showResults()
 
       this.socket.on 'broadcast', this.receiveBroadcast
 
@@ -56,10 +58,12 @@ class App.Metagame
 
     # start metagame by clicking "start"
     this.el.find('#waiting_room button').click =>
-      if this.players.length < 1
-        alert("You need at least two people to play!")
-      else
-        this.socket.emit 'metagame: start'
+      if this.el.find('#waiting_room button').attr('disabled') != "disabled"
+        if this.players.length < 1
+          alert("You need at least two people to play!")
+        else
+          this.el.find('#waiting_room button').attr('disabled', 'disabled').text("Working...")
+          this.socket.emit 'metagame: start'
 
   metagameStart: =>
     this.el.find('#intro').html(
@@ -75,9 +79,13 @@ class App.Metagame
       this.el.find('#pregame').html(_.template(App.Metagame.Default.Templates.pregame, {
         name: this.currentMinigame.constructor.NAME,
         instructions: this.currentMinigame.constructor.INSTRUCTIONS,
-        players: this.players
+        players: this.players,
+        ready: this.ready
       }))
-      this.el.find('#pregame button').click => this.playerReady()
+      this.el.find('#pregame button').click =>
+        if this.el.find('#pregame button').attr('disabled') != "disabled"
+          this.el.find('#pregame button').attr('disabled', 'disabled').text("Waiting...")
+          this.playerReady()
 
   updateScoreboard: =>
     # render the scoreboard screen
@@ -89,6 +97,26 @@ class App.Metagame
   showScoreboard: =>
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
+
+  showResults: =>
+    this.updateScoreboard()
+    this.el.find('#scoreboard').show()
+    setTimeout (=> this.showNextGameIntro()), 4000 + (this.players.length * 1000)
+    for player, index in this.players
+      setTimeout (=> $("tr[data-id=#{player.id}] td.score span").text(player.score + player.minigame_score)),
+        3000 + index * 1000
+
+  showNextGameIntro: =>
+    this.el.find('#next_game').html(
+      _.template(App.Metagame.Default.Templates.next_game, {
+        players: this.players,
+        currentMinigame: this.currentMinigame
+      })
+    ).show()
+    this.el.find('#scoreboard').slideUp(500)
+    setTimeout (=>
+      this.el.find('#pregame').slideDown(500)
+    ), 3000
 
   minigameCountdown: =>
     console.log "Starting #{this.currentMinigame.constructor.NAME} in 2 seconds!"
@@ -123,7 +151,7 @@ class App.Metagame
 
   minigameShowInstructions: =>
     this.updateInstructions()
-    this.el.find('#pregame').slideDown()
+    # this.el.find('#pregame').slideDown()
 
   addMinigame: (minigame) =>
     this.minigames[minigame.NAME] = minigame
@@ -133,13 +161,13 @@ class App.Metagame
     this.socket.emit 'metagame: player ready'
       
   gameover: (minigame) ->
+    this.ready = false
     $('#backgrounds').fadeIn(1000)
     $('#overlay').fadeOut(1000)
     console.log minigame.score
     this.socket.emit 'minigame: gameover',
       score: minigame.score
     this.el.fadeIn()
-    this.showScoreboard()
 
   sendBroadcast: (event, data) ->
     this.socket.emit 'broadcast',

@@ -98,6 +98,8 @@ class Server.Metagame
   startMinigame: =>
     for player in this.players
       player.in_game = true
+      player.ready = false
+      player.minigame_score = 0
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
@@ -111,12 +113,17 @@ class Server.Metagame
     this.room.emit 'minigame: load', {minigame: this.minigames[index]}
 
   gameover: (score, id) =>
-    this.getPlayer(id).score += score
+    if !score
+      score = 0
+    this.getPlayer(id).minigame_score = score
     this.getPlayer(id).in_game = false
     this.sendPlayerList()
 
     if this.readyToStart()
-      setTimeout (=> this.loadRandomGame()), 2000
+      this.room.emit 'minigame: gameover', {players: this.players}
+      for player in this.players
+        player.score += player.minigame_score
+      this.loadRandomGame()
   
 
 module.exports = Server.Metagame

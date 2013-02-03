@@ -22,6 +22,10 @@
 
       this.minigameCountdown = __bind(this.minigameCountdown, this);
 
+      this.showNextGameIntro = __bind(this.showNextGameIntro, this);
+
+      this.showResults = __bind(this.showResults, this);
+
       this.showScoreboard = __bind(this.showScoreboard, this);
 
       this.updateScoreboard = __bind(this.updateScoreboard, this);
@@ -80,6 +84,9 @@
         _this.socket.on('minigame: start', function() {
           return _this.minigameCountdown();
         });
+        _this.socket.on('minigame: gameover', function() {
+          return _this.showResults();
+        });
         return _this.socket.on('broadcast', _this.receiveBroadcast);
       });
     };
@@ -90,10 +97,13 @@
         players: this.players
       }));
       return this.el.find('#waiting_room button').click(function() {
-        if (_this.players.length < 1) {
-          return alert("You need at least two people to play!");
-        } else {
-          return _this.socket.emit('metagame: start');
+        if (_this.el.find('#waiting_room button').attr('disabled') !== "disabled") {
+          if (_this.players.length < 1) {
+            return alert("You need at least two people to play!");
+          } else {
+            _this.el.find('#waiting_room button').attr('disabled', 'disabled').text("Working...");
+            return _this.socket.emit('metagame: start');
+          }
         }
       });
     };
@@ -111,10 +121,14 @@
         this.el.find('#pregame').html(_.template(App.Metagame.Default.Templates.pregame, {
           name: this.currentMinigame.constructor.NAME,
           instructions: this.currentMinigame.constructor.INSTRUCTIONS,
-          players: this.players
+          players: this.players,
+          ready: this.ready
         }));
         return this.el.find('#pregame button').click(function() {
-          return _this.playerReady();
+          if (_this.el.find('#pregame button').attr('disabled') !== "disabled") {
+            _this.el.find('#pregame button').attr('disabled', 'disabled').text("Waiting...");
+            return _this.playerReady();
+          }
         });
       }
     };
@@ -128,6 +142,37 @@
     Metagame.prototype.showScoreboard = function() {
       this.updateScoreboard();
       return this.el.find('#scoreboard').show();
+    };
+
+    Metagame.prototype.showResults = function() {
+      var index, player, _i, _len, _ref, _results,
+        _this = this;
+      this.updateScoreboard();
+      this.el.find('#scoreboard').show();
+      setTimeout((function() {
+        return _this.showNextGameIntro();
+      }), 4000 + (this.players.length * 1000));
+      _ref = this.players;
+      _results = [];
+      for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
+        player = _ref[index];
+        _results.push(setTimeout((function() {
+          return $("tr[data-id=" + player.id + "] td.score span").text(player.score + player.minigame_score);
+        }), 3000 + index * 1000));
+      }
+      return _results;
+    };
+
+    Metagame.prototype.showNextGameIntro = function() {
+      var _this = this;
+      this.el.find('#next_game').html(_.template(App.Metagame.Default.Templates.next_game, {
+        players: this.players,
+        currentMinigame: this.currentMinigame
+      })).show();
+      this.el.find('#scoreboard').slideUp(500);
+      return setTimeout((function() {
+        return _this.el.find('#pregame').slideDown(500);
+      }), 3000);
     };
 
     Metagame.prototype.minigameCountdown = function() {
@@ -175,8 +220,7 @@
     };
 
     Metagame.prototype.minigameShowInstructions = function() {
-      this.updateInstructions();
-      return this.el.find('#pregame').slideDown();
+      return this.updateInstructions();
     };
 
     Metagame.prototype.addMinigame = function(minigame) {
@@ -189,14 +233,14 @@
     };
 
     Metagame.prototype.gameover = function(minigame) {
+      this.ready = false;
       $('#backgrounds').fadeIn(1000);
       $('#overlay').fadeOut(1000);
       console.log(minigame.score);
       this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
-      this.el.fadeIn();
-      return this.showScoreboard();
+      return this.el.fadeIn();
     };
 
     Metagame.prototype.sendBroadcast = function(event, data) {
