@@ -123,32 +123,32 @@
 
     Metagame.prototype.minigameCountdown = function() {
       var _this = this;
-      console.log("Starting " + this.currentMinigame.constructor.NAME + " in 3 seconds!");
+      console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
       this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown), {}).show();
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("2");
+        return _this.el.find('#countdown span').text("1");
       }), 1000);
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("1");
+        return _this.el.find('#countdown span').text("0");
       }), 2000);
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("0");
-      }), 3000);
-      setTimeout((function() {
         return _this.el.fadeOut;
-      }), 3000);
-      return setTimeout(this.currentMinigame.start, 3500);
+      }), 2000);
+      return setTimeout(this.currentMinigame.start, 2500);
     };
 
     Metagame.prototype.minigameLoad = function(data) {
       var _this = this;
       console.log("LOADING MINIGAME: " + data.minigame.name);
+      this.el.find('#instructions').show();
       if (this.minigames[data.minigame.name]) {
         this.currentMinigame = new this.minigames[data.minigame.name];
+        this.currentMinigame.init();
         return this.updateInstructions();
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
           _this.currentMinigame = new _this.minigames[data.minigame.name];
+          _this.currentMinigame.init();
           return _this.updateInstructions();
         });
       }

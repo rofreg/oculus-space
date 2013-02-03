@@ -18,7 +18,7 @@ class App.Metagame
       console.log "New metagame with id #{this.id}"
       # create Metagame <div>
       this.el = $("<div>").addClass('active view').attr("id","metagame").hide()
-      this.el.html(_.template(App.Metagame.Default.Templates.main_view))
+      this.el.html _.template(App.Metagame.Default.Templates.main_view)
       $('body').append(this.el)
       $('.active.view').removeClass('active').fadeOut()
       this.el.fadeIn()
@@ -84,23 +84,24 @@ class App.Metagame
     )
 
   minigameCountdown: =>
-    console.log "Starting #{this.currentMinigame.constructor.NAME} in 3 seconds!"
+    console.log "Starting #{this.currentMinigame.constructor.NAME} in 2 seconds!"
     this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown),{}).show()
-    setTimeout (=> this.el.find('#countdown span').text("2")), 1000
-    setTimeout (=> this.el.find('#countdown span').text("1")), 2000
-    setTimeout (=> this.el.find('#countdown span').text("0")), 3000
-    setTimeout (=> this.el.fadeOut), 3000
-    setTimeout this.currentMinigame.start, 3500
+    setTimeout (=> this.el.find('#countdown span').text("1")), 1000
+    setTimeout (=> this.el.find('#countdown span').text("0")), 2000
+    setTimeout (=> this.el.fadeOut), 2000
+    setTimeout this.currentMinigame.start, 2500
 
   minigameLoad: (data) =>
     console.log("LOADING MINIGAME: #{data.minigame.name}")
+    this.el.find('#instructions').show()
     if this.minigames[data.minigame.name]
       this.currentMinigame = new this.minigames[data.minigame.name]
+      this.currentMinigame.init()
       this.updateInstructions()
     else
       $.getScript(data.minigame.src).done (script, textStatus) =>
-        #remove loading.gif
         this.currentMinigame = new this.minigames[data.minigame.name]
+        this.currentMinigame.init()
         this.updateInstructions()
 
   minigameShowInstructions: =>
