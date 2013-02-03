@@ -3,7 +3,7 @@ Server = {}
 class Server.Metagame
 
   constructor: (@id) ->
-    
+
   colors: [
     '#ff0000', #red
     '#ff6600', #orange
@@ -24,6 +24,10 @@ class Server.Metagame
     {
       'name': 'TapRace'
       'src': "/assets/minigames/tap_race/tap_race.js"
+    },
+    {
+      'name': 'DoubleTapRace'
+      'src': "/assets/minigames/double_tap_race/double_tap_race.js"
     }
   ]
 
