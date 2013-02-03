@@ -21,13 +21,17 @@ class Server.Metagame
     null
 
   minigames: [
+    # {
+    #   'name': 'TapRace'
+    #   'src': "/assets/minigames/tap_race/tap_race.js"
+    # },
+    # {
+    #   'name': 'DoubleTapRace'
+    #   'src': "/assets/minigames/double_tap_race/double_tap_race.js"
+    # },
     {
-      'name': 'TapRace'
-      'src': "/assets/minigames/tap_race/tap_race.js"
-    },
-    {
-      'name': 'DoubleTapRace'
-      'src': "/assets/minigames/double_tap_race/double_tap_race.js"
+      'name': 'HotPotato'
+      'src': "/assets/minigames/hot_potato/hot_potato.js"
     }
   ]
 
@@ -104,7 +108,7 @@ class Server.Metagame
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
-    this.loadGame(1)#Math.floor(this.minigames.length * Math.random()))
+    this.loadGame(Math.floor(this.minigames.length * Math.random()))
     
   loadGame: (index) =>
     this.currentMinigameIndex = index
