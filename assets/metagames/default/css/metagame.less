@@ -15,7 +15,7 @@
   > div{
     height: 100%;
     margin-bottom: 50px;
-    overflow: scroll;
+    overflow: auto;
   }
   #countdown{
     display: none;
@@ -39,5 +39,41 @@
     li{
       list-style: none;
     }
+    &.player_blocks{
+      height: 120px;
+      overflow: hidden;
+      margin: 5px 0;
+      li{
+        text-align: center;
+        display: inline-block;
+        vertical-align: top;
+        width: 100px;
+        margin: 0px;
+        height: 115px;
+        text-align: center;
+        overflow: hidden;
+        div.color{
+          width: 75px;
+          height: 35px;
+          border-radius: 5px;
+          margin: 0 auto;
+          text-align: center;
+          padding: 20px 0;
+          border: 1px solid #333;
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+  button{
+    font-size: 32px;
+    padding: 10px;
+    border-radius: 5px;
+    background: #CCDAEB;
+    border: 1px solid #999;
+    margin-top: 10px;
+  }
+  button:hover{
+    background: #B8CDE6;
   }
 }

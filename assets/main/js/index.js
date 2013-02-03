@@ -18,7 +18,13 @@
         return App.metagame.init(io, $(".username").val());
       }
     });
-    $("button").attr('disabled', 'disabled');
+
+    socket.on("disconnect", function(data) {
+      // alert('The server disconnected! You should refresh the page and try again.');
+      $('#disconnected').fadeIn();
+      $('#overlay').css('zIndex',9999999).fadeIn();
+      setTimeout(function(){ location.href = "/" }, 6000);
+    })
     return false;
   });
 

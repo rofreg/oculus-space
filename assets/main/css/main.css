@@ -369,4 +369,27 @@ textarea {
 #signin button{
   font-size: 32px;
   padding: 10px;
+  border-radius: 5px;
+  background: #CCDAEB;
+  border: 1px solid #999;
+}
+#signin button:hover{
+  background: #B8CDE6;
+}
+
+#disconnected{
+  display: none;
+  position: absolute;
+  z-index: 99999999;
+  top: 50%;
+  left: 50%;
+  background: #b5bdc8;
+  background: rgba(255,255,255,0.8);
+  text-align: center;
+  box-shadow: 0 3px 20px rgba(0,0,0,0.3);
+  padding: 50px;
+  width: 500px;
+  height: 60px;
+  margin-top: -80px;
+  margin-left: -300px;
 }
