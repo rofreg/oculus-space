@@ -5,7 +5,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
   @STYLESHEET = "/assets/minigames/tap_race/styles.css"
 
   init: ->
-
+    super
     this.currentNumber = 1
     Array::shuffle = -> @sort -> 0.5 - Math.random()
     this.numbers = [1..16].shuffle()
@@ -48,13 +48,18 @@ class App.Minigames.TapRace extends App.Minigames.Default
     App.metagame.gameover(this)
 
   receiveBroadcast: (event, data, player_id) ->
+    console.log data
+    console.log player_id
     if player_id?
       for player in this.players
         if player.id == player_id
-          player.currentNumber = data.currentNumber
           table = this.el.find("#tap-race-players #score-table-#{player_id}")
-          while data.currentNumber > player.currentNumber
-            table.find("td").first().addClass('no-background')
+          while data.number > player.currentNumber
+            tds = table.find("td").not(".no-background")
+            rand = Math.floor(Math.random() * tds.length)
+            console.log rand
+            console.log tds.eq(rand)
+            tds.eq(Math.floor(Math.random() * tds.length)).addClass('no-background')
             player.currentNumber++
             break
 
