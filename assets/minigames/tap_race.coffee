@@ -1,5 +1,8 @@
 class App.Minigames.TapRace extends App.Minigames.Default
-  name: 'TapRace'
+  @NAME: 'TapRace'
+  @INSTRUCTIONS: 'TapRace is a fun game. Click link, plz.'
+
+  init: ->
 
   start: =>
     this.score = 0
@@ -15,10 +18,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
   render: =>
     $('.score').text(this.score)
 
-
   gameover: =>
     App.metagame.gameover(this)
 
-for minigame in App.metagame.minigames
-  if minigame.name == 'TapRace'
-    minigame.instance = new App.Minigames.TapRace
+App.metagame.addMinigame App.Minigames.TapRace

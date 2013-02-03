@@ -8,19 +8,7 @@ class App.Metagame
         return player
     null
 
-  allMinigames: [
-    {
-      'name': 'TapRace'
-      'src': "/assets/minigames/tap_race.js"
-    }
-  ]
-
-  minigames: [
-    {
-      'name': 'TapRace'
-      'src': "/assets/minigames/tap_race.js"
-    }
-  ]
+  minigames: []
 
   init: (io, name) =>
     console.log "New metagame with id #{this.id}"
@@ -44,16 +32,30 @@ class App.Metagame
       this.minigames[0].instance.start()
 
   drawPlayerList: =>
-    console.log this
-    console.log this.players
     this.el.html(JSON.stringify(this.players))
 
   minigameLoad: (data) =>
     #display loading.gif
-    $.getScript(data.src).done (script, textStatus) =>
-      #remove loading.gif
-      this.ready = true
-      this.socket.emit 'minigame: done loading'
+    if this.minigames[data.name]
+      this.currentMinigame = new this.minigames[data.name]
+      this.el.find("#instructions").html(this.currentMinigame.INSTRUCTIONS)
+    else
+      $.getScript(data.minigame.src).done (script, textStatus) =>
+        #remove loading.gif
+        this.currentMinigame = new this.minigames[data.name]
+        this.el.find("#instructions").html(this.currentMinigame.INSTRUCTIONS)
+
+  addMinigame: (minigame) ->
+    this.minigames[minigame.NAME] = minigame
+
+  playerReady: ->
+    this.ready = true
+    this.socket.emit 'metagame: player ready'
+      
+for minigame in App.metagame.minigames
+  if minigame.name == 'TapRace'
+    minigame.instance = new App.Minigames.TapRace
+    #App.metagame.currentMinigame = 
 
   gameover: (minigame) ->
     this.socket.emit 'minigame: gameover',

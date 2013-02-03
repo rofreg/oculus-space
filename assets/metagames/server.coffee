@@ -19,13 +19,6 @@ class Server.Metagame
         return player
     null
 
-  allMinigames: [
-    {
-      'name': 'TapRace'
-      'src': "/assets/minigames/tap_race.js"
-    }
-  ]
-
   minigames: [
     {
       'name': 'TapRace'
@@ -47,7 +40,7 @@ class Server.Metagame
     this.players.push({name: name, id: id, color: this.colors[this.colorCount++ % this.colors.length], score: 0})
     this.sendPlayerList()
     if true #this.players.length >= 2
-      this.loadGame(0)
+      this.loadRandomGame()
 
   removePlayer: (id) =>
     for index, player of this.players
@@ -82,13 +75,14 @@ class Server.Metagame
   start: =>
     this.room.emit('minigame: start')
 
+  loadRandomGame: =>
+    this.loadGame(Math.floor(this.minigames.length * Math.random()))
+    
   loadGame: (index) =>
-    this.currentMinigame = index
-    console.log '############################'
-    console.log this.players
+    this.currentMinigameIndex = index
     for player in this.players
       player.ready = false
-    this.room.emit 'minigame: load', {src: this.minigames[index].src}
+    this.room.emit 'minigame: load', {minigame: this.minigames[index]}
 
   gameover: (score, id) =>
     this.getPlayer(id).score = score

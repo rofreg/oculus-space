@@ -13,6 +13,8 @@
 
       this.loadGame = __bind(this.loadGame, this);
 
+      this.loadRandomGame = __bind(this.loadRandomGame, this);
+
       this.start = __bind(this.start, this);
 
       this.allPlayersReady = __bind(this.allPlayersReady, this);
@@ -48,13 +50,6 @@
       }
       return null;
     };
-
-    Metagame.prototype.allMinigames = [
-      {
-        'name': 'TapRace',
-        'src': "/assets/minigames/tap_race.js"
-      }
-    ];
 
     Metagame.prototype.minigames = [
       {
@@ -93,7 +88,7 @@
       });
       this.sendPlayerList();
       if (true) {
-        return this.loadGame(0);
+        return this.loadRandomGame();
       }
     };
 
@@ -156,18 +151,20 @@
       return this.room.emit('minigame: start');
     };
 
+    Metagame.prototype.loadRandomGame = function() {
+      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
+    };
+
     Metagame.prototype.loadGame = function(index) {
       var player, _i, _len, _ref;
-      this.currentMinigame = index;
-      console.log('############################');
-      console.log(this.players);
+      this.currentMinigameIndex = index;
       _ref = this.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
         player.ready = false;
       }
       return this.room.emit('minigame: load', {
-        src: this.minigames[index].src
+        minigame: this.minigames[index]
       });
     };
 
