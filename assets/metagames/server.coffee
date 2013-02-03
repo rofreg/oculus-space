@@ -115,7 +115,7 @@ class Server.Metagame
   gameover: (score, id) =>
     if !score
       score = 0
-    this.getPlayer(id).minigame_score = score + 5
+    this.getPlayer(id).minigame_score = score
     this.getPlayer(id).in_game = false
     this.sendPlayerList()
 
