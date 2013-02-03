@@ -14,6 +14,10 @@
     function Metagame(id) {
       this.drawPlayerList = __bind(this.drawPlayerList, this);
 
+      this.sendPlayerList = __bind(this.sendPlayerList, this);
+
+      this.removePlayer = __bind(this.removePlayer, this);
+
       this.addPlayer = __bind(this.addPlayer, this);
       if (id) {
         this.id = id;
@@ -35,23 +39,49 @@
       this.players = [];
       this.room = io.of("/" + this.id);
       return this.room.on('connection', function(socket) {
-        return socket.on('player joining', _this.addPlayer);
+        console.log("GAME " + _this.id + ": user connected: " + socket.id);
+        return socket.on('player joining', function(data) {
+          return _this.addPlayer(data.name, socket.id);
+        });
       });
     };
 
-    Metagame.prototype.addPlayer = function(data) {
-      this.players.push(data.player);
+    Metagame.prototype.addPlayer = function(name, id) {
+      this.players.push({
+        name: name,
+        id: id
+      });
+      return this.sendPlayerList();
+    };
+
+    Metagame.prototype.removePlayer = function(id) {
+      var index, player, _ref, _results;
+      _ref = this.players;
+      _results = [];
+      for (index in _ref) {
+        player = _ref[index];
+        if (player.id === id) {
+          this.players.splice(index, 1);
+          _results.push(this.sendPlayerList());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Metagame.prototype.sendPlayerList = function() {
       return this.room.emit('player list updated', this.players);
     };
 
-    Metagame.prototype.clientInit = function(io) {
+    Metagame.prototype.clientInit = function(io, name) {
       var _this = this;
       this.el = $("<div>").addClass('active view').attr("id", "metagame");
       $('.active.view').removeClass('active').hide();
       $('body').append(this.el);
       this.socket = io.connect("/" + this.id);
       this.socket.emit('player joining', {
-        player: App.player
+        name: name
       });
       return this.socket.on('player list updated', function(players) {
         _this.players = players;

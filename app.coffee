@@ -12,14 +12,12 @@ app.get '/', (req, res) ->
   res.sendfile(__dirname + '/index.html')
 
 app.get '/:id', (req, res) ->
-  console.log "Connecting to game #{req.params.id}"
+  console.log "Accessed URL: /#{req.params.id}"
 
 App = require('./assets/main/js/classes.coffee')
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'new player', (data) ->
-    console.log(data)
-    player = data
 
     #find game
     game = null
@@ -34,3 +32,7 @@ io.sockets.on 'connection', (socket) ->
       App.metagames.push game
 
     socket.emit 'enter metagame', {metagame_id: game.id}
+  socket.on 'disconnect', =>
+    console.log("PLAYER DROPPED: removing #{socket.id} from all games")
+    for metagame in App.metagames
+      metagame.removePlayer(socket.id)

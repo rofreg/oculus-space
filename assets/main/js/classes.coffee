@@ -19,14 +19,24 @@ class App.Metagame
     this.players = []
     this.room = io.of("/#{@id}")
     this.room.on('connection', (socket) =>
-        socket.on 'player joining', this.addPlayer
-      )
+      console.log("GAME #{@id}: user connected: #{socket.id}")
+      socket.on 'player joining', (data) => this.addPlayer(data.name, socket.id)
+    )
 
-  addPlayer: (data) =>
-    this.players.push(data.player)
+  addPlayer: (name, id) =>
+    this.players.push({name: name, id: id})
+    this.sendPlayerList()
+
+  removePlayer: (id) =>
+    for index, player of this.players
+      if (player.id == id)
+        this.players.splice(index, 1);
+        this.sendPlayerList()
+
+  sendPlayerList: =>
     this.room.emit 'player list updated', this.players
 
-  clientInit: (io) ->
+  clientInit: (io, name) ->
     # create Metagame <div>
     this.el = $("<div>").addClass('active view').attr("id","metagame")
     $('.active.view').removeClass('active').hide()
@@ -34,7 +44,7 @@ class App.Metagame
 
     # connect to server and listen for players
     this.socket = io.connect("/#{@id}")
-    this.socket.emit('player joining', {player: App.player})
+    this.socket.emit('player joining', {name: name})
     this.socket.on 'player list updated', (players) =>
       this.players = players
       this.drawPlayerList()

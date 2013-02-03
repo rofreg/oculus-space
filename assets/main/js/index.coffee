@@ -2,14 +2,11 @@ socket = io.connect('/')
 
 form = document.getElementById("user-form")
 form.onsubmit = ->
-  App.player = new App.Player this.elements["username"].value
-  App.players.push App.player
-  socket.emit "new player", { player: App.player }
-  socket.on "enter metagame", (data) ->
+  socket.emit "new player", { name: this.elements["username"].value }
+  socket.on "enter metagame", (data) =>
     if data.metagame_id?
       App.metagame = new App.Metagame(data.metagame_id)
-      App.metagame.clientInit(io)
       console.log "Connecting to #{data.metagame_id}"
-      # socket.disconnect()
+      App.metagame.clientInit(io, this.elements["username"].value)
   $("button").attr('disabled', 'disabled')
   false
