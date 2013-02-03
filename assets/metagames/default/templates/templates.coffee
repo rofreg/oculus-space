@@ -50,7 +50,7 @@ App.Metagame.Default.Templates = {
   '''
 
   countdown: '''
-    Game starting in <span>2</span>...
+    Game starting in <span>3</span>...
   '''
 
   scoreboard: '''

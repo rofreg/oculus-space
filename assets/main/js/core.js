@@ -23,8 +23,7 @@
 
 // Prevent scrolling on mobile
 document.ontouchmove = function(e){
-  // e.preventDefault();
-  viewport = document.querySelector("meta[name=viewport]")
+  e.preventDefault();
 }
 
 window.onresize = function(e){
@@ -32,6 +31,13 @@ window.onresize = function(e){
     App.Utilities.checkOrientation();
   } catch (e) {
     // App not loaded yet
+  }
+}
+
+window.onscroll = function(e){
+  if (document.body.scrollTop > 0){
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
   }
 }
 

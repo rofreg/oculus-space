@@ -125,16 +125,18 @@
       var _this = this;
       console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
       this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown), {}).show();
+      $('#backgrounds').fadeOut(3000);
+      $('#overlay').fadeIn(3000);
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("1");
+        return _this.el.find('#countdown span').text("2");
       }), 1000);
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("0");
+        return _this.el.find('#countdown span').text("1");
       }), 2000);
       setTimeout((function() {
-        return _this.el.fadeOut;
-      }), 2000);
-      return setTimeout(this.currentMinigame.start, 2500);
+        return _this.el.fadeOut(500);
+      }), 2500);
+      return setTimeout(this.currentMinigame.start, 3000);
     };
 
     Metagame.prototype.minigameLoad = function(data) {
