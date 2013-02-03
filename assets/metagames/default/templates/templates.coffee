@@ -9,14 +9,43 @@ App.Metagame.Default.Templates = {
   '''
 
   waiting_room: '''
-    <h1><%= players.length %> player<%= players.length > 1 ? "s" : "" %> in your party</h1>
-    <ul>
-      <% _.each(players, function(player){ %>
-        <li><%= player.name %></li>
+    <h1>Waiting for more players...</h1>
+    <h4>
+      <% if (players.length == 1) { %>
+        You&rsquo;re all alone right now! :(
+      <% } else if (players.length == 2) { %>
+        Hooray, a friend has joined you!
+      <% } else if (players.length == 3) { %>
+        You&rsquo;ve got two friends to play with!
+      <% } else if (players.length == 4) { %>
+        Sweet, three other players! This should be fun.
+      <% } else if (players.length == 5) { %>
+        SO MANY PEOPLE. I&rsquo;M FEELING OVERWHELMED.
+      <% } else if (players.length == 6) { %>
+        Look at all these people! It&rsquo;s like the Brady Bunch in here.
+      <% } else if (players.length > 6) { %>
+        Y&rsquo;all ready to PARTY?!?!?
+      <% } %>
+    </h4>
+    <ul class="player_blocks">
+      <% _.each(players, function(player, index){ %>
+        <% if (index <= 4 || players.length <= 5) { %>
+          <li>
+            <% if (index == 4 && players.length > 5) { %>
+              <br><br>
+              + <%= (players.length - 4) %> others
+            <% } else { %>
+              <div class="color" style="background: <%= player.color%>">
+                <img src="http://cdn1.iconfinder.com/data/icons/32-soft-media-icons--Vol-2/33/user.png">
+              </div>
+              <%= player.name %>
+            <% } %>
+          </li>
+        <% } %>
       <% }) %>
     </ul>
-    waiting for more players...<br>
-    <button>Start!</button>
+    Ready to start playing?<br>
+    <button>Let&rsquo;s go!</button>
   '''
 
   intro: '''
@@ -24,7 +53,9 @@ App.Metagame.Default.Templates = {
     Here are the players:
     <ul>
       <% _.each(players, function(player){ %>
-        <li><strong><%= player.name %></strong></li>
+        <li>
+          <strong><%= player.name %></strong>
+        </li>
       <% }) %>
     </ul>
     Get ready for your first game!
@@ -50,7 +81,7 @@ App.Metagame.Default.Templates = {
   '''
 
   countdown: '''
-    Game starting in <span>2</span>...
+    Game starting in <span>3</span>...
   '''
 
   scoreboard: '''
@@ -60,7 +91,5 @@ App.Metagame.Default.Templates = {
         <li><%= player.name %>: <%= player.score %> points</li>
       <% }) %>
     </ul>
-    waiting for more players...<br>
-    <button>Start!</button>
   '''
 }

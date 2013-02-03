@@ -22,6 +22,8 @@
 
       this.minigameCountdown = __bind(this.minigameCountdown, this);
 
+      this.showScoreboard = __bind(this.showScoreboard, this);
+
       this.updateScoreboard = __bind(this.updateScoreboard, this);
 
       this.updateInstructions = __bind(this.updateInstructions, this);
@@ -127,20 +129,31 @@
       }));
     };
 
+    Metagame.prototype.showScoreboard = function() {
+      this.updateScoreboard();
+      return this.el.find('#scoreboard').show();
+    };
+
     Metagame.prototype.minigameCountdown = function() {
       var _this = this;
       console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
       this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown), {}).show();
+      $('#backgrounds').fadeOut(3000);
+      $('#overlay').fadeIn(3000);
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("1");
+        return _this.el.find('#countdown span').text("2");
       }), 1000);
       setTimeout((function() {
-        return _this.el.find('#countdown span').text("0");
+        return _this.el.find('#countdown span').text("1");
       }), 2000);
       setTimeout((function() {
-        return _this.el.fadeOut();
-      }), 2000);
-      return setTimeout(this.currentMinigame.start, 2500);
+        return _this.el.fadeOut(500);
+      }), 2500);
+      setTimeout((function() {
+        _this.el.find('#countdown').hide();
+        return _this.el.find('#pregame').hide();
+      }), 3000);
+      return setTimeout(this.currentMinigame.start, 3000);
     };
 
     Metagame.prototype.minigameLoad = function(data) {
@@ -150,18 +163,19 @@
       if (this.minigames[data.minigame.name]) {
         this.currentMinigame = new this.minigames[data.minigame.name];
         this.currentMinigame.init();
-        return this.updateInstructions();
+        return this.minigameShowInstructions();
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
           _this.currentMinigame = new _this.minigames[data.minigame.name];
           _this.currentMinigame.init();
-          return _this.updateInstructions();
+          return _this.minigameShowInstructions();
         });
       }
     };
 
     Metagame.prototype.minigameShowInstructions = function() {
-      return this.updateInstructions();
+      this.updateInstructions();
+      return this.el.find('#pregame').slideDown();
     };
 
     Metagame.prototype.addMinigame = function(minigame) {
@@ -174,9 +188,12 @@
     };
 
     Metagame.prototype.gameover = function(minigame) {
-      return this.socket.emit('minigame: gameover', {
+      $('#backgrounds').fadeIn(1000);
+      $('#overlay').fadeOut(1000);
+      this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
+      return this.el.fadeIn();
     };
 
     Metagame.prototype.sendBroadcast = function(event, data) {

@@ -34,6 +34,12 @@ body {
 html, body{
   height: 100%;
   width: 100%;
+  font-family: "Arvo", serif;
+  overflow: hidden;
+}
+
+input, button{
+  font-family: inherit;
 }
 
 
@@ -231,10 +237,100 @@ textarea {
 
 
 
+ 
+@-webkit-keyframes slide1 {
+  0% {
+    top: 0%;
+  }
+  25% {
+    top: 100%;
+  }
+  67% {
+    top: -100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
 
+#backgrounds > div{
+  position: absolute;
+  left: 0%;
+  width: 20%;
+  height: 100%;
+  opacity: 0.5;
 
+  -webkit-animation-name: slide1;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-direction: normal;
+}
+#backgrounds.off{
+  display: none;
+}
+#backgrounds #b1{
+  background-color: rgba(100,0,0,0.4);
+  -webkit-animation-duration: 3s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b2{
+  left: 20%;
+  background-color: rgba(0,0,100,0.4);
+  -webkit-animation-duration: 7s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b3{
+  left: 40%;
+  background-color: rgba(100,0,100,0.4);
+  -webkit-animation-duration: 5s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b4{
+  left: 60%;
+  background-color: rgba(0,100,0,0.4);
+  -webkit-animation-duration: 2s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b5{
+  left: 80%;
+  background-color: rgba(100,100,0,0.4);
+  -webkit-animation-duration: 6s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b6{
+  left: 10%;
+  background-color: rgba(0,100,0,0.4);
+  -webkit-animation-duration: 2.5s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b7{
+  left: 30%;
+  background-color: rgba(100,100,0,0.4);
+  -webkit-animation-duration: 3.5s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b8{
+  left: 50%;
+  background-color: rgba(0,100,100,0.4);
+  -webkit-animation-duration: 4s;
+  -webkit-animation-name: slide1;
+}
+#backgrounds #b9{
+  left: 70%;
+  background-color: rgba(100,100,0,0.4);
+  -webkit-animation-duration: 5.5s;
+  -webkit-animation-name: slide1;
+}
 
-
+#overlay{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #000;
+  width: 100%;
+  height: 100%;
+}
 
 
 
@@ -250,14 +346,14 @@ textarea {
   margin-top: -300px;
   margin-left: -300px;
 }
-#signin, #metagame{
-  margin-top: -135px;
-  height: 210px;
-  padding: 30px 0;
+#signin{
+  margin-top: 0;
+  top: 0;
+  padding-top: 15px;
+  height: 240px;
   background: #b5bdc8;
-  background: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.8);
   text-align: center;
-  border-radius: 5px;
   box-shadow: 0 3px 20px rgba(0,0,0,0.3);
 }
 #signin h1{
@@ -273,12 +369,27 @@ textarea {
 #signin button{
   font-size: 32px;
   padding: 10px;
+  border-radius: 5px;
+  background: #CCDAEB;
+  border: 1px solid #999;
+}
+#signin button:hover{
+  background: #B8CDE6;
 }
 
-
-#metagame{
-  height: 360px;
-  width: 560px;
-  margin-top: -200px;
-  padding: 20px;
+#disconnected{
+  display: none;
+  position: absolute;
+  z-index: 99999999;
+  top: 50%;
+  left: 50%;
+  background: #b5bdc8;
+  background: rgba(255,255,255,0.8);
+  text-align: center;
+  box-shadow: 0 3px 20px rgba(0,0,0,0.3);
+  padding: 50px;
+  width: 500px;
+  height: 60px;
+  margin-top: -80px;
+  margin-left: -300px;
 }
