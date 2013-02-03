@@ -250,7 +250,7 @@ textarea {
   margin-top: -300px;
   margin-left: -300px;
 }
-#intro, #metagame{
+#signin, #metagame{
   margin-top: -135px;
   height: 210px;
   padding: 30px 0;
@@ -260,17 +260,17 @@ textarea {
   border-radius: 5px;
   box-shadow: 0 3px 20px rgba(0,0,0,0.3);
 }
-#intro h1{
+#signin h1{
   margin: 0;
   font-size: 40px;
 }
-#intro input{
+#signin input{
   margin: 20px 0;
   font-size: 36px;
   padding: 5px;
   text-align: center;
 }
-#intro button{
+#signin button{
   font-size: 32px;
   padding: 10px;
 }

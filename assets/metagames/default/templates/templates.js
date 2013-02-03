@@ -4,7 +4,12 @@
   App.Metagame.Default = {};
 
   App.Metagame.Default.Templates = {
-    main_view: '<h1><%= players.length %> player<%= players.length > 1 ? "s" : "" %> in your party</h1>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><%= player.name %>: <%= player.score %> points</li>\n  <% }) %>\n</ul>'
+    main_view: '<div id="waiting_room"></div>\n<div id="intro"></div>\n<div id="pregame"></div>\n<div id="scoreboard"></div>\n<div id="countdown"></div>',
+    waiting_room: '<h1><%= players.length %> player<%= players.length > 1 ? "s" : "" %> in your party</h1>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><%= player.name %></li>\n  <% }) %>\n</ul>\nwaiting for more players...<br>\n<button>Start!</button>',
+    intro: '<h1>Let\'s get started!</h1>\nHere are the players:\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><strong><%= player.name %></strong></li>\n  <% }) %>\n</ul>\nGet ready for your first game!',
+    pregame: '<h1>Instructions for <%= name %></h1>\n<div>\n  <%= instructions %>\n</div>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li>\n      <% if (player.ready) { %>\n        <strong><%= player.name %> is ready!</strong>\n      <% } else { %>\n        Waiting for <%= player.name %>...\n      <% } %>\n    </li>\n  <% }) %>\n</ul>\n<button>I\'m ready!</button>',
+    countdown: 'Game starting in <span>2</span>...',
+    scoreboard: '<h1>Scoreboard</h1>\n<ul>\n  <% _.each(players, function(player){ %>\n    <li><%= player.name %>: <%= player.score %> points</li>\n  <% }) %>\n</ul>\nwaiting for more players...<br>\n<button>Start!</button>'
   };
 
 }).call(this);
