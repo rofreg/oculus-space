@@ -4,3 +4,9 @@ class App.Minigames.Default
 
   playersUpdated: ->
     
+  receiveBroadcast: (event, data, player_id) ->
+
+  broadcast: (event, data = {}) ->
+    App.metagame.sendBroadcast(event, data)
+
+

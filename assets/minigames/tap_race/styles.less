@@ -3,26 +3,62 @@
   top: 50%;
   left: 50%;
   width:600px;
-  height:600px;
+  height:600px;;
   margin: -300px 0 0 -300px;
   background:#ddd;
   text-align:center;
 
-  h1 {
-    margin:40px;
+  .score {
+    margin:20px;
     font-size:30px;
   }
 
-  a.btn {
-    padding:20px 40px;
+  .countdown {
+    position:absolute;
+    top:0;
+    right:0;
+    padding:20px;
     font-size:20px;
-    background:#333;
-    color:#eee;
   }
 
-  table {
-    margin-top:30px;
-    width:100%;
-    font-size:25px;
+  .scoreboard {
+    margin:10px;
+    font-size:20px;
+  }
+
+  table#tap-board {
+    height:400px;
+    width:580px;
+    margin:10px;
+    border-collapse:collapse;
+    border: 1px dotted #333;
+    font-size:60px;
+    
+    td {
+      border: 1px dotted #333;
+      width:25%;
+    }
+  }
+
+  #tap-race-players {
+    table.player-table {
+      font-size:20px;
+      margin:0 auto;
+    }
+
+    table.score-table {
+      border-collapse:collapse;
+      border: 1px solid #ddd;
+
+      td {
+        width:10px;
+        height:10px;
+        border: 1px solid #ddd;
+      }
+      td.no-background {
+        background:#ddd;
+      }
+    }
+
   }
 }

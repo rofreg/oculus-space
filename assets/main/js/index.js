@@ -4,7 +4,8 @@
 
   window.App = {
     players: [],
-    Minigames: {}
+    Minigames: {},
+    Templates: {}
   };
 
   socket = io.connect('/');

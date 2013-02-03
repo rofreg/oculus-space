@@ -1,6 +1,7 @@
 window.App =
   players: []
   Minigames: {}
+  Templates: {}
   
 socket = io.connect('/')
 
