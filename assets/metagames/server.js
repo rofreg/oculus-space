@@ -77,10 +77,11 @@
         socket.on('minigame: gameover', function(data) {
           return _this.gameover(data.score, socket.id);
         });
-        socket.on('broadcast', function(data) {
+        socket.on('players: refresh', _this.sendPlayerList);
+        return socket.on('broadcast', function(data) {
+          data._player_id = socket.id;
           return _this.room.emit('broadcast', data);
         });
-        return socket.on('players: refresh', _this.sendPlayerList);
       });
     };
 

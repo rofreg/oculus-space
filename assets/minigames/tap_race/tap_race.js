@@ -9,14 +9,6 @@
     __extends(TapRace, _super);
 
     function TapRace() {
-      this.playersUpdated = __bind(this.playersUpdated, this);
-
-      this.receiveBroadcast = __bind(this.receiveBroadcast, this);
-
-      this.gameover = __bind(this.gameover, this);
-
-      this.render = __bind(this.render, this);
-
       this.start = __bind(this.start, this);
       return TapRace.__super__.constructor.apply(this, arguments);
     }
@@ -30,11 +22,22 @@
     TapRace.STYLESHEET = "/assets/minigames/tap_race/styles.css";
 
     TapRace.prototype.init = function() {
-      var _this = this;
+      var new_player, player, _i, _len, _ref,
+        _this = this;
       this.score = 0;
-      this.players = App.metagame.players;
+      this.players = [];
+      _ref = App.metagame.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        new_player = jQuery.extend(true, {}, player);
+        new_player.score = 0;
+        this.players.push(new_player);
+      }
+      $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
-        _this.el = $("<div>").addClass('active view').attr("id", "metagame");
+        _this.el = $("<div>").attr({
+          "id": "tap-race-minigame"
+        });
         _this.el.html(_.template(App.Templates.TapRace.main_view));
         return _this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
           players: _this.players
@@ -48,9 +51,11 @@
       this.el.find(".btn").bind('click', function() {
         _this.score++;
         _this.render();
-        return _this.metagame.refreshPlayers();
+        return _this.broadcast("updateScore");
       });
-      return setTimeout(this.gameover, 5000);
+      return setTimeout((function() {
+        return _this.gameover();
+      }), 5000);
     };
 
     TapRace.prototype.render = function() {
@@ -58,21 +63,36 @@
     };
 
     TapRace.prototype.gameover = function() {
+      $(this.el).fadeOut();
       return App.metagame.gameover(this);
     };
 
-    TapRace.prototype.receiveBroadcast = function(data) {
-      if ((data.player_id != null) && data.name === 'score++') {
-        this.players;
+    TapRace.prototype.broadcast = function(event, data) {
+      if (data == null) {
+        data = {};
       }
-      return console.log(data);
+      return App.metagame.sendBroadcast(event, data);
     };
 
-    TapRace.prototype.playersUpdated = function() {
-      this.players = this.metagame.players;
-      return this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
-        players: this.players
-      }));
+    TapRace.prototype.receiveBroadcast = function(event, data, player_id) {
+      var player, _i, _len, _ref, _results;
+      if (player_id != null) {
+        _ref = this.players;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          player = _ref[_i];
+          if (player.id === player_id) {
+            player.score++;
+            this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
+              players: this.players
+            }));
+            break;
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
     };
 
     return TapRace;

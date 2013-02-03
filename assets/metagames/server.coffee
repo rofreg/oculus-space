@@ -35,8 +35,10 @@ class Server.Metagame
       socket.on 'metagame: start', this.startMetagame
       socket.on 'metagame: player ready', => this.playerReady(socket.id)
       socket.on 'minigame: gameover', (data) => this.gameover(data.score, socket.id)
-      socket.on 'broadcast', (data) => this.room.emit('broadcast', data)
       socket.on 'players: refresh', this.sendPlayerList
+      socket.on 'broadcast', (data) =>
+        data._player_id = socket.id
+        this.room.emit('broadcast', data)
 
   addPlayer: (name, id) =>
     this.colorCount = 0 if not this.colorCount
