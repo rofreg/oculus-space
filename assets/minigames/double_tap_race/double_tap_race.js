@@ -17,9 +17,9 @@
 
       this.animateFeet = __bind(this.animateFeet, this);
 
-      this.start = __bind(this.start, this);
-
       this.getPlayerRep = __bind(this.getPlayerRep, this);
+
+      this.start = __bind(this.start, this);
       return DoubleTapRace.__super__.constructor.apply(this, arguments);
     }
 
@@ -31,20 +31,55 @@
 
     DoubleTapRace.STYLESHEET = "/assets/minigames/double_tap_race/css/double_tap_race.css";
 
+    DoubleTapRace.prototype.inspirations = ["You can do it!", "Show 'em who's boss!", "Go get 'em, tiger!", "Look at those little legs go!", "Run, Forrest!"];
+
     DoubleTapRace.prototype.init = function() {
-      var _this = this;
       DoubleTapRace.__super__.init.apply(this, arguments);
+      if (!(App.Minigames.DoubleTapRace.Templates != null)) {
+        $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
+        return $.getScript(this.constructor.TEMPLATES);
+      }
+    };
+
+    DoubleTapRace.prototype.start = function() {
+      var that;
+      this.clickCount = 0;
       this.dist = 0;
       _.each(this.players, function(player) {
         return player.dist = 0;
       });
-      $('head').append("<link rel='stylesheet' href='" + this.constructor.STYLESHEET + "'>");
-      return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
-        _this.el = $("<div>").addClass('active view').attr("id", "double-tap-race-minigame");
-        _this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
-        return _this.el.find(".progress").html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
-          players: _this.players
-        }));
+      this.el = $("<div>").addClass('active view').attr("id", "double-tap-race-minigame");
+      this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
+      this.el.find(".progress").html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
+        players: this.players
+      }));
+      $('body').append(this.el);
+      this.render();
+      that = this;
+      this.el.find(".btn").bind('click', function() {
+        that.clickCount++;
+        if ($(this).hasClass("active")) {
+          $(this).siblings(".btn").addClass("active");
+          $(this).removeClass("active");
+          that.dist += 5;
+          that.broadcast('player: scored', {
+            dist: that.dist
+          });
+          return that.render();
+        }
+      });
+      return this.el.find(".btn").bind('touchstart', function(e) {
+        e.preventDefault();
+        that.clickCount++;
+        if ($(this).hasClass("active")) {
+          $(this).siblings(".btn").addClass("active");
+          $(this).removeClass("active");
+          that.dist += 5;
+          that.broadcast('player: scored', {
+            dist: that.dist
+          });
+          return that.render();
+        }
       });
     };
 
@@ -60,39 +95,8 @@
       return [];
     };
 
-    DoubleTapRace.prototype.start = function() {
-      var that;
-      $('body').append(this.el);
-      this.render();
-      that = this;
-      this.el.find(".btn").bind('click', function() {
-        if ($(this).hasClass("active")) {
-          $(this).siblings(".btn").addClass("active");
-          $(this).removeClass("active");
-          that.dist += 10;
-          that.broadcast('player: scored', {
-            dist: that.dist
-          });
-          return that.render();
-        }
-      });
-      return this.el.find(".btn").bind('touchstart', function(e) {
-        e.preventDefault();
-        if ($(this).hasClass("active")) {
-          $(this).siblings(".btn").addClass("active");
-          $(this).removeClass("active");
-          that.dist += 10;
-          that.broadcast('player: scored', {
-            dist: that.dist
-          });
-          return that.render();
-        }
-      });
-    };
-
     DoubleTapRace.prototype.animateFeet = function(rep) {
       var $left, $right;
-      console.log(rep);
       $left = $($(rep).find('.left-foot'));
       $right = $($(rep).find('.right-foot'));
       if (parseInt($left.css('left')) === 10) {
@@ -105,12 +109,16 @@
     };
 
     DoubleTapRace.prototype.render = function() {
-      return $('.score').text('Distance = ' + this.dist);
+      console.log("click count: " + this.clickCount);
+      if (this.clickCount % 15 === 0) {
+        return $('.score').text(this.inspirations[Math.floor(this.inspirations.length * Math.random())]);
+      }
     };
 
     DoubleTapRace.prototype.gameover = function() {
-      App.metagame.gameover(this.dist);
-      return this.el.fadeOut();
+      $(this.el).fadeOut();
+      $('#double-tap-race-minigame').remove();
+      return App.metagame.gameover(this.dist);
     };
 
     DoubleTapRace.prototype.receiveBroadcast = function(event, data, player_id) {
@@ -124,7 +132,7 @@
             player.dist = data.dist;
             $(this.getPlayerRep(player_id)).css('left', player.dist + 20);
             this.animateFeet(this.getPlayerRep(player_id));
-            if (player.dist + 50 === parseInt(this.el.css('width'))) {
+            if (player.dist + 50 === 560) {
               this.gameover();
             }
             this.render();
