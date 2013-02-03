@@ -11,11 +11,19 @@
 
   App.Metagame = (function() {
 
-    function Metagame() {
+    function Metagame(id) {
       this.drawPlayerList = __bind(this.drawPlayerList, this);
 
+      this.sendPlayerList = __bind(this.sendPlayerList, this);
+
+      this.removePlayer = __bind(this.removePlayer, this);
+
       this.addPlayer = __bind(this.addPlayer, this);
-      this.id = 1;
+      if (id) {
+        this.id = id;
+      } else {
+        this.id = Math.random().toString(36).substring(2, 6);
+      }
     }
 
     Metagame.prototype.url = function() {
@@ -31,24 +39,49 @@
       this.players = [];
       this.room = io.of("/" + this.id);
       return this.room.on('connection', function(socket) {
-        return socket.on('player joining', _this.addPlayer);
+        console.log("GAME " + _this.id + ": user connected: " + socket.id);
+        return socket.on('player joining', function(data) {
+          return _this.addPlayer(data.name, socket.id);
+        });
       });
     };
 
-    Metagame.prototype.addPlayer = function(data) {
-      this.players.push(data.player);
+    Metagame.prototype.addPlayer = function(name, id) {
+      this.players.push({
+        name: name,
+        id: id
+      });
+      return this.sendPlayerList();
+    };
+
+    Metagame.prototype.removePlayer = function(id) {
+      var index, player, _ref, _results;
+      _ref = this.players;
+      _results = [];
+      for (index in _ref) {
+        player = _ref[index];
+        if (player.id === id) {
+          this.players.splice(index, 1);
+          _results.push(this.sendPlayerList());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Metagame.prototype.sendPlayerList = function() {
       return this.room.emit('player list updated', this.players);
     };
 
-    Metagame.prototype.clientInit = function(io) {
+    Metagame.prototype.clientInit = function(io, name) {
       var _this = this;
-      this.el = $("<div>").addClass('active view').attr("id", "metagame").text("test");
-      $('.active.view').removeClass('active');
+      this.el = $("<div>").addClass('active view').attr("id", "metagame");
+      $('.active.view').removeClass('active').hide();
       $('body').append(this.el);
-      App.Utilities.resizeViewport();
       this.socket = io.connect("/" + this.id);
       this.socket.emit('player joining', {
-        player: App.player
+        name: name
       });
       return this.socket.on('player list updated', function(players) {
         _this.players = players;
@@ -69,7 +102,7 @@
 
     function Player(name) {
       this.name = name;
-      this.id = Math.random().toString(36).substring(2, 8);
+      this.id = Math.random().toString(36).substring(2, 6);
     }
 
     return Player;
@@ -85,34 +118,9 @@
   })();
 
   App.Utilities = {
-    resizeViewport: function() {
-      var view, viewSize, viewport, windowSize;
-      windowSize = {
-        width: $(window).width(),
-        height: $(window).height()
-      };
-      view = $('body > div.view.active');
-      if (view.length === 0) {
-        return;
-      }
-      viewSize = {
-        width: view.width(),
-        height: view.height()
-      };
-      view.css({
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: "-" + (viewSize.height / 2) + "px",
-        marginLeft: "-" + (viewSize.width / 2) + "px"
-      });
-      windowSize.ratio = windowSize.width * 1.0 / windowSize.height;
-      viewSize.ratio = viewSize.width * 1.0 / viewSize.height;
-      viewport = document.querySelector("meta[name=viewport]");
-      if (viewSize.ratio < windowSize.ratio) {
-        return viewport.setAttribute('content', 'width=' + (viewSize.height * windowSize.ratio) + ', user-scalable=0');
-      } else {
-        return viewport.setAttribute('content', 'width=' + viewSize.width + ', user-scalable=0');
+    checkOrientation: function() {
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) && $(window).width() > $(window).height()) {
+        return alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
       }
     }
   };
