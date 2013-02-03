@@ -44,7 +44,8 @@ class App.Metagame
       this.socket.on 'minigame: load', this.minigameLoad
       this.socket.on 'minigame: start', =>
         this.minigameCountdown()
-      this.socket.on 'minigame: gameover', =>
+      this.socket.on 'minigame: gameover', (players) =>
+        this.players = players
         this.showResults()
 
       this.socket.on 'broadcast', this.receiveBroadcast

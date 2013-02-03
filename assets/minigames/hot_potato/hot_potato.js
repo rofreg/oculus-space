@@ -155,9 +155,7 @@
         return this.endGame();
       } else {
         if (currentVal <= 5) {
-          this.el.find('.clock').css({
-            'color': '#f00'
-          });
+          this.el.find('.clock').css('color', '#f00');
         }
         return this.el.find('.clock').text(currentVal - 1);
       }

@@ -62,7 +62,7 @@
           });
           that.currentNumber++;
           $(this).text('');
-          if (that.currentNumber > 3) {
+          if (that.currentNumber > 16) {
             return that.done();
           }
         }

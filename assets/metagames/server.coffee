@@ -125,6 +125,7 @@ class Server.Metagame
     this.sendPlayerList()
 
     if this.readyToStart()
+      console.log('change scores, server-side')
       this.room.emit 'minigame: gameover', {players: this.players}
       for player in this.players
         player.score += player.minigame_score

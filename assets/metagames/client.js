@@ -84,7 +84,8 @@
         _this.socket.on('minigame: start', function() {
           return _this.minigameCountdown();
         });
-        _this.socket.on('minigame: gameover', function() {
+        _this.socket.on('minigame: gameover', function(players) {
+          _this.players = players;
           return _this.showResults();
         });
         return _this.socket.on('broadcast', _this.receiveBroadcast);

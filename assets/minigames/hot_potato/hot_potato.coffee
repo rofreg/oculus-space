@@ -97,7 +97,7 @@ class App.Minigames.HotPotato extends App.Minigames.Default
       this.endGame()
     else
       if currentVal <= 5
-        this.el.find('.clock').css('color':'#f00')
+        this.el.find('.clock').css('color','#f00')
       this.el.find('.clock').text((currentVal-1))
 
   endGame: =>

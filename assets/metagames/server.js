@@ -224,6 +224,7 @@
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();
       if (this.readyToStart()) {
+        console.log('change scores, server-side');
         this.room.emit('minigame: gameover', {
           players: this.players
         });
