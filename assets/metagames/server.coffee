@@ -3,6 +3,7 @@ Server = {}
 class Server.Metagame
 
   constructor: (@id) ->
+    
   colors: [
     '#ff0000', #red
     '#ff6600', #orange

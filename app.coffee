@@ -48,5 +48,5 @@ io.sockets.on 'connection', (socket) ->
 
   socket.on 'disconnect', =>
     console.log("PLAYER DROPPED: removing #{socket.id} from all games")
-    for metagame in App.metagames
+    for metagame in Server.metagames
       metagame.removePlayer(socket.id)
