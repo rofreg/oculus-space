@@ -112,7 +112,7 @@ App.Metagame.Default.Templates = {
             <td class="name"><%= player.name %></td>
             <td class="score"><span><%= player.score %></span> points</td>
             <td class="result">+ <%= player.minigame_score %></td>
-          <tr>
+          </tr>
         <% }) %>
       </tbody>
     </table>

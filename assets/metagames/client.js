@@ -135,7 +135,7 @@
 
     Metagame.prototype.updateScoreboard = function() {
       return this.el.find('#scoreboard').html(_.template(App.Metagame.Default.Templates.scoreboard, {
-        players: this.players
+        players: this.sorted_players
       }));
     };
 
@@ -145,22 +145,44 @@
     };
 
     Metagame.prototype.showResults = function() {
-      var index, player, _i, _len, _ref, _results,
+      var index, player, top, _fn, _i, _len, _ref,
         _this = this;
+      if (!this.sorted_players) {
+        this.sorted_players = this.players;
+      }
       this.updateScoreboard();
       this.el.find('#scoreboard').show();
       setTimeout((function() {
         return _this.showNextGameIntro();
-      }), 4000 + (this.players.length * 1000));
-      _ref = this.players;
-      _results = [];
+      }), 5500 + (this.players.length * 1000));
+      _ref = this.sorted_players;
+      _fn = function() {
+        var score, temp;
+        player.score += player.minigame_score;
+        temp = $("tr[data-id=" + player.id + "] td.score span");
+        score = player.score;
+        return setTimeout((function() {
+          return temp.text(score);
+        }), 3000 + index * 1000);
+      };
       for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
         player = _ref[index];
-        _results.push(setTimeout((function() {
-          return $("tr[data-id=" + player.id + "] td.score span").text(player.score + player.minigame_score);
-        }), 3000 + index * 1000));
+        _fn();
       }
-      return _results;
+      this.sorted_players = this.players.sort(function(s1, s2) {
+        return s1.score <= s2.score;
+      });
+      top = 60;
+      return setTimeout((function() {
+        top = 60;
+        return $.each(_this.sorted_players, function(index, player) {
+          $("#scoreboard tr[data-id=" + player.id + "]").animate({
+            position: 'absolute',
+            top: top + 'px'
+          }, 500);
+          return top += 60;
+        });
+      }), 3500 + (this.players.length * 1000));
     };
 
     Metagame.prototype.showNextGameIntro = function() {
@@ -201,20 +223,23 @@
       var _this = this;
       this.el.find(".next_game").text(data.minigame.name);
       this.el.find(".next_game").fadeIn(300);
-      setTimeout((function() {
-        return _this.el.find('#intro').slideUp(500);
-      }), 2000);
       console.log("LOADING MINIGAME: " + data.minigame.name);
       this.el.find('#instructions').show();
       if (this.minigames[data.minigame.name]) {
         this.currentMinigame = new this.minigames[data.minigame.name];
         this.currentMinigame.init();
-        return this.minigameShowInstructions();
+        this.minigameShowInstructions();
+        return setTimeout((function() {
+          return _this.el.find('#intro').slideUp(500);
+        }), 2000);
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
           _this.currentMinigame = new _this.minigames[data.minigame.name];
           _this.currentMinigame.init();
-          return _this.minigameShowInstructions();
+          _this.minigameShowInstructions();
+          return setTimeout((function() {
+            return _this.el.find('#intro').slideUp(500);
+          }), 2000);
         });
       }
     };

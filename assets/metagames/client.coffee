@@ -91,7 +91,7 @@ class App.Metagame
     # render the scoreboard screen
     this.el.find('#scoreboard').html(
       _.template(App.Metagame.Default.Templates.scoreboard,
-      {players: this.players})
+      {players: this.sorted_players})
     )
 
   showScoreboard: =>
@@ -99,12 +99,30 @@ class App.Metagame
     this.el.find('#scoreboard').show()
 
   showResults: =>
+    if !this.sorted_players
+      this.sorted_players = this.players
     this.updateScoreboard()
     this.el.find('#scoreboard').show()
-    setTimeout (=> this.showNextGameIntro()), 4000 + (this.players.length * 1000)
-    for player, index in this.players
-      setTimeout (=> $("tr[data-id=#{player.id}] td.score span").text(player.score + player.minigame_score)),
-        3000 + index * 1000
+    setTimeout (=> this.showNextGameIntro()), 5500 + (this.players.length * 1000)
+    for player, index in this.sorted_players
+      (=>
+        player.score += player.minigame_score
+        temp = $("tr[data-id=#{player.id}] td.score span")
+        score = player.score
+        setTimeout (=> temp.text(score)), 3000 + index * 1000
+      )()
+    this.sorted_players = this.players.sort (s1, s2) =>
+      s1.score <= s2.score
+    top = 60
+    setTimeout (=>
+      top = 60
+      $.each this.sorted_players, (index, player) =>
+        $("#scoreboard tr[data-id=#{player.id}]").animate({
+          position: 'absolute',
+          top: top + 'px'
+        }, 500)
+        top += 60
+      ), 3500 + (this.players.length * 1000)
 
   showNextGameIntro: =>
     this.el.find('#next_game').html(
@@ -135,7 +153,6 @@ class App.Metagame
   minigameLoad: (data) =>
     this.el.find(".next_game").text(data.minigame.name)
     this.el.find(".next_game").fadeIn(300)
-    setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
 
     console.log("LOADING MINIGAME: #{data.minigame.name}")
     this.el.find('#instructions').show()
@@ -143,11 +160,13 @@ class App.Metagame
       this.currentMinigame = new this.minigames[data.minigame.name]
       this.currentMinigame.init()
       this.minigameShowInstructions()
+      setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
     else
       $.getScript(data.minigame.src).done (script, textStatus) =>
         this.currentMinigame = new this.minigames[data.minigame.name]
         this.currentMinigame.init()
         this.minigameShowInstructions()
+        setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
 
   minigameShowInstructions: =>
     this.updateInstructions()

@@ -14,6 +14,13 @@
     return App.player_id = data.id;
   });
 
+  socket.on("disconnect", function(data) {
+    console.log('test');
+    $('#disconnected').fadeIn(500);
+    $('#overlay').fadeIn(500).css('z-index', 9999);
+    return setTimeout("location.href = '/'", 6000);
+  });
+
   $("#user-form").submit(function() {
     $("button").attr('disabled', 'disabled');
     socket.emit('server: new player');
