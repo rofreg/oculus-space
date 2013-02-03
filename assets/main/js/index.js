@@ -15,6 +15,7 @@
   });
 
   $("#user-form").submit(function() {
+    $('#music-player')[0].play()
     $("button").attr('disabled', 'disabled');
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {

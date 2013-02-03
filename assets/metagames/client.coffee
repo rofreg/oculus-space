@@ -153,7 +153,6 @@ class App.Metagame
   minigameLoad: (data) =>
     this.el.find(".next_game").text(data.minigame.name)
     this.el.find(".next_game").fadeIn(300)
-    setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
 
     console.log("LOADING MINIGAME: #{data.minigame.name}")
     this.el.find('#instructions').show()
@@ -161,11 +160,13 @@ class App.Metagame
       this.currentMinigame = new this.minigames[data.minigame.name]
       this.currentMinigame.init()
       this.minigameShowInstructions()
+      setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
     else
       $.getScript(data.minigame.src).done (script, textStatus) =>
         this.currentMinigame = new this.minigames[data.minigame.name]
         this.currentMinigame.init()
         this.minigameShowInstructions()
+        setTimeout((=> this.el.find('#intro').slideUp(500)), 2000)
 
   minigameShowInstructions: =>
     this.updateInstructions()

@@ -223,20 +223,23 @@
       var _this = this;
       this.el.find(".next_game").text(data.minigame.name);
       this.el.find(".next_game").fadeIn(300);
-      setTimeout((function() {
-        return _this.el.find('#intro').slideUp(500);
-      }), 2000);
       console.log("LOADING MINIGAME: " + data.minigame.name);
       this.el.find('#instructions').show();
       if (this.minigames[data.minigame.name]) {
         this.currentMinigame = new this.minigames[data.minigame.name];
         this.currentMinigame.init();
-        return this.minigameShowInstructions();
+        this.minigameShowInstructions();
+        return setTimeout((function() {
+          return _this.el.find('#intro').slideUp(500);
+        }), 2000);
       } else {
         return $.getScript(data.minigame.src).done(function(script, textStatus) {
           _this.currentMinigame = new _this.minigames[data.minigame.name];
           _this.currentMinigame.init();
-          return _this.minigameShowInstructions();
+          _this.minigameShowInstructions();
+          return setTimeout((function() {
+            return _this.el.find('#intro').slideUp(500);
+          }), 2000);
         });
       }
     };
