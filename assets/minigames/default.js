@@ -31,6 +31,34 @@
       return App.metagame.sendBroadcast(event, data);
     };
 
+    Default.prototype.getPlayer = function(id) {
+      var player, _i, _len, _ref;
+      _ref = this.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        if (player.id === id) {
+          return player;
+        }
+      }
+      return null;
+    };
+
+    Default.prototype.getCurrentPlayer = function() {
+      return this.getPlayer(App.player_id);
+    };
+
+    Default.prototype.gameover = function() {
+      return App.metagame.gameover(Math.floor(Math.random() * 10));
+    };
+
+    Default.prototype.proxyFetch = function(url) {
+      return App.metagame.proxyFetch(url);
+    };
+
+    Default.prototype.proxyFetchReturn = function(data) {
+      return console.log(JSON.parse(data));
+    };
+
     return Default;
 
   })();

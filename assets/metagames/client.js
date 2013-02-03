@@ -10,6 +10,10 @@
 
     function Metagame(id) {
       this.id = id;
+      this.proxyFetchReturn = __bind(this.proxyFetchReturn, this);
+
+      this.proxyFetch = __bind(this.proxyFetch, this);
+
       this.receiveBroadcast = __bind(this.receiveBroadcast, this);
 
       this.playerReady = __bind(this.playerReady, this);
@@ -87,7 +91,8 @@
         _this.socket.on('minigame: gameover', function() {
           return _this.showResults();
         });
-        return _this.socket.on('broadcast', _this.receiveBroadcast);
+        _this.socket.on('broadcast', _this.receiveBroadcast);
+        return _this.socket.on('proxyFetchReturn', _this.proxyFetchReturn);
       });
     };
 
@@ -277,6 +282,19 @@
     Metagame.prototype.receiveBroadcast = function(data) {
       if (this.currentMinigame != null) {
         return this.currentMinigame.receiveBroadcast(data._event, data._data, data._player_id);
+      }
+    };
+
+    Metagame.prototype.proxyFetch = function(url) {
+      return this.socket.emit('proxyFetch', {
+        url: url
+      });
+    };
+
+    Metagame.prototype.proxyFetchReturn = function(data) {
+      console.log(data);
+      if (this.currentMinigame != null) {
+        return this.currentMinigame.proxyFetchReturn(data);
       }
     };
 

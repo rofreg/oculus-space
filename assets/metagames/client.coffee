@@ -48,6 +48,7 @@ class App.Metagame
         this.showResults()
 
       this.socket.on 'broadcast', this.receiveBroadcast
+      this.socket.on 'proxyFetchReturn', this.proxyFetchReturn
 
   updateWaitingRoom: =>
     # render the metagame window
@@ -195,3 +196,12 @@ class App.Metagame
   receiveBroadcast: (data) =>
     if this.currentMinigame?
       this.currentMinigame.receiveBroadcast data._event, data._data, data._player_id
+
+  proxyFetch: (url) =>
+    this.socket.emit 'proxyFetch', {url: url}
+
+  proxyFetchReturn: (data) =>
+    console.log data
+    if this.currentMinigame?
+      this.currentMinigame.proxyFetchReturn data
+    

@@ -1,4 +1,5 @@
 Server = {}
+request = require('request')
 
 class Server.Metagame
 
@@ -28,6 +29,10 @@ class Server.Metagame
     {
       'name': 'DoubleTapRace'
       'src': "/assets/minigames/double_tap_race/double_tap_race.js"
+    },
+    {
+      'name': 'HideAndSeek'
+      'src': "/assets/minigames/hide_and_seek/hide_and_seek.js"
     }
   ]
 
@@ -43,6 +48,13 @@ class Server.Metagame
       socket.on 'broadcast', (data) =>
         data._player_id = socket.id
         this.room.emit('broadcast', data)
+      socket.on 'proxyFetch', this.proxyFetch
+
+  proxyFetch: (data) =>
+    request {uri: data.url, json: true}, (error, response, body) =>
+      if !error && response.statusCode == 200
+        console.log(body) # Print the google web page.
+        this.room.emit "proxyFetchReturn", {body: body}
 
   addPlayer: (name, id) =>
     this.colorCount = 0 if not this.colorCount
@@ -104,7 +116,7 @@ class Server.Metagame
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
-    this.loadGame(1)#Math.floor(this.minigames.length * Math.random()))
+    this.loadGame(2)#Math.floor(this.minigames.length * Math.random()))
     
   loadGame: (index) =>
     this.currentMinigameIndex = index
