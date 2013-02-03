@@ -1,7 +1,8 @@
 #tap-race-minigame{position:absolute;top:50%;left:50%;width:600px;height:600px;margin:-300px 0 0 -300px;background:#ddd;text-align:center;}#tap-race-minigame .score{margin:20px;font-size:30px;}
 #tap-race-minigame .countdown{position:absolute;top:0;right:0;padding:20px;font-size:20px;}
 #tap-race-minigame .scoreboard{margin:10px;font-size:20px;}
-#tap-race-minigame table#tap-board{height:400px;width:580px;margin:10px;border-collapse:collapse;border:1px dotted #333;font-size:60px;}#tap-race-minigame table#tap-board td{border:1px dotted #333;width:25%;height:100px;}
-#tap-race-minigame #tap-race-players{margin-top:35px;}#tap-race-minigame #tap-race-players table.player-table{font-size:20px;width:100%;}
-#tap-race-minigame #tap-race-players table.score-table{border-collapse:collapse;border:1px solid #ddd;margin:0 auto;}#tap-race-minigame #tap-race-players table.score-table td{width:10px;height:10px;border:1px solid #ddd;}
+#tap-race-minigame table#tap-board{height:400px;width:580px;margin:10px 10px 0;border-collapse:collapse;border:1px dotted #333;font-size:60px;}#tap-race-minigame table#tap-board td{border:1px dotted #333;width:25%;height:100px;}
+#tap-race-minigame #tap-race-players table.player-table{font-size:20px;width:100%;}
+#tap-race-minigame #tap-race-players table.score-table{border-collapse:collapse;border:3px solid #ddd;margin:5px auto 5px;}#tap-race-minigame #tap-race-players table.score-table td{width:40px;height:25px;border:3px solid #ddd;}
 #tap-race-minigame #tap-race-players table.score-table td.no-background{background:#ddd;}
+#tap-race-minigame #tap-race-players .player-name{font-size:30px;}

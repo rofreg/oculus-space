@@ -192,7 +192,7 @@
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
+      return this.loadGame(0);
     };
 
     Metagame.prototype.loadGame = function(index) {

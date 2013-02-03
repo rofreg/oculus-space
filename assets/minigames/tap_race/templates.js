@@ -5,7 +5,7 @@
 
   App.Templates.TapRace = {
     main_view: '<table id=\'tap-board\'>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n  <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n</table>\n<div id=\'tap-race-players\'>\n</div>',
-    players_view: '<table class=\'player-table\'> \n  <tr>\n    <% _.each(players, function(player){ %>\n      <td>\n        <table class=\'score-table\' id=\'score-table-<%= player.id %>\' style=\'background-color: <%= player.color %>;\'>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n        </table><br>\n        <strong><%= player.name %></strong>\n      </td>\n    <% }) %>\n  </tr>\n</table>'
+    players_view: '<table class=\'player-table\'> \n  <tr>\n    <% _.each(players, function(player){ %>\n      <td>\n        <table class=\'score-table\' id=\'score-table-<%= player.id %>\' style=\'background-color: <%= player.color %>;\'>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n          <tr> <td></td> <td></td> <td></td> <td></td> </tr>\n        </table>\n        <span class=\'player-name\'>\n          <%= player.name %>\n        </span>\n      </td>\n    <% }) %>\n  </tr>\n</table>'
   };
 
 }).call(this);
