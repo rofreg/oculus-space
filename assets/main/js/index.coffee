@@ -6,6 +6,8 @@ window.App =
 socket = io.connect('/')
 socket.on "player: your id", (data) ->
   App.player_id = data.id
+
+
 socket.on "disconnect", (data) ->
   $('#disconnected').fadeIn(500)
   $('#overlay').fadeIn(500).css('z-index', 99999)
@@ -15,7 +17,13 @@ $("#user-form").submit ->
   $("button").attr('disabled', 'disabled').text("Connecting...")
   $(".username").blur()
   $("#music-player")[0].play()
-  socket.emit 'server: new player'
+
+  path = window.location.pathname.substr(1)
+  if path != ''
+    socket.emit 'server: new player', path: path
+  else
+    socket.emit 'server: new player'
+
   socket.on "server: enter metagame", (data) ->
     if data.metagame_id?
       App.metagame = new App.Metagame(data.metagame_id)

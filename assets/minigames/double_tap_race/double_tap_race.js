@@ -13,6 +13,8 @@
 
       this.gameover = __bind(this.gameover, this);
 
+      this.stopGame = __bind(this.stopGame, this);
+
       this.render = __bind(this.render, this);
 
       this.animateFeet = __bind(this.animateFeet, this);
@@ -22,6 +24,8 @@
       this.raceStart = __bind(this.raceStart, this);
 
       this.raceCountdown = __bind(this.raceCountdown, this);
+
+      this.setupPlayers = __bind(this.setupPlayers, this);
 
       this.start = __bind(this.start, this);
       return DoubleTapRace.__super__.constructor.apply(this, arguments);
@@ -48,15 +52,13 @@
     DoubleTapRace.prototype.start = function() {
       var that;
       this.clickCount = 0;
-      this.dist = 0;
+      this.dist = 10;
       _.each(this.players, function(player) {
-        return player.dist = 0;
+        return player.dist = 10;
       });
       this.el = $("<div>").addClass('active view').attr("id", "double-tap-race-minigame");
       this.el.html(_.template(App.Minigames.DoubleTapRace.Templates.main_view));
-      this.el.find(".progress").html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
-        players: this.players
-      }));
+      this.setupPlayers();
       $('body').append(this.el);
       this.render();
       that = this;
@@ -86,6 +88,29 @@
         }
       });
       return this.raceCountdown();
+    };
+
+    DoubleTapRace.prototype.setupPlayers = function() {
+      var _this = this;
+      switch (this.players.length) {
+        case 1:
+        case 2:
+          this.startLane = 1;
+          break;
+        case 3:
+        case 4:
+          this.startLane = 0;
+      }
+      console.log(this.startLane);
+      if (this.startLane != null) {
+        return $(this.el.find('.runner-lane').slice(this.startLane)).each(function(index, lane) {
+          if (index < _this.players.length) {
+            return $(lane).html(_.template(App.Minigames.DoubleTapRace.Templates.player_view, {
+              player: _this.players[index]
+            }));
+          }
+        });
+      }
     };
 
     DoubleTapRace.prototype.raceCountdown = function() {
@@ -170,6 +195,21 @@
       return _results;
     };
 
+    DoubleTapRace.prototype.stopGame = function(winner) {
+      var _this = this;
+      $('.btn').removeClass('active');
+      if (winner.id === App.player_id) {
+        $('.score').text('CONGRATS!!!');
+      } else {
+        $('.score').text('You Lose :(');
+      }
+      $(this.getPlayerRep(winner.id)).addClass('winner');
+      $('.runner').not($(this.getPlayerRep(winner.id))).addClass('loser');
+      return setTimeout((function() {
+        return _this.gameover();
+      }), 4000);
+    };
+
     DoubleTapRace.prototype.gameover = function() {
       $(this.el).fadeOut();
       $('#double-tap-race-minigame').remove();
@@ -188,8 +228,8 @@
             player.dist = data.dist;
             $(this.getPlayerRep(player_id)).css('left', player.dist + 20);
             this.animateFeet(this.getPlayerRep(player_id));
-            if (player.dist + 50 === 500) {
-              this.gameover();
+            if (player.dist + 50 >= 510) {
+              this.stopGame(player);
             }
             this.render();
             break;

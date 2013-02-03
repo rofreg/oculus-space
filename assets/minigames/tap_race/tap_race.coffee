@@ -1,6 +1,14 @@
 class App.Minigames.TapRace extends App.Minigames.Default
   @NAME: 'TapRace'
-  @INSTRUCTIONS: "It's a counting race! Click the numbers in order from 1-16 as fast as you can!!"
+
+  @INSTRUCTIONS: """
+    In this game, you'll see a grid of numbers.<br>
+    <br>
+    16 digits are randomly shuffled on the page, and it's your job
+    to click them in order, from 1 to 16. <br>
+    <br>
+    Remember, it's a race, so move quickly!
+  """
   @TEMPLATES = "/assets/minigames/tap_race/templates.js"
   @STYLESHEET = "/assets/minigames/tap_race/styles.css"
 

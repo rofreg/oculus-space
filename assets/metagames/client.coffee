@@ -55,7 +55,7 @@ class App.Metagame
     # render the metagame window
     this.el.find('#waiting_room').html(
       _.template(App.Metagame.Default.Templates.waiting_room,
-      {players: this.players})
+      {players: this.players, metagame: this})
     )
 
     # start metagame by clicking "start"
@@ -147,7 +147,6 @@ class App.Metagame
     ), 3000
 
   minigameCountdown: =>
-    console.log "Starting #{this.currentMinigame.constructor.NAME} in 2 seconds!"
     this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown),{}).show()
     $('#backgrounds').fadeOut(3000)
     $('#overlay').fadeIn(3000)

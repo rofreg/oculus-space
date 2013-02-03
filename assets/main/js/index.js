@@ -21,10 +21,18 @@
   });
 
   $("#user-form").submit(function() {
+    var path;
     $("button").attr('disabled', 'disabled').text("Connecting...");
     $(".username").blur();
     $("#music-player")[0].play();
-    socket.emit('server: new player');
+    path = window.location.pathname.substr(1);
+    if (path !== '') {
+      socket.emit('server: new player', {
+        path: path
+      });
+    } else {
+      socket.emit('server: new player');
+    }
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
         App.metagame = new App.Metagame(data.metagame_id);

@@ -3,7 +3,13 @@ request = require('request')
 
 class Server.Metagame
 
-  constructor: (@id) ->
+  constructor: (id) ->
+    this.id = "#{this.names[id % this.names.length]}#{id}"
+
+  names: [
+    "banana", "plum", "pear", "aardvark", "pie",
+    "apple", "cheese", "egg", "pomegranite", "kiwi"
+  ]
 
   colors: [
     '#ff0000', #red
@@ -61,6 +67,8 @@ class Server.Metagame
         this.room.emit "proxyFetchReturn", {body: body}
 
   addPlayer: (name, id) =>
+    if !name or !name? or name == ''
+      name = this.buildName()
     this.colorCount = 0 if not this.colorCount
     this.players.push({name: name, id: id, color: this.colors[this.colorCount++ % this.colors.length], score: 0})
     this.sendPlayerList()
@@ -121,6 +129,11 @@ class Server.Metagame
 
   loadRandomGame: =>
     this.loadGame(Math.floor(this.minigames.length * Math.random()))
+
+  buildName: =>
+    this.nouns or= ["Pickle", "Banana", "Ocelot", "Turnip", "Tuna", "Thumb"]
+    this.adjs or= ["Spicy", "Wet", "Sassy", "Grumpy", "Scumbag", "Sad", "Stanky"]
+    "#{this.adjs[Math.floor(Math.random()*this.adjs.length)]} #{this.nouns[Math.floor(Math.random()*this.nouns.length)]}"
     
   loadGame: (index) =>
     this.currentMinigameIndex = index
@@ -141,6 +154,5 @@ class Server.Metagame
       for player in this.players
         player.score += player.minigame_score
       this.loadRandomGame()
-  
 
 module.exports = Server.Metagame

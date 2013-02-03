@@ -100,7 +100,8 @@
     Metagame.prototype.updateWaitingRoom = function() {
       var _this = this;
       this.el.find('#waiting_room').html(_.template(App.Metagame.Default.Templates.waiting_room, {
-        players: this.players
+        players: this.players,
+        metagame: this
       }));
       return this.el.find('#waiting_room button').click(function() {
         if (_this.el.find('#waiting_room button').attr('disabled') !== "disabled") {
@@ -217,7 +218,6 @@
 
     Metagame.prototype.minigameCountdown = function() {
       var _this = this;
-      console.log("Starting " + this.currentMinigame.constructor.NAME + " in 2 seconds!");
       this.el.find('#countdown').html(_.template(App.Metagame.Default.Templates.countdown), {}).show();
       $('#backgrounds').fadeOut(3000);
       $('#overlay').fadeIn(3000);
