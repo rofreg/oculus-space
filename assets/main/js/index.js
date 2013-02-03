@@ -4,7 +4,7 @@
 
   socket = io.connect('/');
 
-  form = document.getElementById("user-form");
+  form = $("#user-form");
 
   form.onsubmit = function() {
     var _this = this;
