@@ -16,8 +16,8 @@
 
   socket.on("disconnect", function(data) {
     $('#disconnected').fadeIn(500);
-    $('#overlay').fadeIn(500).css('z-index', 9999);
-    return setTimeout("location.href = '/'", 6000);
+    $('#overlay').fadeIn(500).css('z-index', 99999);
+    return setTimeout("location.href = '/'", 4500);
   });
 
   $("#user-form").submit(function() {

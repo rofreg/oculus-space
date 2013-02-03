@@ -8,8 +8,8 @@ socket.on "player: your id", (data) ->
   App.player_id = data.id
 socket.on "disconnect", (data) ->
   $('#disconnected').fadeIn(500)
-  $('#overlay').fadeIn(500).css('z-index', 9999)
-  setTimeout("location.href = '/'", 6000)
+  $('#overlay').fadeIn(500).css('z-index', 99999)
+  setTimeout("location.href = '/'", 4500)
 
 $("#user-form").submit ->
   $("button").attr('disabled', 'disabled').text("Connecting...")
@@ -22,8 +22,6 @@ $("#user-form").submit ->
       console.log "Connecting to #{data.metagame_id}"
       App.metagame.init(io, $(".username").val())
   false
-
-
 
 App.Utilities =
   warningGiven: false

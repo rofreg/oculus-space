@@ -245,7 +245,6 @@
       }
       this.getPlayer(id).minigame_score = score;
       this.getPlayer(id).in_game = false;
-      this.sendPlayerList();
       if (this.readyToStart()) {
         this.room.emit('minigame: gameover', {
           players: this.players

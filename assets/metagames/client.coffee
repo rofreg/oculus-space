@@ -196,6 +196,7 @@ class App.Metagame
     this.socket.emit 'minigame: gameover',
       score: score
     this.el.fadeIn()
+    # TODO: better handling if there's a delay (e.g. show a 'loading...' toast)
 
   sendBroadcast: (event, data) ->
     this.socket.emit 'broadcast',
