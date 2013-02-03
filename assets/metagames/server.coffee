@@ -44,7 +44,7 @@ class Server.Metagame
       this.loadRandomGame()
   
   readyToStart: ->
-    this.players.length > 1 and this.allPlayersNotInGame()
+    this.players.length > 0 and this.allPlayersNotInGame()
 
   removePlayer: (id) =>
     for index, player of this.players
@@ -97,7 +97,8 @@ class Server.Metagame
     this.room.emit 'minigame: load', {minigame: this.minigames[index]}
 
   gameover: (score, id) =>
-    this.getPlayer(id).score = score
+    this.getPlayer(id).score or= 0
+    this.getPlayer(id).score += score
     this.getPlayer(id).in_game = false
     this.sendPlayerList()
 

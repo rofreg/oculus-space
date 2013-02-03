@@ -94,7 +94,7 @@
     };
 
     Metagame.prototype.readyToStart = function() {
-      return this.players.length > 1 && this.allPlayersNotInGame();
+      return this.players.length > 0 && this.allPlayersNotInGame();
     };
 
     Metagame.prototype.removePlayer = function(id) {
@@ -192,7 +192,9 @@
     };
 
     Metagame.prototype.gameover = function(score, id) {
-      this.getPlayer(id).score = score;
+      var _base;
+      (_base = this.getPlayer(id)).score || (_base.score = 0);
+      this.getPlayer(id).score += score;
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();
       if (this.readyToStart()) {
