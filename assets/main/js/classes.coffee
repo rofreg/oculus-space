@@ -1,5 +1,14 @@
 App = {}
 App.metagames = []
+App.colors = [
+  '#ff0000', #red
+  '#ff6600', #orange
+  '#ffe500', #yellow
+  '#00cc00', #green
+  '#0033cc', #blue
+  '#9900cc', #purple
+  '#ff00cc', #pink
+]
 
 class App.Metagame
   constructor: (id) ->
@@ -23,7 +32,7 @@ class App.Metagame
     )
 
   addPlayer: (name, id) =>
-    this.players.push({name: name, id: id})
+    this.players.push({name: name, id: id, color: App.colors[this.players.length % App.colors.length], score: 0})
     this.sendPlayerList()
 
   removePlayer: (id) =>

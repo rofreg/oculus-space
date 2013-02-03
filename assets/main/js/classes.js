@@ -7,6 +7,8 @@
 
   App.metagames = [];
 
+  App.colors = ['#ff0000', '#ff6600', '#ffe500', '#00cc00', '#0033cc', '#9900cc', '#ff00cc'];
+
   App.Metagame = (function() {
 
     function Metagame(id) {
@@ -47,7 +49,9 @@
     Metagame.prototype.addPlayer = function(name, id) {
       this.players.push({
         name: name,
-        id: id
+        id: id,
+        color: App.colors[this.players.length % App.colors.length],
+        score: 0
       });
       return this.sendPlayerList();
     };
