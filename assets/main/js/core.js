@@ -30,7 +30,7 @@ window.addEventListener('devicemotion', function (e) {
   // Your code for dealing with the shake event here
   // Stop the default behavior from triggering the undo dialog (hopefully)
   e.preventDefault();
-}
+});
 
 window.onresize = function(e){
   try {
