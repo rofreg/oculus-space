@@ -21,12 +21,13 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
 
   start: =>
     this.clickCount = 0
-    this.dist= 0
-    _.each this.players, (player) -> player.dist = 0
+    this.dist= 10
+    _.each this.players, (player) -> player.dist = 10
 
     this.el = $("<div>").addClass('active view').attr("id","double-tap-race-minigame")
     this.el.html _.template App.Minigames.DoubleTapRace.Templates.main_view
-    this.el.find(".progress").html _.template App.Minigames.DoubleTapRace.Templates.player_view, {players: this.players}
+    #this.el.find(".progress").html _.template App.Minigames.DoubleTapRace.Templates.player_view, {players: this.players}
+    this.setupPlayers()
     $('body').append(this.el)
     this.render()
 
@@ -51,6 +52,17 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
         that.render()
     )
     this.raceCountdown()
+
+
+  setupPlayers: =>
+    switch this.players.length
+      when 1, 2 then this.startLane = 1
+      when 3, 4 then this.startLane = 0
+    console.log this.startLane
+    if this.startLane?
+      $(this.el.find('.runner-lane').slice(this.startLane)).each (index, lane) =>
+        if index < this.players.length
+          $(lane).html _.template App.Minigames.DoubleTapRace.Templates.player_view, {player: this.players[index]}
 
   raceCountdown: =>
     setTimeout (=> $('.score').text("Set")), 2000
@@ -98,6 +110,17 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
       if player.id == App.player_id
         this.minigame_score = player.minigame_score
 
+
+  stopGame: (winner) =>
+    $('.btn').removeClass('active');
+    if winner.id == App.player_id
+      $('.score').text 'CONGRATS!!!'
+    else
+      $('.score').text 'You Lose :('
+    $(this.getPlayerRep(winner.id)).addClass 'winner'
+    $('.runner').not($(this.getPlayerRep(winner.id))).addClass 'loser'
+    setTimeout (=> this.gameover()), 4000
+
   gameover: =>
     $(this.el).fadeOut()
     $('#double-tap-race-minigame').remove()
@@ -111,7 +134,7 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
           player.dist = data.dist
           $(this.getPlayerRep(player_id)).css 'left', player.dist + 20;
           this.animateFeet(this.getPlayerRep(player_id))
-          this.gameover() if player.dist + 50 == 500
+          this.stopGame(player) if player.dist + 50 >= 510
           this.render()
           break
 
