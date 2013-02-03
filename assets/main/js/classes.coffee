@@ -58,7 +58,7 @@ class App.Minigame
 App.Utilities =
   checkOrientation: ->
     if /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) and $(window).width() > $(window).height()
-      alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)')
+      alert('To play Thumb War, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)')
     
 if module?
   module.exports = App

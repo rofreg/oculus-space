@@ -22,8 +22,8 @@
   });
 
   $("#user-form").submit(function() {
+    $("button").attr('disabled', 'disabled').text("Connecting...");
     $('#music-player')[0].play()
-    $("button").attr('disabled', 'disabled').text('Connecting...')
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
@@ -39,7 +39,7 @@
     warningGiven: false,
     checkOrientation: function() {
       if (!App.Utilities.warningGiven && /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) && $(window).width() > $(window).height()) {
-        alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
+        alert('To play Thumb War, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
         return App.Utilities.warningGiven = true;
       }
     }
