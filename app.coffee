@@ -21,6 +21,9 @@ app.get '/', (req, res) ->
 app.get '/favicon.ico', (req, res) ->
   res.sendfile(__dirname + '/assets/favicon.ico')
 
+app.get '/apple-touch-icon-precomposed.png', (req, res) ->
+  res.sendfile(__dirname + '/assets/apple-touch-icon-precomposed.png')
+
 app.get '/:id', (req, res) ->
   console.log "Accessed URL: /#{req.params.id}"
 
