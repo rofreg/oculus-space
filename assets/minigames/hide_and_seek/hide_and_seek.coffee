@@ -18,6 +18,10 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
     super
 
   start: =>
+    if this.players.length < 2
+      App.metagame.gameover 0
+      return
+
     #initialize grid
     for x in [0..3]
       for y in [0..3]
@@ -43,7 +47,9 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
     else
       this.el.html _.template App.Templates.HideAndSeek.hiderIntro
       this.el.find(".confirm").bind "touchstart click", =>
-        this.renderGrid()
+        this.el.find("> div").fadeOut 500, =>
+          this.renderGrid()
+          this.notify("Find a safe place to hide!")
 
   notify: (string) ->
     this.el.find(".notif").html(string)
@@ -104,7 +110,7 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
     this.renderGrid()
     if this.allPlayersDiscovered()
       this.gameover()
-    if cell.players.length
+    else if cell.players.length
       this.notify("#{cell.players[0].name} bit the dust!")
     else if Math.floor Math.random() < 0.5
       this.notify(this.taunts[Math.floor(Math.random()*this.taunts.length)])
@@ -151,7 +157,7 @@ class App.Minigames.HideAndSeek extends App.Minigames.Default
         if this.grid[x][y].inspected
           inspected++
 
-    this.notify("Exposed! In only #{inspected} shots")
+    this.notify("Game over! In only #{inspected} shots")
     setTimeout((=>
       this.el.fadeOut 500, =>
         if this.player.seeker

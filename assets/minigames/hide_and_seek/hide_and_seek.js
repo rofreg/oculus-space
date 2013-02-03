@@ -40,6 +40,10 @@
     HideAndSeek.prototype.start = function() {
       var player, x, y, _i, _j, _k, _len, _ref,
         _this = this;
+      if (this.players.length < 2) {
+        App.metagame.gameover(0);
+        return;
+      }
       for (x = _i = 0; _i <= 3; x = ++_i) {
         for (y = _j = 0; _j <= 3; y = ++_j) {
           this.grid[x][y] = {
@@ -67,7 +71,10 @@
       } else {
         this.el.html(_.template(App.Templates.HideAndSeek.hiderIntro));
         return this.el.find(".confirm").bind("touchstart click", function() {
-          return _this.renderGrid();
+          return _this.el.find("> div").fadeOut(500, function() {
+            _this.renderGrid();
+            return _this.notify("Find a safe place to hide!");
+          });
         });
       }
     };
@@ -155,9 +162,8 @@
       cell.inspected = true;
       this.renderGrid();
       if (this.allPlayersDiscovered()) {
-        this.gameover();
-      }
-      if (cell.players.length) {
+        return this.gameover();
+      } else if (cell.players.length) {
         return this.notify("" + cell.players[0].name + " bit the dust!");
       } else if (Math.floor(Math.random() < 0.5)) {
         return this.notify(this.taunts[Math.floor(Math.random() * this.taunts.length)]);
@@ -234,7 +240,7 @@
           }
         }
       }
-      this.notify("Exposed! In only " + inspected + " shots");
+      this.notify("Game over! In only " + inspected + " shots");
       return setTimeout((function() {
         return _this.el.fadeOut(500, function() {
           if (_this.player.seeker) {
