@@ -7,6 +7,8 @@
       this.id = Math.random().toString(36).substring(2, 8);
     }
 
+    Default.prototype.playersUpdated = function() {};
+
     return Default;
 
   })();

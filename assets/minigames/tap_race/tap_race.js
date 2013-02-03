@@ -9,6 +9,8 @@
     __extends(TapRace, _super);
 
     function TapRace() {
+      this.playersUpdated = __bind(this.playersUpdated, this);
+
       this.receiveBroadcast = __bind(this.receiveBroadcast, this);
 
       this.gameover = __bind(this.gameover, this);
@@ -30,26 +32,23 @@
     TapRace.prototype.init = function() {
       var _this = this;
       this.score = 0;
-      console.log(this.contructor.TEMPLATES);
+      this.players = App.metagame.players;
       return $.getScript(this.constructor.TEMPLATES).done(function(script, textStatus) {
-        return _this.el = _.template(App.Templates.TapRace.main_view, {
+        _this.el = $("<div>").addClass('active view').attr("id", "metagame");
+        _this.el.html(_.template(App.Templates.TapRace.main_view));
+        return _this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
           players: _this.players
-        });
+        }));
       });
     };
 
     TapRace.prototype.start = function() {
       var _this = this;
-      this.el = _.template(App.Templates.TapRace.main_view, {
-        players: this.players
-      });
-      $(".view").html(this.el);
+      $('body').append(this.el);
       this.el.find(".btn").bind('click', function() {
         _this.score++;
         _this.render();
-        return App.metagame.broadcast({
-          name: "score++"
-        });
+        return _this.metagame.refreshPlayers();
       });
       return setTimeout(this.gameover, 5000);
     };
@@ -63,7 +62,17 @@
     };
 
     TapRace.prototype.receiveBroadcast = function(data) {
+      if ((data.player_id != null) && data.name === 'score++') {
+        this.players;
+      }
       return console.log(data);
+    };
+
+    TapRace.prototype.playersUpdated = function() {
+      this.players = this.metagame.players;
+      return this.el.find("#tap-race-players").html(_.template(App.Templates.TapRace.players_view, {
+        players: this.players
+      }));
     };
 
     return TapRace;

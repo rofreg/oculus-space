@@ -29,6 +29,7 @@ class App.Metagame
       this.socket.on 'players: list updated', (players) =>
         this.players = players
         this.drawPlayerList()
+        this.currentMinigame.playersUpdated() if this.currentMinigame?
 
       this.socket.on 'minigame: load', this.minigameLoad
 
@@ -72,3 +73,6 @@ class App.Metagame
     data.player_id = this.socket.id
     console.log "bcing #{data}"
     this.socket.emit 'broadcast', data
+
+  refreshPlayers:
+    this.socket.emit "players: refresh"

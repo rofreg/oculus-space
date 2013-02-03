@@ -74,9 +74,10 @@
         socket.on('minigame: gameover', function(data) {
           return _this.gameover(data.score, socket.id);
         });
-        return socket.on('broadcast', function(data) {
+        socket.on('broadcast', function(data) {
           return _this.room.emit('broadcast', data);
         });
+        return socket.on('players: refresh', _this.sendPlayerList);
       });
     };
 

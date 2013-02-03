@@ -6,18 +6,20 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
   init: ->
     this.score = 0
-    #$('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
-    console.log this.contructor.TEMPLATES
+    this.players = App.metagame.players
+
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
-      this.el = _.template(App.Templates.TapRace.main_view, {players: this.players})
+
+      this.el = $("<div>").addClass('active view').attr("id","metagame")
+      this.el.html _.template App.Templates.TapRace.main_view
+      this.el.find("#tap-race-players").html _.template App.Templates.TapRace.players_view, {players: this.players}
 
   start: =>
-    this.el = _.template(App.Templates.TapRace.main_view, {players: this.players})
-    $(".view").html(this.el)
+    $('body').append(this.el)
     this.el.find(".btn").bind 'click', =>
       this.score++
       this.render()
-      App.metagame.broadcast {name: "score++"}
+      this.metagame.refreshPlayers()
     setTimeout(this.gameover, 5000)
 
   render: =>
@@ -27,7 +29,12 @@ class App.Minigames.TapRace extends App.Minigames.Default
     App.metagame.gameover(this)
 
   receiveBroadcast: (data) =>
-    #if data.player_id?
+    if data.player_id? and data.name == 'score++'
+      this.players
     console.log data
+
+  playersUpdated: =>
+    this.players = this.metagame.players
+    this.el.find("#tap-race-players").html _.template App.Templates.TapRace.players_view, {players: this.players}
 
 App.metagame.addMinigame App.Minigames.TapRace

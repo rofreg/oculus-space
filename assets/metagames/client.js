@@ -49,7 +49,10 @@
         console.log('sending JOINING');
         _this.socket.on('players: list updated', function(players) {
           _this.players = players;
-          return _this.drawPlayerList();
+          _this.drawPlayerList();
+          if (_this.currentMinigame != null) {
+            return _this.currentMinigame.playersUpdated();
+          }
         });
         _this.socket.on('minigame: load', _this.minigameLoad);
         _this.socket.on('minigame: start', function() {
@@ -107,6 +110,8 @@
       console.log("bcing " + data);
       return this.socket.emit('broadcast', data);
     };
+
+    Metagame.prototype.refreshPlayers = Metagame.socket.emit("players: refresh");
 
     return Metagame;
 
