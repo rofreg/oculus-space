@@ -34,7 +34,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
         that.broadcast('player: scored', {number: that.currentNumber})
         that.currentNumber++
         $(this).text('')
-        if that.currentNumber > 2#16
+        if that.currentNumber > 3#16
           that.showCongrats()
 
   render: ->
@@ -42,6 +42,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
   showCongrats: ->
     alert("congrats!")
+    this.gameover()
 
   gameover: ->
     $(this.el).fadeOut()

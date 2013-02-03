@@ -20,8 +20,10 @@ App.Templates.TapRace =
               <tr> <td></td> <td></td> <td></td> <td></td> </tr>
               <tr> <td></td> <td></td> <td></td> <td></td> </tr>
               <tr> <td></td> <td></td> <td></td> <td></td> </tr>
-            </table><br>
-            <strong><%= player.name %></strong>
+            </table>
+            <span class='player-name'>
+              <%= player.name %>
+            </span>
           </td>
         <% }) %>
       </tr>

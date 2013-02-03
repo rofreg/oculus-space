@@ -103,7 +103,7 @@ class Server.Metagame
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
-    this.loadGame(Math.floor(this.minigames.length * Math.random()))
+    this.loadGame(0)#Math.floor(this.minigames.length * Math.random()))
     
   loadGame: (index) =>
     this.currentMinigameIndex = index

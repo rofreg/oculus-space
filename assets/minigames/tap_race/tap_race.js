@@ -62,7 +62,7 @@
           });
           that.currentNumber++;
           $(this).text('');
-          if (that.currentNumber > 2) {
+          if (that.currentNumber > 3) {
             return that.showCongrats();
           }
         }
@@ -76,7 +76,8 @@
     };
 
     TapRace.prototype.showCongrats = function() {
-      return alert("congrats!");
+      alert("congrats!");
+      return this.gameover();
     };
 
     TapRace.prototype.gameover = function() {
