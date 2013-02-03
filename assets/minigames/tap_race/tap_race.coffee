@@ -104,7 +104,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
   calculateScores: ->
     this.sortPlayers()
-    alert(JSON.stringify(this.players))
+    #alert(JSON.stringify(this.players))
 
     this.el.find(".top-half > div").fadeOut 500
     this.el.find(".score-table-holder > div").fadeOut 500
