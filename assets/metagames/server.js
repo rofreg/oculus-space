@@ -114,9 +114,7 @@
     };
 
     Metagame.prototype.sendPlayerList = function() {
-      return this.room.emit('players: list updated', _.filter(this.players, function(player) {
-        return !player.in_game;
-      }));
+      return this.room.emit('players: list updated', this.players);
     };
 
     Metagame.prototype.isAcceptingPlayers = function() {
