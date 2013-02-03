@@ -193,7 +193,8 @@
       this.socket.emit('minigame: gameover', {
         score: minigame.score
       });
-      return this.el.fadeIn();
+      this.el.fadeIn();
+      return this.showScoreboard();
     };
 
     Metagame.prototype.sendBroadcast = function(event, data) {

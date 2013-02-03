@@ -10,6 +10,7 @@
   socket = io.connect('/');
 
   $("#user-form").submit(function() {
+    $('#user-form buttom').attr('disabled', 'disabled');
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {

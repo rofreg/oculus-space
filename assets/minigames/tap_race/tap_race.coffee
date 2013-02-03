@@ -14,14 +14,13 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
     $('head').append("<link rel='stylesheet' href='#{this.constructor.STYLESHEET}'>")
     $.getScript(this.constructor.TEMPLATES).done (script, textStatus) =>
-
       this.el = $("<div>").attr("id":"tap-race-minigame")
       this.el.html _.template App.Templates.TapRace.main_view
       this.el.find("#tap-race-players").html _.template App.Templates.TapRace.players_view, {players: this.players}
 
   start: =>
     $('body').append(this.el)
-    this.el.find(".btn").bind 'click', =>
+    this.el.bind 'click touchstart', =>
       this.score++
       this.render()
       this.broadcast "updateScore"

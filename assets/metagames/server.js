@@ -207,11 +207,14 @@
     };
 
     Metagame.prototype.gameover = function(score, id) {
+      var _this = this;
       this.getPlayer(id).score += score;
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();
       if (this.readyToStart()) {
-        return this.loadRandomGame();
+        return setTimeout((function() {
+          return _this.loadRandomGame();
+        }), 2000);
       }
     };
 

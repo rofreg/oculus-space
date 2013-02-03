@@ -48,7 +48,7 @@
     TapRace.prototype.start = function() {
       var _this = this;
       $('body').append(this.el);
-      this.el.find(".btn").bind('click', function() {
+      this.el.bind('click touchstart', function() {
         _this.score++;
         _this.render();
         return _this.broadcast("updateScore");
