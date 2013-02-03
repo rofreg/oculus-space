@@ -10,7 +10,12 @@
 
   socket = io.connect('/');
 
+  socket.on("player: your id", function(data) {
+    return App.player_id = data.id;
+  });
+
   $("#user-form").submit(function() {
+    $("button").attr('disabled', 'disabled');
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {
@@ -19,7 +24,6 @@
         return App.metagame.init(io, $(".username").val());
       }
     });
-    $("button").attr('disabled', 'disabled');
     return false;
   });
 

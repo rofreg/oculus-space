@@ -31,6 +31,8 @@ Server =
 Server.Metagame = require('./assets/metagames/server.coffee')
 
 io.sockets.on 'connection', (socket) ->
+  socket.emit 'player: your id', {id: socket.id}
+
   socket.on 'server: new player', (data) ->
     #find game
     game = null

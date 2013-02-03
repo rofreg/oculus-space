@@ -59,6 +59,9 @@
       {
         'name': 'TapRace',
         'src': "/assets/minigames/tap_race/tap_race.js"
+      }, {
+        'name': 'DoubleTapRace',
+        'src': "/assets/minigames/double_tap_race/double_tap_race.js"
       }
     ];
 
@@ -207,11 +210,14 @@
     };
 
     Metagame.prototype.gameover = function(score, id) {
+      var _this = this;
       this.getPlayer(id).score += score;
       this.getPlayer(id).in_game = false;
       this.sendPlayerList();
       if (this.readyToStart()) {
-        return this.loadRandomGame();
+        return setTimeout((function() {
+          return _this.loadRandomGame();
+        }), 2000);
       }
     };
 

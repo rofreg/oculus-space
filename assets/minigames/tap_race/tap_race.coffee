@@ -32,7 +32,6 @@ class App.Minigames.TapRace extends App.Minigames.Default
 
     this.render()
     $('body').append(this.el)
-
     that = this
     this.el.find("#tap-board td").bind "touchstart click", ->
       if parseInt($(this).text()) == that.currentNumber
@@ -41,8 +40,6 @@ class App.Minigames.TapRace extends App.Minigames.Default
         $(this).text('')
         if that.currentNumber > 2#16
           that.showCongrats()
-
-    #setTimeout((=> this.gameover()), 5000)
 
   render: ->
     this.el.find("#tap-race-players").html _.template App.Templates.TapRace.players_view, {players: this.players}
