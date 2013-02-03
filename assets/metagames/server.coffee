@@ -68,7 +68,7 @@ class Server.Metagame
     this.room.emit 'players: list updated', this.players
 
   isAcceptingPlayers: =>
-    true
+    this.players.length < 4
 
   getPlayer: (id) =>
     for player in this.players

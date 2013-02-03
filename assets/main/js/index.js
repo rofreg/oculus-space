@@ -14,7 +14,8 @@
   });
 
   $("#user-form").submit(function() {
-    $("button").attr('disabled', 'disabled');
+    $("button").attr('disabled', 'disabled').text("Searching...");
+    $(".username").blur();
     socket.emit('server: new player');
     socket.on("server: enter metagame", function(data) {
       if (data.metagame_id != null) {

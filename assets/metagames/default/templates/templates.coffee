@@ -36,7 +36,7 @@ App.Metagame.Default.Templates = {
               + <%= (players.length - 4) %> others
             <% } else { %>
               <div class="color" style="background: <%= player.color%>">
-                <img src="http://cdn1.iconfinder.com/data/icons/32-soft-media-icons--Vol-2/33/user.png">
+                <img src="http://cdn1.iconfinder.com/data/icons/gnome-desktop-icons-png/PNG/64/Gnome-Stock-Person-64.png">
               </div>
               <%= player.name %>
             <% } %>
@@ -44,31 +44,35 @@ App.Metagame.Default.Templates = {
         <% } %>
       <% }) %>
     </ul>
-    Ready to start playing?<br>
+    <div style="font-size: 24px">
+      Ready to start playing?
+    </div>
     <button>Let&rsquo;s go!</button>
   '''
 
   intro: '''
     <h1>Let's get started!</h1>
-    Loading your first game!
+    <h4>Loading your first game...</h4>
+    <img src="/assets/metagames/default/images/ajax.gif" style="margin: 40px 0 90px">
+    <div class="next_game" style="display: none"></div>
   '''
 
   pregame: '''
-    <h1>Instructions for <%= name %></h1>
-    <div>
+    <h1><%= name %></h1>
+    <div class="instructions">
+      <h4>Instructions</h4>
       <%= instructions %>
     </div>
-    <ul>
+    <div style="font-size: 24px">
+      Waiting for players...
+    </div>
+    <div class="ready-for-minigame">
       <% _.each(players, function(player){ %>
-        <li>
-          <% if (player.ready) { %>
-            <strong><%= player.name %> is ready!</strong>
-          <% } else { %>
-            Waiting for <%= player.name %>...
-          <% } %>
-        </li>
+        <div class="player <%= player.ready ? "ready" : "" %>" style="background: <%= player.color %>">
+          <%= player.ready ? "&#10003;" : "&times;" %>
+        </div>
       <% }) %>
-    </ul>
+    </div>
     <button>I'm ready!</button>
   '''
 
