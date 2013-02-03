@@ -19,7 +19,7 @@ App.Metagame.Default.Templates = {
       <% } else if (players.length == 3) { %>
         You&rsquo;ve got two friends to play with!
       <% } else if (players.length == 4) { %>
-        Sweet, three other players! This should be fun.
+        Sweet, four players! This should be fun.
       <% } else if (players.length == 5) { %>
         SO MANY PEOPLE. I&rsquo;M FEELING OVERWHELMED.
       <% } else if (players.length == 6) { %>

@@ -57,11 +57,8 @@
 
     Metagame.prototype.minigames = [
       {
-        'name': 'TapRace',
-        'src': "/assets/minigames/tap_race/tap_race.js"
-      }, {
-        'name': 'DoubleTapRace',
-        'src': "/assets/minigames/double_tap_race/double_tap_race.js"
+        'name': 'HotPotato',
+        'src': "/assets/minigames/hot_potato/hot_potato.js"
       }
     ];
 
@@ -195,7 +192,7 @@
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(1);
+      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
     };
 
     Metagame.prototype.loadGame = function(index) {
