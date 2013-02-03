@@ -1,18 +1,21 @@
 #double-tap-race-minigame {
-  height: 360px;
+  height: 460px;
   width: 560px;
-  margin-top: -200px;
+  margin-top: -250px;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.9);
   text-align: center;
   border-radius: 5px;
   box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3);
 
   .btn {
+    display: inline-block;
+    background: #eee;
     font-size: 32px;
     margin: 0 40px;
-    padding: 10px;
+    padding: 30px 45px;
     color: #bab4b4;
+    cursor: pointer;
   }
 
   .btn.active {
@@ -23,43 +26,60 @@
     font-size: 40px;
   }
 
-  .progress {
-    height : 60%;
+  .racetrack {
+    height: 60%;
+    margin-bottom: 20px;
+    
+    .finish {
+      height: 100%;
+      width: 11%;
+      background-image: url('../images/checkerboard.jpg');
+      display: inline-block;
+    }
 
-    .runner-lane {
+    .progress {
+      margin-top: 5%;
+      height : 90%;
+      width: 89%;
+      display: inline-block;
+      float: left;
 
-      width: 100%;
-      height: 60px;
+      .runner-lane {
 
-      .runner {
-        position: absolute;
-        left: 0;
-        width: 50px;
-        height: 45px;
-        -webkit-transition: all 0.5s linear;
+        width: 100%;
+        height: 60px;
 
-        .runner-body {
+        .runner {
+          position: absolute;
+          left: 0;
           width: 50px;
           height: 45px;
-        }
+          -webkit-transition: all 0.1s linear;
 
-        .left-foot, .right-foot {
-          position: absolute;
-          top: 45px;
-          width: 10px;
-          height: 10px;
-          -webkit-transition: all 0.5s linear;
-        }
+          .runner-body {
+            width: 50px;
+            height: 45px;
+          }
 
-        .left-foot {
-          left: 10px;
-        }
+          .left-foot, .right-foot {
+            position: absolute;
+            top: 45px;
+            width: 10px;
+            height: 10px;
+            -webkit-transition: all 0.1s linear;
+          }
 
-        .right-foot {
-          left: 30px;
+          .left-foot {
+            left: 10px;
+          }
+
+          .right-foot {
+            left: 30px;
+          }
         }
       }
     }
   }
+
 }
 

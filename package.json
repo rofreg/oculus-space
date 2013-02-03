@@ -1,6 +1,6 @@
 {
-   "name": "mobile-party",
-   "version": "0.0.1-3",
+   "name": "thumbwar",
+   "version": "0.0.1-5",
    "dependencies": {
       "express": "3.1.0",
       "coffee-script": "1.4.0",
@@ -8,7 +8,7 @@
       "socket.io": "0.9.13",
       "supervisor": "0.5.0"
    },
-   "subdomain": "mobile-party",
+   "subdomain": "thumbwar",
    "scripts": {
       "start": "app.js"
    },

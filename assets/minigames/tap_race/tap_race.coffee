@@ -1,6 +1,6 @@
 class App.Minigames.TapRace extends App.Minigames.Default
   @NAME: 'TapRace'
-  @INSTRUCTIONS: 'TapRace is a fun game. Click link, plz.'
+  @INSTRUCTIONS: "It's a counting race! Click the numbers in order from 1-16 as fast as you can!!"
   @TEMPLATES = "/assets/minigames/tap_race/templates.js"
   @STYLESHEET = "/assets/minigames/tap_race/styles.css"
 
@@ -34,7 +34,7 @@ class App.Minigames.TapRace extends App.Minigames.Default
         that.broadcast('player: scored', {number: that.currentNumber})
         that.currentNumber++
         $(this).text('')
-        if that.currentNumber > 3#16
+        if that.currentNumber > 16
           that.done()
 
   render: ->

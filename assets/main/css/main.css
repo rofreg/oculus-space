@@ -22,13 +22,14 @@ body {
   font-size: 1em;
   line-height: 1.4;
   background: #828c95; /* Old browsers */
-  background: -moz-radial-gradient(center, ellipse cover,  #b5bdc8 0%, #828c95 36%, #28343b 100%); /* FF3.6+ */
-  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#b5bdc8), color-stop(36%,#828c95), color-stop(100%,#28343b)); /* Chrome,Safari4+ */
-  background: -webkit-radial-gradient(center, ellipse cover,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-radial-gradient(center, ellipse cover,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* Opera 12+ */
-  background: -ms-radial-gradient(center, ellipse cover,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* IE10+ */
-  background: radial-gradient(ellipse at center,  #b5bdc8 0%,#828c95 36%,#28343b 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', endColorstr='#28343b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  background: -moz-radial-gradient(center, ellipse cover,  #b5bdc8 0%, #828c95 36%, #28343b 100%); 
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#b5bdc8), color-stop(36%,#828c95), color-stop(100%,#28343b));
+  background: -webkit-radial-gradient(center, ellipse cover,  #b5bdc8 0%,#828c95 36%,#28343b 100%); 
+  background: -o-radial-gradient(center, ellipse cover,  #b5bdc8 0%,#828c95 36%,#28343b 100%); 
+  background: -ms-radial-gradient(center, ellipse cover,  #b5bdc8 0%,#828c95 36%,#28343b 100%);
+  background: radial-gradient(ellipse at center,  #b5bdc8 0%,#828c95 36%,#28343b 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b5bdc8', endColorstr='#28343b',GradientType=1 );
+
 }
 
 html, body{
@@ -257,25 +258,27 @@ textarea {
  
 @-webkit-keyframes slide1 {
   0% {
-    top: 0%;
+    -webkit-transform: translate3d(0, 0, 0)
   }
   25% {
-    top: 100%;
+    -webkit-transform: translate3d(0, 100%, 0)
   }
   67% {
-    top: -100%;
+    -webkit-transform: translate3d(0, -100%, 0)
   }
   100% {
-    top: 0%;
+     -webkit-transform: translate3d(0, 0, 0)
   }
 }
 
 #backgrounds > div{
+  display: block;
   position: absolute;
   left: 0%;
   width: 20%;
   height: 100%;
-  opacity: 0.5;
+  overflow: hidden;
+  opacity: 0.25;
 
   -webkit-animation-name: slide1;
   -webkit-animation-timing-function: linear;
@@ -286,57 +289,48 @@ textarea {
   display: none;
 }
 #backgrounds #b1{
-  background-color: rgba(100,0,0,0.4);
+  background-color: rgb(100,0,0);
   -webkit-animation-duration: 3s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b2{
   left: 20%;
-  background-color: rgba(0,0,100,0.4);
+  background-color: rgba(0,0,100,1.0);
   -webkit-animation-duration: 7s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b3{
   left: 40%;
-  background-color: rgba(100,0,100,0.4);
+  background-color: rgba(100,0,100,1.0);
   -webkit-animation-duration: 5s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b4{
   left: 60%;
-  background-color: rgba(0,100,0,0.4);
+  background-color: rgba(0,100,0,1.0);
   -webkit-animation-duration: 2s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b5{
   left: 80%;
-  background-color: rgba(100,100,0,0.4);
+  background-color: rgba(100,100,0,1.0);
   -webkit-animation-duration: 6s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b6{
   left: 10%;
-  background-color: rgba(0,100,0,0.4);
+  background-color: rgba(0,100,0,1.0);
   -webkit-animation-duration: 2.5s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b7{
   left: 30%;
-  background-color: rgba(100,100,0,0.4);
+  background-color: rgba(100,100,0,1.0);
   -webkit-animation-duration: 3.5s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b8{
   left: 50%;
-  background-color: rgba(0,100,100,0.4);
+  background-color: rgba(0,100,100,1.0);
   -webkit-animation-duration: 4s;
-  -webkit-animation-name: slide1;
 }
 #backgrounds #b9{
   left: 70%;
-  background-color: rgba(100,100,0,0.4);
+  background-color: rgba(100,100,0,1.0);
   -webkit-animation-duration: 5.5s;
-  -webkit-animation-name: slide1;
 }
 
 #overlay{

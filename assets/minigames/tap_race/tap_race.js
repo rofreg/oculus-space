@@ -15,7 +15,7 @@
 
     TapRace.NAME = 'TapRace';
 
-    TapRace.INSTRUCTIONS = 'TapRace is a fun game. Click link, plz.';
+    TapRace.INSTRUCTIONS = "It's a counting race! Click the numbers in order from 1-16 as fast as you can!!";
 
     TapRace.TEMPLATES = "/assets/minigames/tap_race/templates.js";
 
@@ -62,7 +62,7 @@
           });
           that.currentNumber++;
           $(this).text('');
-          if (that.currentNumber > 3) {
+          if (that.currentNumber > 16) {
             return that.done();
           }
         }

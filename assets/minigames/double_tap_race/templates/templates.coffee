@@ -1,10 +1,13 @@
 App.Minigames.DoubleTapRace = {}
 App.Minigames.DoubleTapRace.Templates = {
   main_view: '''
-    <div class="score">Distance: 0</div>
-    <div class="progress"></div>
-    <button type="button" class="active btn">Left!</button>
-    <button type="button" class="btn">Right!</button>
+    <div class="score">Ready</div>
+    <div class="racetrack">
+      <div class="progress"></div>
+      <div class="finish"></div>
+    </div>
+    <div class="btn">Left!</div>
+    <div class="btn">Right!</div>
   '''
   player_view: '''
     <% _.each(players, function(player){ %>

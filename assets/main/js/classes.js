@@ -109,7 +109,7 @@
   App.Utilities = {
     checkOrientation: function() {
       if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) && $(window).width() > $(window).height()) {
-        return alert('To play Mobile Party, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
+        return alert('To play Thumb War, you should use portrait orientation on your phone. (You may want to lock your phone in this orientation!)');
       }
     }
   };
