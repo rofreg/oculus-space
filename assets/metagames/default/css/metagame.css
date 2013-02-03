@@ -4,3 +4,4 @@
 #metagame ul.player_blocks{height:120px;overflow:hidden;margin:5px 0;}#metagame ul.player_blocks li{display:inline-block;vertical-align:top;width:100px;margin:0px;height:115px;text-align:center;overflow:hidden;}#metagame ul.player_blocks li div.color{width:75px;height:35px;border-radius:5px;margin:0 auto;text-align:center;padding:20px 0;border:1px solid #333;margin-bottom:4px;}
 #metagame button{font-size:32px;padding:10px;border-radius:5px;background:#CCDAEB;border:1px solid #999;margin-top:10px;}
 #metagame button:hover{background:#B8CDE6;}
+#metagame button[disabled=disabled]{background:#eee;}

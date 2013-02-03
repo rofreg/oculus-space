@@ -419,6 +419,9 @@ textarea {
 #signin button:hover{
   background: #B8CDE6;
 }
+#signin button[disabled=disabled] {
+  background: #eee;
+}
 
 #disconnected{
   display: none;

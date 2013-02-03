@@ -3,15 +3,17 @@ window.App =
   Minigames: {}
   
 socket = io.connect('/')
+socket.on "player: your id", (data) ->
+  App.player_id = data.id
 
 $("#user-form").submit ->
+  $("button").attr('disabled', 'disabled')
   socket.emit 'server: new player'
   socket.on "server: enter metagame", (data) ->
     if data.metagame_id?
       App.metagame = new App.Metagame(data.metagame_id)
       console.log "Connecting to #{data.metagame_id}"
       App.metagame.init(io, $(".username").val())
-  $("button").attr('disabled', 'disabled')
   false
 
 App.Utilities =
