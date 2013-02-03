@@ -30,7 +30,16 @@ class App.Minigames.DoubleTapRace extends App.Minigames.Default
     this.render()
 
     that = this
-    this.el.find(".btn").bind('click touchstart', ->
+    this.el.find(".btn").bind('click', ->
+      if $(this).hasClass "active"
+        $(this).siblings(".btn").addClass "active"
+        $(this).removeClass "active"
+        that.dist+= 10
+        that.broadcast('player: scored', {dist: that.dist})
+        that.render()
+    )
+    this.el.find(".btn").bind('touchstart', (e) ->
+      e.preventDefault()
       if $(this).hasClass "active"
         $(this).siblings(".btn").addClass "active"
         $(this).removeClass "active"

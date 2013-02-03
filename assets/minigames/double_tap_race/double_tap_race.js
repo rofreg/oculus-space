@@ -65,7 +65,19 @@
       $('body').append(this.el);
       this.render();
       that = this;
-      return this.el.find(".btn").bind('click touchstart', function() {
+      this.el.find(".btn").bind('click', function() {
+        if ($(this).hasClass("active")) {
+          $(this).siblings(".btn").addClass("active");
+          $(this).removeClass("active");
+          that.dist += 10;
+          that.broadcast('player: scored', {
+            dist: that.dist
+          });
+          return that.render();
+        }
+      });
+      return this.el.find(".btn").bind('touchstart', function(e) {
+        e.preventDefault();
         if ($(this).hasClass("active")) {
           $(this).siblings(".btn").addClass("active");
           $(this).removeClass("active");
