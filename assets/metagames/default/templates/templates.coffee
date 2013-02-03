@@ -10,7 +10,7 @@ App.Metagame.Default.Templates = {
   '''
 
   waiting_room: '''
-    <h1>Waiting for more players...</h1>
+    <h1>Waiting in room thumbwar.me/<%= metagame.id %></h1>
     <h4>
       <% if (players.length == 1) { %>
         You&rsquo;re all alone right now! :(
