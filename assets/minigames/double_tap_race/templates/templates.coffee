@@ -1,9 +1,12 @@
 App.Minigames.DoubleTapRace = {}
 App.Minigames.DoubleTapRace.Templates = {
   main_view: '''
-    <div class="score">Distance: 0</div>
-    <div class="progress"></div>
-    <div class="active btn">Left!</div>
+    <div class="score">Ready</div>
+    <div class="racetrack">
+      <div class="progress"></div>
+      <div class="finish"></div>
+    </div>
+    <div class="btn">Left!</div>
     <div class="btn">Right!</div>
   '''
   player_view: '''
