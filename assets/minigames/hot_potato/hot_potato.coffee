@@ -22,7 +22,7 @@ class App.Minigames.HotPotato extends App.Minigames.Default
   trueStart: =>
     this.gameOn = true
 
-    if (this.players.sort((player)=>player.name+player.score)[0].id == App.player_id)
+    if (this.players.sort((p1, p2) => p1.name.localeCompare(p2.name))[0].id == App.player_id)
       for player in this.players
         player.hasBomb = false
       index = Math.floor(this.players.length * Math.random())
@@ -39,6 +39,9 @@ class App.Minigames.HotPotato extends App.Minigames.Default
       console.log($(e.currentTarget).data('id'))
       if this.self.hasBomb and this.gameOn
         this.throwBomb($(e.currentTarget).data('id'))
+
+    this.el.bind "touchstart", (e) =>
+      this.touchstart = null
 
     this.el.bind "touchmove", (e) =>
       if !this.touchstart
@@ -65,12 +68,12 @@ class App.Minigames.HotPotato extends App.Minigames.Default
         else if this.players.length == 2
           this.throwBomb(this.others[0].id)
         else if this.players.length == 3
-          if diff <= 0
+          if diff >= 0
             this.throwBomb(this.others[0].id)
           else
             this.throwBomb(this.others[1].id)
         else  # 4 players
-          if Math.abs(ratio) > 4 or Math.abs(diff) < 30
+          if Math.abs(ratio) > 4 or Math.abs(diff) < 50
             this.throwBomb(this.others[1].id)
           else if diff <= 0
             this.throwBomb(this.others[0].id)

@@ -57,6 +57,12 @@
 
     Metagame.prototype.minigames = [
       {
+        'name': 'TapRace',
+        'src': "/assets/minigames/tap_race/tap_race.js"
+      }, {
+        'name': 'DoubleTapRace',
+        'src': "/assets/minigames/double_tap_race/double_tap_race.js"
+      }, {
         'name': 'HotPotato',
         'src': "/assets/minigames/hot_potato/hot_potato.js"
       }

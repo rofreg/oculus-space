@@ -66,8 +66,8 @@
       var index, player, _i, _len, _ref,
         _this = this;
       this.gameOn = true;
-      if (this.players.sort(function(player) {
-        return player.name + player.score;
+      if (this.players.sort(function(p1, p2) {
+        return p1.name.localeCompare(p2.name);
       })[0].id === App.player_id) {
         _ref = this.players;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -89,6 +89,9 @@
         if (_this.self.hasBomb && _this.gameOn) {
           return _this.throwBomb($(e.currentTarget).data('id'));
         }
+      });
+      this.el.bind("touchstart", function(e) {
+        return _this.touchstart = null;
       });
       this.el.bind("touchmove", function(e) {
         if (!_this.touchstart) {
@@ -115,13 +118,13 @@
           } else if (_this.players.length === 2) {
             _this.throwBomb(_this.others[0].id);
           } else if (_this.players.length === 3) {
-            if (diff <= 0) {
+            if (diff >= 0) {
               _this.throwBomb(_this.others[0].id);
             } else {
               _this.throwBomb(_this.others[1].id);
             }
           } else {
-            if (Math.abs(ratio) > 4 || Math.abs(diff) < 30) {
+            if (Math.abs(ratio) > 4 || Math.abs(diff) < 50) {
               _this.throwBomb(_this.others[1].id);
             } else if (diff <= 0) {
               _this.throwBomb(_this.others[0].id);
