@@ -227,7 +227,7 @@
     };
 
     Metagame.prototype.loadRandomGame = function() {
-      return this.loadGame(0);
+      return this.loadGame(Math.floor(this.minigames.length * Math.random()));
     };
 
     Metagame.prototype.buildName = function() {

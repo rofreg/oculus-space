@@ -128,7 +128,7 @@ class Server.Metagame
     this.room.emit('minigame: start')
 
   loadRandomGame: =>
-    this.loadGame(0)#Math.floor(this.minigames.length * Math.random()))
+    this.loadGame(Math.floor(this.minigames.length * Math.random()))
 
   buildName: =>
     this.nouns or= ["Pickle", "Banana", "Ocelot", "Turnip", "Tuna", "Thumb"]
