@@ -1,9 +1,29 @@
-App or= {}
-App.Metagames or= {}
+class App.Metagame
 
-class App.Metagames.DefaultClient extends App.Metagames.Default
+  constructor: (@id) ->
 
-  init: (io) ->
+  getPlayer: (id) =>
+    for player in this.players
+      if player.id == id
+        return player
+    null
+
+  allMinigames: [
+    {
+      'name': 'TapRace'
+      'src': "/assets/minigames/tap_race.js"
+    }
+  ]
+
+  minigames: [
+    {
+      'name': 'TapRace'
+      'src': "/assets/minigames/tap_race.js"
+    }
+  ]
+
+  init: (io) =>
+    console.log "New metagame with id #{this.id}"
     # create Metagame <div>
     this.el = $("<div>").addClass('active view').attr("id","metagame")
     $('.active.view').removeClass('active').hide()
@@ -12,6 +32,7 @@ class App.Metagames.DefaultClient extends App.Metagames.Default
     # connect to server and listen for players
     this.socket = io.connect("/#{@id}")
     this.socket.emit 'players: player joining', {player: App.player}
+    console.log 'sending JOINING'
 
     this.socket.on 'players: list updated', (players) =>
       this.players = players
@@ -19,8 +40,8 @@ class App.Metagames.DefaultClient extends App.Metagames.Default
 
     this.socket.on 'minigame: load', this.minigameLoad
 
-    this.socket.on 'minigame: start', ->
-      App.minigames[0].start()
+    this.socket.on 'minigame: start', =>
+      this.minigames[0].instance.start()
 
   drawPlayerList: =>
     console.log this
@@ -38,11 +59,6 @@ class App.Metagames.DefaultClient extends App.Metagames.Default
     this.getPlayer(App.player.id).score = minigame.score
     this.socket.emit 'minigame: gameover',
       player: App.player
-      score: minigame.score
     this.drawPlayerList()
     
 
-if module?
-  module.exports = App.Metagames.Default
-else
-  window.App = App

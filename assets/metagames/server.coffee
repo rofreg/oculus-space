@@ -1,14 +1,8 @@
-App =
-  Metagames:
-    Default: {}
+Server = {}
 
-class App.Metagames.Default.Parent
+class Server.Metagame
 
-  constructor: (id) ->
-    this.id or= Math.random().toString(36).substring(2,6)
-
-  url: =>
-    "/#{@id}"
+  constructor: (@id) ->
 
   getPlayer: (id) =>
     for player in this.players
@@ -30,10 +24,8 @@ class App.Metagames.Default.Parent
     }
   ]
 
-
-class App.Metagames.Default.Server extends App.Metagames.Default.Parent
-
   init: (io) =>
+    console.log "New metagame with id #{this.id}"
     this.players = []
     this.room = io.of("/#{@id}")
     this.room.on 'connection', (socket) =>
@@ -60,6 +52,7 @@ class App.Metagames.Default.Server extends App.Metagames.Default.Parent
       this.start()
 
   addPlayer: (data) =>
+    console.log '####################### PLAYER JOINING'
     this.players.push(data.player)
     this.room.emit 'players: list updated', this.players
     if true #this.players.length >= 2
@@ -83,48 +76,5 @@ class App.Metagames.Default.Server extends App.Metagames.Default.Parent
   gameover: (data) =>
     this.getPlayer(data.player.id).score = data.score
 
-class App.Metagames.Default.Client extends App.Metagames.Default.Parent
 
-  init: (io) ->
-    # create Metagame <div>
-    this.el = $("<div>").addClass('active view').attr("id","metagame")
-    $('.active.view').removeClass('active').hide()
-    $('body').append(this.el)
-
-    # connect to server and listen for players
-    this.socket = io.connect("/#{@id}")
-    this.socket.emit 'players: player joining', {player: App.player}
-
-    this.socket.on 'players: list updated', (players) =>
-      this.players = players
-      this.drawPlayerList()
-
-    this.socket.on 'minigame: load', this.minigameLoad
-
-    this.socket.on 'minigame: start', ->
-      App.minigames[0].start()
-
-  drawPlayerList: =>
-    console.log this
-    console.log this.players
-    this.el.html(JSON.stringify(this.players))
-
-  minigameLoad: (data) =>
-    #display loading.gif
-    $.getScript(data.src).done (script, textStatus) =>
-      #remove loading.gif
-      this.ready = true
-      this.socket.emit 'minigame: done loading', {player: App.player}
-
-  gameover: (minigame) ->
-    this.getPlayer(App.player.id).score = minigame.score
-    this.socket.emit 'minigame: gameover',
-      player: App.player
-      score: minigame.score
-    this.drawPlayerList()
-    
-
-if module?
-  module.exports = App.Metagames.Default
-else
-  window.App = App
+module.exports = Server.Metagame

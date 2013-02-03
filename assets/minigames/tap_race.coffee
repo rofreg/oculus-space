@@ -1,4 +1,6 @@
 class App.Minigames.TapRace extends App.Minigames.Default
+  name: 'TapRace'
+
   start: =>
     this.score = 0
     $(".view").html("<div class='minigame' style='width:100%; height:100%;'></div>")
@@ -8,13 +10,15 @@ class App.Minigames.TapRace extends App.Minigames.Default
     this.el.find(".btn").bind 'click', =>
       this.score++
       this.render()
-    setTimeout(this.end, 5000)
+    setTimeout(this.gameover, 5000)
 
   render: =>
     $('.score').text(this.score)
 
 
-  end: =>
-    App.currentMetagame.clientGameover(this)
+  gameover: =>
+    App.metagame.gameover(this)
 
-App.minigames.push new TapRace
+for minigame in App.metagame.minigames
+  if minigame.name == 'TapRace'
+    minigame.instance = new App.Minigames.TapRace

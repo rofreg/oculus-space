@@ -14,23 +14,24 @@ app.get '/', (req, res) ->
 app.get '/:id', (req, res) ->
   console.log "Connecting to game #{req.params.id}"
 
-App = require('./assets/main/js/classes.coffee')
+Server =
+  metagames: []
+  metagame_index: 0
+
+Server.Metagame = require('./assets/metagames/server.coffee')
 
 io.sockets.on 'connection', (socket) ->
-  socket.on 'new player', (data) ->
-    console.log(data)
-    player = data
-
+  socket.on 'server: new player', (data) ->
     #find game
     game = null
-    for metagame in App.metagames
+    for metagame in Server.metagames
       if metagame.isAcceptingPlayers()
         game = metagame
         break
 
     if !game #still haven't found a game for them
-      game = new App.Metagames.Default.Server
-      game.serverInit(io)
-      App.metagames.push game
+      game = new Server.Metagame(Server.metagame_index++)
+      game.init(io)
+      Server.metagames.push game
 
-    socket.emit 'enter metagame', {metagame_id: game.id}
+    socket.emit 'server: enter metagame', {metagame_id: game.id}
