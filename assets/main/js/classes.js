@@ -47,10 +47,13 @@
     };
 
     Metagame.prototype.addPlayer = function(name, id) {
+      if (!this.colorCount) {
+        this.colorCount = 0;
+      }
       this.players.push({
         name: name,
         id: id,
-        color: App.colors[this.players.length % App.colors.length],
+        color: App.colors[this.colorCount++ % App.colors.length],
         score: 0
       });
       return this.sendPlayerList();

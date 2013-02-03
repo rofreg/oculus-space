@@ -32,7 +32,8 @@ class App.Metagame
     )
 
   addPlayer: (name, id) =>
-    this.players.push({name: name, id: id, color: App.colors[this.players.length % App.colors.length], score: 0})
+    this.colorCount = 0 if not this.colorCount
+    this.players.push({name: name, id: id, color: App.colors[this.colorCount++ % App.colors.length], score: 0})
     this.sendPlayerList()
 
   removePlayer: (id) =>
