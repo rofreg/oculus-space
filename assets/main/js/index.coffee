@@ -1,6 +1,15 @@
-App =
+window.App =
   room: null,
-  data: {}
+  data: {},
+  bridgeOrientationUpdated: (quatValues) ->
+    for key, value of quatValues
+      $("#o#{key.toUpperCase()}").text(value.toFixed(2))
+  bridgeConnected: () ->
+    $('#hud .oculus .disconnected').fadeOut(250)
+    $('#hud .oculus .connected').fadeIn(250)
+  bridgeDisconnected: () ->
+    $('#hud .oculus .disconnected').fadeIn(250)
+    $('#hud .oculus .connected').fadeOut(250)
   
 socket = io.connect('/')
 
@@ -19,8 +28,8 @@ socket.on "init: connected to room", (data) ->
   $('#room').text(App.room);
 
 socket.on "room: data", (data) ->
-  $('#hud .instructions').fadeOut(250);
-  $('#hud .connected').fadeIn(250);
+  $('#hud .controller .disconnected').fadeOut(250);
+  $('#hud .controller .connected').fadeIn(250);
   App.data = data
   for key, value of data
     # console.log("#{key} = #{value}")
@@ -29,3 +38,16 @@ socket.on "room: data", (data) ->
     else
       $("##{key}").text(value)
   # $('#data').html("x: #{data.controllerX.toFixed(2)}<br>x: #{data.controllerY.toFixed(2)}<br>z: #{data.controllerZ.toFixed(2)}")
+
+socket.on "server: controller disconnected", (data) ->
+  $('#hud .controller .disconnected').fadeIn(250);
+  $('#hud .controller .connected').fadeOut(250);
+
+oculusBridge = new OculusBridge({
+  "debug" : true,
+  "onOrientationUpdate" : App.bridgeOrientationUpdated,
+  # "onConfigUpdate"      : bridgeConfigUpdated,
+  "onConnect"           : App.bridgeConnected,
+  "onDisconnect"        : App.bridgeDisconnected
+});
+oculusBridge.connect()

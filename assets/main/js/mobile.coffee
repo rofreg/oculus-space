@@ -16,6 +16,10 @@ socket.on "disconnect", (data) ->
   $('#disconnected').fadeIn(500)
   setTimeout("location.href = location.href", 4500)
 
+socket.on "server: client disconnected", (data) ->
+  $('#disconnected').fadeIn(500)
+  setTimeout("location.href = location.href", 4500)
+
 socket.on "init: connected to room", (data) ->
   App.room = data.room
   $('#room_id').text(data.room)

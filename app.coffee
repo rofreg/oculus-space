@@ -70,10 +70,10 @@ io.sockets.on 'connection', (socket) ->
     for room_id, room of Server.rooms
       if room.client_id == socket.id
         room.client_id = null
-        socket.broadcast.to room_id, "server: client disconnected"
+        socket.broadcast.to(room_id).emit "server: client disconnected"
       else if room.controller_id == socket.id
         room.controller_id = null
-        socket.broadcast.to room_id, "server: controller disconnected"
+        socket.broadcast.to(room_id).emit "server: controller disconnected"
       if not room.client_id and not room.controller_id
         console.log "Killing room #{room_id}"
         delete Server.rooms[room_id]   # delete zombie rooms

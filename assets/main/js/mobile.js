@@ -27,6 +27,11 @@
     return setTimeout("location.href = location.href", 4500);
   });
 
+  socket.on("server: client disconnected", function(data) {
+    $('#disconnected').fadeIn(500);
+    return setTimeout("location.href = location.href", 4500);
+  });
+
   socket.on("init: connected to room", function(data) {
     App.room = data.room;
     $('#room_id').text(data.room);
