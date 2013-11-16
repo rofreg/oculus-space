@@ -13,62 +13,58 @@ app.configure () ->
   }))
   app.use '/assets', express.static(__dirname + "/assets")
 
-server.listen(80)
+server.listen(8080)
 
 app.get '/', (req, res) ->
-  res.sendfile(__dirname + '/index.html')
+  ua = req.header('user-agent')
+  if /mobile/i.test(ua)
+    res.sendfile(__dirname + '/mobile.html')
+  else
+    res.sendfile(__dirname + '/index.html')
 
-app.get '/favicon.ico', (req, res) ->
-  res.sendfile(__dirname + '/assets/favicon.ico')
-
-app.get '/apple-touch-icon-114x114-precomposed.png', (req, res) ->
-  res.sendfile(__dirname + '/assets/apple-touch-icon-precomposed.png')
-
-app.get '/apple-touch-icon-precomposed.png', (req, res) ->
-  res.sendfile(__dirname + '/assets/apple-touch-icon-precomposed.png')
-
-app.get '/:id', (req, res) ->
-  res.sendfile(__dirname + '/index.html')
+app.get '/mobile', (req, res) ->
+  res.sendfile(__dirname + '/mobile.html')
 
 Server =
-  metagames: []
-  metagame_index: 0
+  rooms: {}
 
-#utility
-Array::shuffle = -> @sort -> 0.5 - Math.random()
 
-Server.Metagame = require('./assets/metagames/server.coffee')
+guid = () ->
+  ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(Math.floor(Math.random()*26)) for [1..4]).join("")
+
 
 io.sockets.on 'connection', (socket) ->
-  socket.emit 'player: your id', {id: socket.id}
+  socket.on 'init: add client', (data) ->
+    console.log("init: add client")
+    roomId = guid()
+    Server.rooms[roomId] = {client_id: socket.id, data: {}}
+    socket.emit 'init: connected to room', room: roomId
+    socket.join(roomId)
 
-  socket.on 'server: new player', (data) ->
-    #find game
-    game = null
+  socket.on 'init: add controller', (data) ->
+    console.log("init: add controller")
+    if data? and data.room and Server.rooms[data.room]
+      # this is a controller connecting
+      Server.rooms[data.room].controller_id = socket.id;
+      socket.join data.room
+      socket.broadcast.to(data.room, "room: controller connected")
 
-    #passed in a game id?
-    if data? and data.path
-      for metagame in Server.metagames
-        if "#{metagame.id}" == "#{data.path}" and metagame.isAcceptingPlayers()
-          game = metagame
-          break
-      
-    #empty room?
-    if !game
-      for metagame in Server.metagames
-        if metagame.isAcceptingPlayers()
-          game = metagame
-          break
-
-    #build new :(
-    if !game #still haven't found a game for them
-      game = new Server.Metagame(Server.metagame_index++, Server.metagames)
-      game.init(io)
-      Server.metagames.push game
-
-    socket.emit 'server: enter metagame', {metagame_id: game.id}
+      # subscribe to events for this room
+      socket.join data.room
+      socket.emit 'init: connected to room', room: data.room
+      console.log 'init: connected to room'
+    else
+      socket.emit "init: invalid room ID"
+      console.log 'init: invalid room ID'
 
   socket.on 'disconnect', =>
-    console.log("PLAYER DROPPED: removing #{socket.id} from all games")
-    for metagame in Server.metagames
-      metagame.removePlayer(socket.id)
+    console.log("CONNECTION DROPPED: removing #{socket.id} from rooms")
+    for room_id, room of Server.rooms
+      if room.client_id == socket.id
+        room.client_id = null
+        socket.broadcast.to room_id, "server: client disconnected"
+      else if room.controller_id == socket.id
+        room.controller_id = null
+        socket.broadcast.to room_id, "server: controller disconnected"
+      if room.client_id == null and room.controller_id == null
+        Server.rooms.delete room_id   # delete zombie rooms

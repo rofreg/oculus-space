@@ -32,25 +32,9 @@ window.addEventListener('devicemotion', function (e) {
   e.preventDefault();
 });
 
-window.onresize = function(e){
-  try {
-    App.Utilities.checkOrientation();
-  } catch (e) {
-    // App not loaded yet
-  }
-}
-
 window.onscroll = function(e){
   if (document.body.scrollTop > 0){
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
-  }
-}
-
-window.onload = function(e){
-  try {
-    App.Utilities.checkOrientation();
-  } catch (e) {
-    // App not loaded yet
   }
 }
