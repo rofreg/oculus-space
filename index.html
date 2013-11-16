@@ -17,32 +17,34 @@
     <!-- <script src="js/vendor/modernizr-2.6.2.min.js"></script> -->
   </head>
   <body>
-    <div id="backgrounds">
-      <div id="b1"></div>
-      <div id="b2"></div>
-      <div id="b3"></div>
-      <div id="b4"></div>
-      <div id="b5"></div>
-      <div id="b6"></div>
-      <div id="b7"></div>
-      <div id="b8"></div>
-      <div id="b9"></div>
-    </div>
-    <div id="overlay"></div>
     <div id="disconnected">
-      You have been disconnected from the Thumb War server. Sorry!
+      <h3>SIGNAL LOST</h3>
+      You have been disconnected from the server. Sorry!<br>
       The page will refresh automatically in a few moments.
     </div>
-    <div id="signin" class="active view">
-      <h1>Welcome to Thumb War!</h1>
-      <form id="user-form">
-        <input type="text" name="username" class='username' placeholder="Enter your name"><br>
-        <button type="submit">Declare a thumb war!</button>
-      </form>
+    <div id="hud">
+      <div class="instructions">
+        <h1>EXPLORER ID: <span id="room"></span></h1>
+        Open this site on your mobile phone<br>and enter the above code.
+      </div>
+      <div class="connected">CONNECTED</div>
     </div>
-    <!-- <div style="display: none"> -->
-      <audio id="music-player" src="/assets/main/music/music.mp3" loop></audio>
-    <!-- </div> -->
+    <div id="debug">
+      <table id="data">
+        <tr>
+          <td>x</td>
+          <td id="cX"></td>
+        </tr>
+        <tr>
+          <td>y</td>
+          <td id="cY"></td>
+        </tr>
+        <tr>
+          <td>z</td>
+          <td id="cZ"></td>
+        </tr>
+      </table>
+    </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/assets/main/js/jquery-1.9.0.min.js"><\/script>')</script>

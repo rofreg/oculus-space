@@ -14,6 +14,7 @@ app.configure () ->
   app.use '/assets', express.static(__dirname + "/assets")
 
 server.listen(8080)
+io.set 'log level', 1
 
 app.get '/', (req, res) ->
   ua = req.header('user-agent')
@@ -35,30 +36,37 @@ guid = () ->
 
 io.sockets.on 'connection', (socket) ->
   socket.on 'init: add client', (data) ->
-    console.log("init: add client")
     roomId = guid()
+    console.log "#{roomId}: starting room"
+    console.log "#{roomId}: adding client #{socket.id}"
     Server.rooms[roomId] = {client_id: socket.id, data: {}}
     socket.emit 'init: connected to room', room: roomId
-    socket.join(roomId)
+    socket.join roomId
 
   socket.on 'init: add controller', (data) ->
-    console.log("init: add controller")
+    # if no room ID submitted, just take the first room (if available)
+    if not data? and Object.keys(Server.rooms).length > 0
+      roomId = Object.keys(Server.rooms)[0]
+      data = {}
+      if roomId and not Server.rooms[roomId].controller_id
+        data.room = Object.keys(Server.rooms)[0]
+
     if data? and data.room and Server.rooms[data.room]
       # this is a controller connecting
+      console.log "#{data.room}: adding controller #{socket.id}"
       Server.rooms[data.room].controller_id = socket.id;
       socket.join data.room
-      socket.broadcast.to(data.room, "room: controller connected")
 
       # subscribe to events for this room
-      socket.join data.room
       socket.emit 'init: connected to room', room: data.room
-      console.log 'init: connected to room'
     else
       socket.emit "init: invalid room ID"
-      console.log 'init: invalid room ID'
+
+  socket.on 'broadcast', (data) ->
+    socket.broadcast.to(data.room).emit(data.event, data.data)
 
   socket.on 'disconnect', =>
-    console.log("CONNECTION DROPPED: removing #{socket.id} from rooms")
+    console.log("Connection lost for socket #{socket.id}")
     for room_id, room of Server.rooms
       if room.client_id == socket.id
         room.client_id = null
@@ -66,5 +74,6 @@ io.sockets.on 'connection', (socket) ->
       else if room.controller_id == socket.id
         room.controller_id = null
         socket.broadcast.to room_id, "server: controller disconnected"
-      if room.client_id == null and room.controller_id == null
-        Server.rooms.delete room_id   # delete zombie rooms
+      if not room.client_id and not room.controller_id
+        console.log "Killing room #{room_id}"
+        delete Server.rooms[room_id]   # delete zombie rooms

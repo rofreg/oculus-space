@@ -9,20 +9,25 @@
     <meta name="apple-mobile-web-app-capable" content="yes"> 
     <meta name="apple-touch-fullscreen" content="yes">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- <link rel="stylesheet" href="/assets/main/css/normalize.css"> -->
-    <!-- <link rel="stylesheet" href="/assets/main/css/main.css"> -->
+    <link rel="stylesheet" href="/assets/main/css/normalize.css">
+    <link rel="stylesheet" href="/assets/main/css/main.css">
   </head>
   <body>
-    <div id="disconnected" style="display: none">
-      You have been disconnected from the server. Sorry!
+    <div id="disconnected">
+      <h3>SIGNAL LOST</h3>
+      You have been disconnected from the server. Sorry!<br>
       The page will refresh automatically in a few moments.
     </div>
-    <div>
-      <h1>Demo time!</h1>
+    <div id="lobby">
+      <h1>ENTER CODE</h1>
       <form id="initialize">
-        <input type="text" name="room" id='room' placeholder="Enter your room code"><br>
-        <button type="submit">Connect</button>
+        <input type="text" name="room" id='room' placeholder="" autocapitalize="off"><br>
+        <button type="submit">Embark</button>
       </form>
+    </div>
+    <div id="mobile_hud">
+      <h3>EXPLORER ID: <span id="room_id"></span></h3>
+      Tap anywhere to re-orient
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>

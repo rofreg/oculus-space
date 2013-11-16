@@ -27,14 +27,23 @@ document.ontouchmove = function(e){
 }
 
 window.addEventListener('devicemotion', function (e) {
-  // Your code for dealing with the shake event here
-  // Stop the default behavior from triggering the undo dialog (hopefully)
+  // Stop the default behavior from triggering the shake-to-undo dialog (hopefully)
   e.preventDefault();
 });
 
-window.onscroll = function(e){
-  if (document.body.scrollTop > 0){
-    window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
+window.ondeviceorientation = function(event) {
+  if (window.App && App.data){
+    App.data.cX = Math.round(event.alpha);
+    App.data.cY = Math.round(event.beta);
+    App.data.cZ = Math.round(event.gamma);
+  }
+}
+
+// Reset gyroscope
+document.ontouchstart = function(e){
+  if (window.App && App.data && App.data.cX){
+    App.adjustment.cX = App.data.cX;
+    App.adjustment.cY = App.data.cY;
+    App.adjustment.cZ = App.data.cZ;
   }
 }

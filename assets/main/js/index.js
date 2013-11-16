@@ -21,7 +21,25 @@
 
   socket.on("init: connected to room", function(data) {
     console.log("Connected to room: " + data.room);
-    return App.room = data.room;
+    App.room = data.room;
+    return $('#room').text(App.room);
+  });
+
+  socket.on("room: data", function(data) {
+    var key, value, _results;
+    $('#hud .instructions').fadeOut(250);
+    $('#hud .connected').fadeIn(250);
+    App.data = data;
+    _results = [];
+    for (key in data) {
+      value = data[key];
+      if (typeof value === "number") {
+        _results.push($("#" + key).text(value.toFixed(2)));
+      } else {
+        _results.push($("#" + key).text(value));
+      }
+    }
+    return _results;
   });
 
 }).call(this);
