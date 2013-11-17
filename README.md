@@ -1,6 +1,6 @@
 # Oculus Space
 
-Oculus Space is a WebGL demo using both the Oculus Rift (optional, with oculus-bridge installed) and a smartphone as a gyroscopic motion controller. It was created in 24 hours for #HackThat in Providence, RI.
+Oculus Space is a WebGL demo using both the Oculus Rift (optional, with [oculus-bridge](https://github.com/Instrument/oculus-bridge) installed) and a smartphone as a gyroscopic motion controller. It was created in 24 hours for #HackThat in Providence, RI.
 
 ## How it works
 
@@ -18,7 +18,7 @@ Built by [@rofreg](http://twitter.com/rofreg) for the [HackThat hackathon](http:
 Music is "Spacefighter" by cerror.
 Ship texture by [FrostBo](http://frostbo.deviantart.com/art/Hull-Textures-pack-1-for-spaceship-286898019).
 Code is heavily based on the OculusBridge [first-person example](http://instrument.github.io/oculus-bridge/examples/first_person.html).
-You'll need the [oculus-bridge](https://github.com/Instrument/oculus-bridge) executable installed to enable Oculus Rift support.
+Smartphone socket code somewhat adapted from [Thumb War](https://github.com/kyletns/thumbwar), a previous hackathon project.
 
 ## License
 
