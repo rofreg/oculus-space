@@ -376,7 +376,7 @@ textarea {
   color: #fff;
   margin: 0;
 }
-#hud #room{
+#hud .room{
   display: inline-block;
   min-width: 100px;
   color: #109f9d;
@@ -424,4 +424,30 @@ textarea {
 
 .debug{
   display: none;
+}
+
+.overlay{
+  position: absolute;
+  z-index: 99;
+  top: 50%;
+  width: 100px;
+  /*height: 60px;*/
+  margin: -25px 0 0 -55px;
+  color: #fff;
+  background: rgba(0,0,0,0.6);
+  text-align: center;
+  padding: 5px;
+  font-size: 10px;
+}
+.overlay.left, img.targeting.left{
+  left: 29%;
+}
+.overlay.right, img.targeting.right{
+  left: 71%;
+}
+.overlay .code{
+  color: #666;
+}
+.overlay .room{
+  color: #109f9d;
 }

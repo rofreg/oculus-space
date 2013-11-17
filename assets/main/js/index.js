@@ -5,7 +5,8 @@
   window.App = {
     room: null,
     data: {},
-    useRift: true
+    useRift: true,
+    controllerConnected: false
   };
 
   socket = io.connect('/');
@@ -23,12 +24,13 @@
   socket.on("init: connected to room", function(data) {
     console.log("Connected to room: " + data.room);
     App.room = data.room;
-    return $('#room').text(App.room);
+    return $('.room').text(App.room);
   });
 
   socket.on("room: data", function(data) {
     var key, value, _results;
-    $('#hud .controller .disconnected').fadeOut(250);
+    App.controllerConnected = true;
+    $('#hud .controller .disconnected, .overlay').fadeOut(250);
     $('#hud .controller .connected').fadeIn(250);
     App.data = data;
     _results = [];
@@ -44,13 +46,24 @@
   });
 
   socket.on("server: controller disconnected", function(data) {
-    $('#hud .controller .disconnected').fadeIn(250);
-    return $('#hud .controller .connected').fadeOut(250);
+    $('#hud .controller .disconnected, .overlay').fadeIn(250);
+    $('#hud .controller .connected').fadeOut(250);
+    return App.controllerConnected = false;
   });
 
   document.addEventListener('keydown', function(event) {
     if (event.keyCode === 68) {
       return $('.debug').toggle();
+    } else if (event.keyCode === 82 && App.data) {
+      return App.recalibration = {
+        viewAngle: App.viewAngle,
+        bodyAngle: App.bodyAngle,
+        bodyVerticalAngle: App.bodyVerticalAngle
+      };
+    } else if (event.keyCode === 87) {
+      return App.speed += 0.2;
+    } else if (event.keyCode === 83) {
+      return App.speed = Math.max(App.speed - 0.2, 0);
     }
   });
 

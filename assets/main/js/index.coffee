@@ -1,7 +1,8 @@
 window.App =
   room: null,
   data: {},
-  useRift: true
+  useRift: true,
+  controllerConnected: false
   
 socket = io.connect('/')
 
@@ -17,10 +18,11 @@ socket.on 'connect', () ->
 socket.on "init: connected to room", (data) ->
   console.log "Connected to room: #{data.room}"
   App.room = data.room
-  $('#room').text(App.room);
+  $('.room').text(App.room);
 
 socket.on "room: data", (data) ->
-  $('#hud .controller .disconnected').fadeOut(250);
+  App.controllerConnected = true
+  $('#hud .controller .disconnected, .overlay').fadeOut(250);
   $('#hud .controller .connected').fadeIn(250);
   App.data = data
   for key, value of data
@@ -32,9 +34,22 @@ socket.on "room: data", (data) ->
   # $('#data').html("x: #{data.controllerX.toFixed(2)}<br>x: #{data.controllerY.toFixed(2)}<br>z: #{data.controllerZ.toFixed(2)}")
 
 socket.on "server: controller disconnected", (data) ->
-  $('#hud .controller .disconnected').fadeIn(250);
+  $('#hud .controller .disconnected, .overlay').fadeIn(250);
   $('#hud .controller .connected').fadeOut(250);
+  App.controllerConnected = false
 
 document.addEventListener 'keydown', (event) ->
   if event.keyCode == 68
     $('.debug').toggle()
+  else if event.keyCode == 82 and App.data
+    # window.App.bodyAngle = -Math.PI / 2
+    # window.App.bodyVerticalAngle = 0
+    App.recalibration = {
+      viewAngle: App.viewAngle,
+      bodyAngle: App.bodyAngle,
+      bodyVerticalAngle: App.bodyVerticalAngle
+    }
+  else if event.keyCode == 87
+    App.speed += 0.2
+  else if event.keyCode == 83
+    App.speed = Math.max(App.speed - 0.2, 0)

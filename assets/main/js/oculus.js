@@ -2,12 +2,15 @@
 (function() {
   window.App.init = function() {
     var oculusBridge;
-    window.App.viewAngle = -5 / Math.PI;
+    window.App.viewAngle = 0;
+    window.App.startTime = Date.now();
     window.App.time = Date.now();
-    window.App.bodyAngle = 0;
+    window.App.bodyAngle = Math.PI;
+    window.App.bodyVerticalAngle = 0;
     window.App.bodyAxis = new THREE.Vector3(0, 1, 0);
-    window.App.bodyPosition = new THREE.Vector3(100, 15, 100);
+    window.App.bodyPosition = new THREE.Vector3(0, 15, 0);
     window.App.velocity = new THREE.Vector3();
+    window.App.speed = 1.0;
     App.initScene();
     App.initGeometry();
     App.initLights();
@@ -18,13 +21,15 @@
         for (key in quatValues) {
           value = quatValues[key];
           $("#o" + (key.toUpperCase())).text(value.toFixed(2));
+          App.data["o" + (key.toUpperCase())] = value;
         }
         quat = new THREE.Quaternion();
-        quat.setFromAxisAngle(App.bodyAxis, App.bodyAngle);
+        quat.setFromAxisAngle(App.bodyAxis, -App.bodyAngle);
         quatCam = new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w);
         quat.multiply(quatCam);
         xzVector = new THREE.Vector3(0, 0, 1);
         xzVector.applyQuaternion(quat);
+        App.viewAngle = Math.atan2(xzVector.z, xzVector.x) + Math.PI;
         return App.camera.quaternion.copy(quat);
       },
       "onConfigUpdate": function(config) {
@@ -50,8 +55,9 @@
     windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
     aspectRatio = window.innerWidth / window.innerHeight;
     window.App.scene = new THREE.Scene();
-    window.App.camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 10000);
+    window.App.camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.01, 10000);
     App.camera.useQuaternion = true;
+    App.camera.eulerOrder = "YXZ";
     App.camera.position.set(100, 15, 100);
     App.camera.lookAt(App.scene.position);
     window.App.renderer = new THREE.WebGLRenderer({
@@ -59,85 +65,169 @@
     });
     App.renderer.setClearColor(0x000000);
     App.renderer.setSize(window.innerWidth, window.innerHeight);
-    App.scene.fog = new THREE.Fog(0x000000, 300, 700);
+    App.scene.fog = new THREE.Fog(0x000000, 250, 750);
     element = document.getElementById('viewport');
-    element.appendChild(App.renderer.domElement);
-    return window.App.controls = new THREE.SpaceControls(App.camera);
+    return element.appendChild(App.renderer.domElement);
   };
 
   window.App.initLights = function() {
     var ambient;
-    ambient = new THREE.AmbientLight(0x222222);
+    ambient = new THREE.AmbientLight(0xffffff);
     App.scene.add(ambient);
-    window.App.headlights = new THREE.PointLight(0xffffff, 0.4, 500);
-    App.headlights.position.set(0, 0, 0);
-    return App.scene.add(App.headlights);
+    window.App.headlights = new THREE.PointLight(0xffffff, 0.9, 300);
+    App.headlights.position.set(0, 0, 10);
+    return App.shipParent.add(App.headlights);
   };
 
   window.App.initGeometry = function() {
-    var box, boxTexture, floor, floorGeometry, floorMaterial, floorTexture, height, i, material, width, _i;
+    var floor, floorGeometry, floorMaterial, floorTexture, i, material, targetGeometry, targetMaterial, targetTexture, _i;
+    window.App.boxes = [];
+    for (i = _i = 0; _i <= 250; i = ++_i) {
+      App.addBox();
+    }
+    window.App.shipParent = new THREE.Object3D();
+    App.shipParent.eulerOrder = "YXZ";
+    App.scene.add(App.shipParent);
+    material = new THREE.MeshLambertMaterial({
+      color: 0x445566,
+      ambient: 0x151515
+    });
+    window.App.ship = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), material);
+    App.ship.eulerOrder = "YXZ";
+    App.ship.geometry.vertices[0].x += 1;
+    App.ship.geometry.vertices[0].z += 10;
+    App.ship.geometry.vertices[1].x += 3;
+    App.ship.geometry.vertices[1].z -= 10;
+    App.ship.geometry.vertices[4].x -= 3;
+    App.ship.geometry.vertices[4].z -= 10;
+    App.ship.geometry.vertices[5].x -= 1;
+    App.ship.geometry.vertices[5].z += 10;
+    App.ship.position.set(-0.5, -3, 0);
+    App.shipParent.add(App.ship);
+    targetTexture = new THREE.ImageUtils.loadTexture("/assets/textures/targeting.png");
+    targetTexture.wrapS = targetTexture.wrapT = THREE.RepeatWrapping;
+    targetTexture.repeat.set(1, 1);
+    targetTexture.anisotropy = 32;
+    targetMaterial = new THREE.MeshLambertMaterial({
+      map: targetTexture,
+      transparent: true,
+      opacity: 0.75
+    });
+    targetGeometry = new THREE.PlaneGeometry(0.15, 0.15, 1, 1);
+    window.App.target = new THREE.Mesh(targetGeometry, targetMaterial);
+    App.target.side = THREE.DoubleSide;
+    App.target.position.set(-0.025, -0.05, 1.5);
+    App.target.rotation.y = +Math.PI;
+    App.shipParent.add(App.target);
     floorTexture = new THREE.ImageUtils.loadTexture("/assets/textures/tile.jpg");
     floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-    floorTexture.repeat.set(50, 50);
+    floorTexture.repeat.set(5000, 1);
     floorTexture.anisotropy = 32;
     floorMaterial = new THREE.MeshLambertMaterial({
       map: floorTexture,
       transparent: true,
-      opacity: 0.60
+      opacity: 0.5
     });
-    floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
+    floorGeometry = new THREE.PlaneGeometry(1000000, 500, 1, 1);
     floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.position.set(0, -250, 500000 - 500);
+    floor.side = THREE.DoubleSide;
     floor.rotation.x = -Math.PI / 2;
+    floor.rotation.z = +Math.PI / 2;
     App.scene.add(floor);
-    window.App.boxes = [];
-    boxTexture = new THREE.ImageUtils.loadTexture("/assets/textures/blue_blue.jpg");
-    for (i = _i = 0; _i <= 200; i = ++_i) {
-      material = new THREE.MeshLambertMaterial({
-        emissive: 0x000000,
-        map: boxTexture,
-        color: 0xffffff
-      });
-      height = Math.random() * 150 + 10;
-      width = Math.random() * 20 + 2;
-      box = new THREE.Mesh(new THREE.CubeGeometry(width, height, width), material);
-      box.position.set(Math.random() * 1000 - 500, height / 2, Math.random() * 1000 - 500);
-      box.rotation.set(0, Math.random() * Math.PI * 2, 0);
-      App.boxes.push(box);
-      App.scene.add(box);
+    floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.position.set(0, 250, 500000 - 500);
+    floor.side = THREE.DoubleSide;
+    floor.rotation.x = +Math.PI / 2;
+    floor.rotation.z = +Math.PI / 2;
+    App.scene.add(floor);
+    floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.position.set(250, 0, 500000 - 500);
+    floor.side = THREE.DoubleSide;
+    floor.rotation.y = -Math.PI / 2;
+    App.scene.add(floor);
+    floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    floor.position.set(-250, 0, 500000 - 500);
+    floor.side = THREE.DoubleSide;
+    floor.rotation.y = +Math.PI / 2;
+    return App.scene.add(floor);
+  };
+
+  window.App.addBox = function(options) {
+    var box, height, material, width, zCoord;
+    if (options == null) {
+      options = {};
     }
     material = new THREE.MeshLambertMaterial({
-      color: 0x990000
+      color: Math.round(Math.random() * 16777215),
+      ambient: 0x151515
     });
-    window.App.ship = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), material);
-    App.ship.rotation.set(Math.PI / 4, Math.PI / 4, Math.PI / 4);
-    App.ship.position.set(0, 0, 0);
-    return App.scene.add(App.ship);
+    height = Math.random() * 25 + 5;
+    width = height + (Math.random() * 6 - 3);
+    if (Math.random() > 0.1) {
+      box = new THREE.Mesh(new THREE.CubeGeometry(width, height, width), material);
+    } else {
+      box = new THREE.Mesh(new THREE.SphereGeometry(height), material);
+    }
+    zCoord = App.camera.position.z;
+    if (options.aheadOnly) {
+      zCoord += 500 + 250 * Math.random();
+    } else {
+      zCoord = Math.random() * 1000 - 250;
+    }
+    box.position.set(Math.random() * 600 - 300, Math.random() * 600 - 300, zCoord);
+    box.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2);
+    App.boxes.push(box);
+    return App.scene.add(box);
   };
 
   window.App.updateInput = function(delta) {
     var step, turn_speed;
-    step = 25 * delta;
-    turn_speed = (2 * delta) * Math.PI / 180;
-    App.bodyPosition.x += Math.cos(App.bodyAngle) * step;
-    App.bodyPosition.z -= Math.sin(App.bodyAngle) * step;
+    step = 40 * delta * App.speed;
+    turn_speed = 0.05 * delta;
     if (App.data.cY) {
-      App.bodyAngle -= App.data.cY * turn_speed;
+      App.bodyAngle += App.data.cY * turn_speed;
     }
+    if (App.data.cZ) {
+      App.bodyVerticalAngle += App.data.cZ * turn_speed;
+    }
+    App.bodyPosition.x += Math.sin(App.bodyAngle) * step;
+    App.bodyPosition.y -= Math.sin(App.bodyVerticalAngle) * step;
+    App.bodyPosition.z -= Math.cos(App.bodyAngle) * step;
     if (App.useRift) {
       App.camera.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
-      App.ship.position.set(App.bodyPosition.x + Math.cos(App.bodyAngle) * 10, App.bodyPosition.y, App.bodyPosition.z - Math.sin(App.bodyAngle) * 10);
-      return App.headlights.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
+      App.camera.rotation.x += -App.bodyVerticalAngle;
+      App.shipParent.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
+      App.shipParent.rotation.y = -App.bodyAngle - Math.PI;
+      return App.shipParent.rotation.x = App.bodyVerticalAngle;
     }
   };
 
   window.App.animate = function() {
-    var delta;
+    var box, delta, _i, _len, _ref;
     delta = App.clock.getDelta();
     App.time += delta;
-    App.updateInput(delta);
-    App.ship.rotation.x += delta * 1.0;
-    App.ship.rotation.y -= delta * 1.33;
-    App.ship.rotation.z += delta * 0.57;
+    if (App.controllerConnected || true) {
+      App.updateInput(delta);
+      _ref = App.boxes;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        box = _ref[_i];
+        box.rotation.x += delta * 0.4;
+        box.rotation.y -= delta * 0.2;
+        box.rotation.z += delta * 0.3;
+        if (!(box.position.z > App.camera.position.z - 200)) {
+          App.scene.remove(box);
+          App.addBox({
+            aheadOnly: true
+          });
+        }
+      }
+      App.boxes = App.boxes.filter(function(box) {
+        return box.position.z > App.camera.position.z - 200;
+      });
+    } else {
+      App.updateInput(0.0);
+    }
     requestAnimationFrame(App.animate);
     if (App.useRift) {
       return App.riftCam.render(App.scene, App.camera);
