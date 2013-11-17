@@ -229,7 +229,7 @@
   window.App.updateInput = function(delta) {
     var step, turn_speed;
     step = 40 * delta * App.speed;
-    turn_speed = 0.05 * delta;
+    turn_speed = 0.03 * delta;
     if (App.data.cY) {
       App.bodyAngle += App.data.cY * turn_speed;
     }

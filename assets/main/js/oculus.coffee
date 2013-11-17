@@ -226,7 +226,7 @@ window.App.fire = () ->
 
 window.App.updateInput = (delta) ->
   step        = 40 * delta * App.speed
-  turn_speed  = 0.05 * delta
+  turn_speed  = 0.03 * delta
 
   # Update ship position
   if App.data.cY
