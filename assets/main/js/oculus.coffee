@@ -185,10 +185,13 @@ window.App.addBox = (options = {}) ->
   height = Math.random() * 25 + 5
   width = height + (Math.random() * 6 - 3)
   
-  if Math.random() > 0.1
+  rand = Math.random()
+  if rand < 0.5
     box = new THREE.Mesh( new THREE.CubeGeometry(width, height, width), material)
-  else
+  else if rand < 0.96
     box = new THREE.Mesh( new THREE.SphereGeometry(height), material)
+  else
+    box = new THREE.Mesh( new THREE.TorusGeometry(height * 2.5, 3 + Math.random() * height / 2, 8, 4 ), material)
 
   zCoord = App.camera.position.z
   if options.aheadOnly
