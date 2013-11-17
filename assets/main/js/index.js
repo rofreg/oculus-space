@@ -37,12 +37,20 @@
     for (key in data) {
       value = data[key];
       if (typeof value === "number") {
+        if (App.recalibration && App.recalibration[key]) {
+          App.data[key] -= App.recalibration[key];
+          value -= App.recalibration[key];
+        }
         _results.push($("#" + key).text(value.toFixed(2)));
       } else {
         _results.push($("#" + key).text(value));
       }
     }
     return _results;
+  });
+
+  socket.on("fire", function(data) {
+    return App.fire();
   });
 
   socket.on("server: controller disconnected", function(data) {
@@ -56,6 +64,9 @@
       return $('.debug').toggle();
     } else if (event.keyCode === 82 && App.data) {
       return App.recalibration = {
+        cX: App.data.cX,
+        cY: App.data.cY,
+        cZ: App.data.cZ,
         viewAngle: App.viewAngle,
         bodyAngle: App.bodyAngle,
         bodyVerticalAngle: App.bodyVerticalAngle
@@ -64,6 +75,8 @@
       return App.speed += 0.2;
     } else if (event.keyCode === 83) {
       return App.speed = Math.max(App.speed - 0.2, 0);
+    } else if (event.keyCode === 65) {
+      return App.fire();
     }
   });
 

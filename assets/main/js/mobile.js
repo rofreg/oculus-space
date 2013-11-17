@@ -83,4 +83,12 @@
     }
   };
 
+  document.ontouchstart = function() {
+    return socket.emit('broadcast', {
+      room: App.room,
+      event: "fire",
+      data: {}
+    });
+  };
+
 }).call(this);

@@ -53,3 +53,6 @@ App.utils.normalize = (number, range = 360) ->
     number -= range while number > range / 2
     number += range while number < -range / 2
     number
+
+document.ontouchstart =  ->
+  socket.emit 'broadcast', {room: App.room, event: "fire", data: {}}

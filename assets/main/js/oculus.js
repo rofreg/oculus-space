@@ -85,6 +85,7 @@
     for (i = _i = 0; _i <= 250; i = ++_i) {
       App.addBox();
     }
+    window.App.shots = [];
     window.App.shipParent = new THREE.Object3D();
     App.shipParent.eulerOrder = "YXZ";
     App.scene.add(App.shipParent);
@@ -102,7 +103,7 @@
     App.ship.geometry.vertices[4].z -= 10;
     App.ship.geometry.vertices[5].x -= 1;
     App.ship.geometry.vertices[5].z += 10;
-    App.ship.position.set(-0.5, -3, 0);
+    App.ship.position.set(0, -3, 0);
     App.shipParent.add(App.ship);
     targetTexture = new THREE.ImageUtils.loadTexture("/assets/textures/targeting.png");
     targetTexture.wrapS = targetTexture.wrapT = THREE.RepeatWrapping;
@@ -116,7 +117,7 @@
     targetGeometry = new THREE.PlaneGeometry(0.15, 0.15, 1, 1);
     window.App.target = new THREE.Mesh(targetGeometry, targetMaterial);
     App.target.side = THREE.DoubleSide;
-    App.target.position.set(-0.025, -0.05, 1.5);
+    App.target.position.set(0.03, 0.0, 1.5);
     App.target.rotation.y = +Math.PI;
     App.shipParent.add(App.target);
     floorTexture = new THREE.ImageUtils.loadTexture("/assets/textures/tile.jpg");
@@ -181,6 +182,22 @@
     return App.scene.add(box);
   };
 
+  window.App.fire = function() {
+    var material, shot;
+    material = new THREE.MeshLambertMaterial({
+      color: 0x00ff00,
+      ambient: 0x00ff00
+    });
+    shot = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 4), material);
+    shot.position.set(-1, -4, 5);
+    App.shots.push(shot);
+    App.shipParent.add(shot);
+    shot = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 4), material);
+    shot.position.set(1, -4, 5);
+    App.shots.push(shot);
+    return App.shipParent.add(shot);
+  };
+
   window.App.updateInput = function(delta) {
     var step, turn_speed;
     step = 40 * delta * App.speed;
@@ -204,7 +221,7 @@
   };
 
   window.App.animate = function() {
-    var box, delta, _i, _len, _ref;
+    var box, delta, shot, _i, _j, _len, _len1, _ref, _ref1;
     delta = App.clock.getDelta();
     App.time += delta;
     if (App.controllerConnected || true) {
@@ -220,6 +237,14 @@
           App.addBox({
             aheadOnly: true
           });
+        }
+      }
+      _ref1 = App.shots;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        shot = _ref1[_j];
+        shot.position.z += delta * 800;
+        if (!Math.abs(shot.position.z - App.camera.position.z) < 1000) {
+          App.scene.remove(shot);
         }
       }
       App.boxes = App.boxes.filter(function(box) {

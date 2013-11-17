@@ -105,6 +105,8 @@ window.App.initGeometry = ->
   for i in [0..250]
     App.addBox()
 
+  window.App.shots = []
+
   window.App.shipParent = new THREE.Object3D();
   App.shipParent.eulerOrder = "YXZ";
   App.scene.add(App.shipParent)
@@ -127,7 +129,7 @@ window.App.initGeometry = ->
   App.ship.geometry.vertices[5].x -= 1;
   App.ship.geometry.vertices[5].z += 10;
 
-  App.ship.position.set(-0.5,-3,0)
+  App.ship.position.set(0,-3,0)
   # App.ship.centroid.set(0,0,0)
   App.shipParent.add(App.ship)
 
@@ -144,7 +146,7 @@ window.App.initGeometry = ->
   window.App.target = new THREE.Mesh(targetGeometry, targetMaterial)
   # App.target.eulerOrder = "YXZ";
   App.target.side = THREE.DoubleSide;
-  App.target.position.set(-0.025,-0.05,1.5)
+  App.target.position.set(0.03,0.0,1.5)
   App.target.rotation.y = +Math.PI;
   App.shipParent.add(App.target);
 
@@ -201,6 +203,18 @@ window.App.addBox = (options = {}) ->
   
   App.boxes.push(box)
   App.scene.add(box)
+
+window.App.fire = () ->
+  material = new THREE.MeshLambertMaterial({ color: 0x00ff00, ambient: 0x00ff00 })
+  shot = new THREE.Mesh( new THREE.CubeGeometry(1, 1, 4), material)
+  shot.position.set(-1, -4, 5)
+  App.shots.push(shot)
+  App.shipParent.add(shot) 
+
+  shot = new THREE.Mesh( new THREE.CubeGeometry(1, 1, 4), material)
+  shot.position.set(1, -4, 5)
+  App.shots.push(shot)
+  App.shipParent.add(shot)
 
 
 window.App.updateInput = (delta) ->
@@ -280,6 +294,11 @@ window.App.animate = ->
       if not (box.position.z > App.camera.position.z - 200)
         App.scene.remove(box)
         App.addBox({aheadOnly: true})
+
+    for shot in App.shots
+      shot.position.z += delta * 800
+      if not Math.abs(shot.position.z - App.camera.position.z) < 1000
+        App.scene.remove(shot)
 
     App.boxes = App.boxes.filter (box) -> box.position.z > App.camera.position.z - 200
   else

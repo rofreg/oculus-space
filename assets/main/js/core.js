@@ -40,10 +40,10 @@ window.ondeviceorientation = function(event) {
 }
 
 // Reset gyroscope
-document.ontouchstart = function(e){
-  if (window.App && App.data && App.data.cX){
-    App.adjustment.cX = App.data.cX;
-    App.adjustment.cY = App.data.cY;
-    App.adjustment.cZ = App.data.cZ;
-  }
-}
+// document.ontouchstart = function(e){
+//   if (window.App && App.data && App.data.cX){
+//     App.adjustment.cX = App.data.cX;
+//     App.adjustment.cY = App.data.cY;
+//     App.adjustment.cZ = App.data.cZ;
+//   }
+// }

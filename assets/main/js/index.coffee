@@ -28,10 +28,15 @@ socket.on "room: data", (data) ->
   for key, value of data
     # console.log("#{key} = #{value}")
     if typeof value == "number"
+      if App.recalibration and App.recalibration[key]
+        App.data[key] -= App.recalibration[key]
+        value -= App.recalibration[key]
       $("##{key}").text(value.toFixed(2))
     else
       $("##{key}").text(value)
-  # $('#data').html("x: #{data.controllerX.toFixed(2)}<br>x: #{data.controllerY.toFixed(2)}<br>z: #{data.controllerZ.toFixed(2)}")
+
+socket.on "fire", (data) ->
+  App.fire()
 
 socket.on "server: controller disconnected", (data) ->
   $('#hud .controller .disconnected, .overlay').fadeIn(250);
@@ -45,6 +50,9 @@ document.addEventListener 'keydown', (event) ->
     # window.App.bodyAngle = -Math.PI / 2
     # window.App.bodyVerticalAngle = 0
     App.recalibration = {
+      cX: App.data.cX,
+      cY: App.data.cY,
+      cZ: App.data.cZ,
       viewAngle: App.viewAngle,
       bodyAngle: App.bodyAngle,
       bodyVerticalAngle: App.bodyVerticalAngle
@@ -53,3 +61,5 @@ document.addEventListener 'keydown', (event) ->
     App.speed += 0.2
   else if event.keyCode == 83
     App.speed = Math.max(App.speed - 0.2, 0)
+  else if event.keyCode == 65
+    App.fire()
