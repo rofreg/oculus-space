@@ -18,13 +18,17 @@
 
   socket.on('connect', function(data) {
     if (App.DEBUG_MODE) {
-      return socket.emit('init: add controller');
+      socket.emit('init: add controller');
+    }
+    if (App.refreshTimeout) {
+      clearInterval(App.refreshTimeout);
+      return $('#disconnected').fadeOut(500);
     }
   });
 
   socket.on("disconnect", function(data) {
     $('#disconnected').fadeIn(500);
-    return setTimeout("location.href = location.href", 4500);
+    return App.refreshTimeout = setTimeout("location.href = location.href", 4500);
   });
 
   socket.on("server: client disconnected", function(data) {

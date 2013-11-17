@@ -1,15 +1,7 @@
 window.App =
   room: null,
   data: {},
-  bridgeOrientationUpdated: (quatValues) ->
-    for key, value of quatValues
-      $("#o#{key.toUpperCase()}").text(value.toFixed(2))
-  bridgeConnected: () ->
-    $('#hud .oculus .disconnected').fadeOut(250)
-    $('#hud .oculus .connected').fadeIn(250)
-  bridgeDisconnected: () ->
-    $('#hud .oculus .disconnected').fadeIn(250)
-    $('#hud .oculus .connected').fadeOut(250)
+  useRift: true
   
 socket = io.connect('/')
 
@@ -43,11 +35,6 @@ socket.on "server: controller disconnected", (data) ->
   $('#hud .controller .disconnected').fadeIn(250);
   $('#hud .controller .connected').fadeOut(250);
 
-oculusBridge = new OculusBridge({
-  "debug" : true,
-  "onOrientationUpdate" : App.bridgeOrientationUpdated,
-  # "onConfigUpdate"      : bridgeConfigUpdated,
-  "onConnect"           : App.bridgeConnected,
-  "onDisconnect"        : App.bridgeDisconnected
-});
-oculusBridge.connect()
+document.addEventListener 'keydown', (event) ->
+  if event.keyCode == 68
+    $('.debug').toggle()

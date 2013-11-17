@@ -11,10 +11,13 @@ socket.on 'connect', (data) ->
   if App.DEBUG_MODE
     # for testing: immediately connect to the first available room
     socket.emit 'init: add controller'
+  if App.refreshTimeout
+    clearInterval(App.refreshTimeout)
+    $('#disconnected').fadeOut(500)
 
 socket.on "disconnect", (data) ->
   $('#disconnected').fadeIn(500)
-  setTimeout("location.href = location.href", 4500)
+  App.refreshTimeout = setTimeout("location.href = location.href", 4500)
 
 socket.on "server: client disconnected", (data) ->
   $('#disconnected').fadeIn(500)

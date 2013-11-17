@@ -47,52 +47,58 @@
         </div>
       </div>
     </div>
-    <div id="oculus_debug">
-      OCULUS DATA
+    <div id="oculus_debug" class="debug">
+      OCULUS DATA<br>
       <table id="data">
         <tr>
           <td>x</td>
-          <td id="oX"></td>
+          <td id="oX">??</td>
         </tr>
         <tr>
           <td>y</td>
-          <td id="oY"></td>
+          <td id="oY">??</td>
         </tr>
         <tr>
           <td>z</td>
-          <td id="oZ"></td>
+          <td id="oZ">??</td>
         </tr>
         <tr>
           <td>w</td>
-          <td id="oW"></td>
+          <td id="oW">??</td>
         </tr>
       </table>
     </div>
-    <div id="mobile_debug">
-      MOBILE DATA
+    <div id="mobile_debug" class="debug">
+      MOBILE DATA<br>
       <table id="data">
         <tr>
           <td>x</td>
-          <td id="cX"></td>
+          <td id="cX">??</td>
         </tr>
         <tr>
           <td>y</td>
-          <td id="cY"></td>
+          <td id="cY">??</td>
         </tr>
         <tr>
           <td>z</td>
-          <td id="cZ"></td>
+          <td id="cZ">??</td>
         </tr>
       </table>
     </div>
+
+    <div id="viewport"></div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="/assets/main/js/jquery-1.9.0.min.js"><\/script>')</script>
     <script src="/assets/main/js/underscore-min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/assets/main/js/OculusBridge.min.js"></script>
+    <script src="/assets/main/js/three.min.r59.js"></script>
+    <script src="/assets/main/js/RiftCamera.js"></script>
+    <script src="/assets/main/js/SpaceControls.js"></script>
     <script src="/assets/main/js/core.js"></script>
     <script src="/assets/main/js/index.js"></script>
+    <script src="/assets/main/js/oculus.js"></script>
 
     <script>
         var _gaq=[['_setAccount','UA-38204926-1'],['_trackPageview']];
