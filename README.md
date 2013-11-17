@@ -1,6 +1,6 @@
 # Oculus Space
 
-Oculus Space is a WebGl demo using both the Oculus Rift (optional, with oculus-bridge installed) and a smartphone as a gyroscopic motion controller. It was created in 24 hours for #HackThat in Providence, RI.
+Oculus Space is a WebGL demo using both the Oculus Rift (optional, with oculus-bridge installed) and a smartphone as a gyroscopic motion controller. It was created in 24 hours for #HackThat in Providence, RI.
 
 ## How it works
 
