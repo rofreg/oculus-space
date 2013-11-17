@@ -216,6 +216,12 @@ window.App.fire = () ->
   App.shots.push(shot)
   App.shipParent.add(shot)
 
+  shot_sound = document.getElementById('shot_sound')
+  shot_sound.pause()
+  shot_sound.volume = 0.3
+  shot_sound.currentTime = 0.0
+  shot_sound.play()
+
 
 window.App.updateInput = (delta) ->
   # speed up over time

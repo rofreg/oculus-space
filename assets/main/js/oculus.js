@@ -183,7 +183,7 @@
   };
 
   window.App.fire = function() {
-    var material, shot;
+    var material, shot, shot_sound;
     material = new THREE.MeshLambertMaterial({
       color: 0x00ff00,
       ambient: 0x00ff00
@@ -195,7 +195,12 @@
     shot = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 4), material);
     shot.position.set(1, -4, 5);
     App.shots.push(shot);
-    return App.shipParent.add(shot);
+    App.shipParent.add(shot);
+    shot_sound = document.getElementById('shot_sound');
+    shot_sound.pause();
+    shot_sound.volume = 0.3;
+    shot_sound.currentTime = 0.0;
+    return shot_sound.play();
   };
 
   window.App.updateInput = function(delta) {
