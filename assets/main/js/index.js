@@ -53,6 +53,21 @@
     return App.fire();
   });
 
+  socket.on("boost", function(data) {
+    clearInterval(App.speedAdjustment);
+    if (data.on) {
+      return window.App.speedAdjustment = setInterval(function() {
+        App.speed = Math.max(1.7, App.speed);
+        return App.speed = Math.min(3.5, App.speed + 0.2);
+      }, 50);
+    } else {
+      return window.App.speedAdjustment = setInterval(function() {
+        App.speed = Math.min(2.8, App.speed);
+        return App.speed = Math.max(1.0, App.speed - 0.2);
+      }, 50);
+    }
+  });
+
   socket.on("server: controller disconnected", function(data) {
     $('#hud .controller .disconnected, .overlay').fadeIn(250);
     $('#hud .controller .connected').fadeOut(250);

@@ -38,6 +38,19 @@ socket.on "room: data", (data) ->
 socket.on "fire", (data) ->
   App.fire()
 
+socket.on "boost", (data) ->
+  clearInterval(App.speedAdjustment)
+  if (data.on)
+    window.App.speedAdjustment = setInterval ->
+      App.speed = Math.max(1.7, App.speed)
+      App.speed = Math.min(3.5, App.speed + 0.2)
+    , 50
+  else
+    window.App.speedAdjustment = setInterval ->
+      App.speed = Math.min(2.8, App.speed)
+      App.speed = Math.max(1.0, App.speed - 0.2)
+    , 50
+
 socket.on "server: controller disconnected", (data) ->
   $('#hud .controller .disconnected, .overlay').fadeIn(250);
   $('#hud .controller .connected').fadeOut(250);
