@@ -40,6 +40,7 @@
     App.room = data.room;
     $('#room_id').text(data.room);
     $('#mobile_hud').fadeIn(300);
+    $('#lobby').fadeOut(300);
     return setInterval(function() {
       return socket.emit('broadcast', {
         room: App.room,

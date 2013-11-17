@@ -2,7 +2,7 @@ window.App =
   room: null,
   data: {},
   adjustment: {cX:0, cY:0, cZ:0},
-  utils: {}
+  utils: {},
   DEBUG_MODE: false
   
 socket = io.connect('/')
@@ -27,6 +27,7 @@ socket.on "init: connected to room", (data) ->
   App.room = data.room
   $('#room_id').text(data.room)
   $('#mobile_hud').fadeIn(300)
+  $('#lobby').fadeOut(300)
   setInterval ->
     socket.emit 'broadcast', {room: App.room, event: "room: data", data: {
       cX: App.utils.normalize(App.data.cX - App.adjustment.cX),
