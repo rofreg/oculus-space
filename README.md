@@ -15,8 +15,10 @@ Go to http://oculus-space.herokuapp.com to see it in action. You'll need a WebGL
 
 ## Credits
 Built by [@rofreg](http://twitter.com/rofreg) for the [HackThat hackathon](http://hack-that.com), November 2013.
-Music is "Spacefighter" by cerror
-Code is heavily based on the OculusBridge [first-person example](http://instrument.github.io/oculus-bridge/examples/first_person.html). You'll need the [oculus-bridge](https://github.com/Instrument/oculus-bridge) executable installed to enable Oculus Rift support.
+Music is "Spacefighter" by cerror.
+Ship texture by [FrostBo](http://frostbo.deviantart.com/art/Hull-Textures-pack-1-for-spaceship-286898019).
+Code is heavily based on the OculusBridge [first-person example](http://instrument.github.io/oculus-bridge/examples/first_person.html).
+You'll need the [oculus-bridge](https://github.com/Instrument/oculus-bridge) executable installed to enable Oculus Rift support.
 
 ## License
 
