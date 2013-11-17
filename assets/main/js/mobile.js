@@ -11,7 +11,7 @@
       cZ: 0
     },
     utils: {},
-    DEBUG_MODE: true
+    DEBUG_MODE: false
   };
 
   socket = io.connect('/');

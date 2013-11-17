@@ -3,7 +3,7 @@ window.App =
   data: {},
   adjustment: {cX:0, cY:0, cZ:0},
   utils: {}
-  DEBUG_MODE: true
+  DEBUG_MODE: false
   
 socket = io.connect('/')
 
