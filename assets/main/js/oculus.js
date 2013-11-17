@@ -126,10 +126,10 @@
       transparent: true,
       opacity: 0.75
     });
-    targetGeometry = new THREE.PlaneGeometry(0.15, 0.15, 1, 1);
+    targetGeometry = new THREE.PlaneGeometry(0.25, 0.25, 1, 1);
     window.App.target = new THREE.Mesh(targetGeometry, targetMaterial);
     App.target.side = THREE.DoubleSide;
-    App.target.position.set(0.03, 0.0, 1.5);
+    App.target.position.set(0.0, -0.02, 3);
     App.target.rotation.y = +Math.PI;
     App.shipParent.add(App.target);
     floorTexture = new THREE.ImageUtils.loadTexture("/assets/textures/tile.jpg");
