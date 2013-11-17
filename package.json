@@ -9,11 +9,6 @@
       "socket.io": "0.9.13",
       "supervisor": "0.5.0"
    },
-   // "domains": [
-   //    "thumbwar.me",
-   //    "www.thumbwar.me"
-   // ],
-   // "subdomain": "thumbwar",
    "scripts": {
       "start": "app.js"
    },
