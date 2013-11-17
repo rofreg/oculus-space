@@ -13,7 +13,7 @@ app.configure () ->
   }))
   app.use '/assets', express.static(__dirname + "/assets")
 
-server.listen(5000)
+server.listen(process.env.PORT || 5000)
 io.set 'log level', 1
 
 app.get '/', (req, res) ->
