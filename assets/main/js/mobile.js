@@ -84,34 +84,38 @@
   };
 
   document.ontouchstart = function() {
-    socket.emit('broadcast', {
-      room: App.room,
-      event: "fire",
-      data: {}
-    });
-    return window.App.boostTimeout = setTimeout(function() {
+    if (App.room) {
       socket.emit('broadcast', {
         room: App.room,
-        event: "boost",
-        data: {
-          on: true
-        }
+        event: "fire",
+        data: {}
       });
-      return window.App.boostTimeout = void 0;
-    }, 500);
+      return window.App.boostTimeout = setTimeout(function() {
+        socket.emit('broadcast', {
+          room: App.room,
+          event: "boost",
+          data: {
+            on: true
+          }
+        });
+        return window.App.boostTimeout = void 0;
+      }, 500);
+    }
   };
 
   document.ontouchend = function() {
-    if (window.App.boostTimeout) {
-      return clearTimeout(App.boostTimeout);
-    } else {
-      return socket.emit('broadcast', {
-        room: App.room,
-        event: "boost",
-        data: {
-          on: false
-        }
-      });
+    if (App.room) {
+      if (window.App.boostTimeout) {
+        return clearTimeout(App.boostTimeout);
+      } else {
+        return socket.emit('broadcast', {
+          room: App.room,
+          event: "boost",
+          data: {
+            on: false
+          }
+        });
+      }
     }
   };
 

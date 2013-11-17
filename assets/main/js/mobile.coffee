@@ -55,14 +55,16 @@ App.utils.normalize = (number, range = 360) ->
     number
 
 document.ontouchstart =  ->
-  socket.emit 'broadcast', {room: App.room, event: "fire", data: {}}
-  window.App.boostTimeout = setTimeout ->
-    socket.emit 'broadcast', {room: App.room, event: "boost", data: {on: true}}
-    window.App.boostTimeout = undefined
-  , 500
+  if App.room
+    socket.emit 'broadcast', {room: App.room, event: "fire", data: {}}
+    window.App.boostTimeout = setTimeout ->
+      socket.emit 'broadcast', {room: App.room, event: "boost", data: {on: true}}
+      window.App.boostTimeout = undefined
+    , 500
 
 document.ontouchend = ->
-  if window.App.boostTimeout
-    clearTimeout(App.boostTimeout)
-  else
-    socket.emit 'broadcast', {room: App.room, event: "boost", data: {on: false}}
+  if App.room
+    if window.App.boostTimeout
+      clearTimeout(App.boostTimeout)
+    else
+      socket.emit 'broadcast', {room: App.room, event: "boost", data: {on: false}}
