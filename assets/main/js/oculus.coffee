@@ -22,7 +22,6 @@ window.App.init = ->
         App.data["o#{key.toUpperCase()}"] = value
 
       # Do first-person style controls (like the Tuscany demo) using the rift and keyboard.
-
       # TODO: Don't instantiate new objects in here, these should be re-used to avoid garbage collection.
 
       # make a quaternion for the the body angle rotated about the Y axis.
@@ -35,7 +34,6 @@ window.App.init = ->
       # multiply the body rotation by the Rift rotation.
       quat.multiply(quatCam)
 
-
       # Make a vector pointing along the Z axis and rotate it accoring to the combined look/body angle.
       xzVector = new THREE.Vector3(0, 0, 1)
       xzVector.applyQuaternion(quat)
@@ -46,12 +44,6 @@ window.App.init = ->
 
       # Apply the combined look/body angle to the camera.
       App.camera.quaternion.copy(quat)
-
-      # if App.recalibration
-      #   App.recalibration.xRot = 0 unless App.recalibration.xRot
-      #   App.recalibration.xRot += 0.01
-      #   # App.camera.rotation.y += App.recalibration.xRot
-      #   App.camera.rotation.y += App.recalibration.viewAngle
         
     "onConfigUpdate"      : (config) ->
       App.riftCam.setHMD(config)
@@ -111,26 +103,25 @@ window.App.initGeometry = ->
   App.shipParent.eulerOrder = "YXZ";
   App.scene.add(App.shipParent)
 
-  material = new THREE.MeshLambertMaterial({color: 0x445566, ambient: 0x151515})
+
+  shipTexture = new THREE.ImageUtils.loadTexture( "/assets/textures/ship.png" );
+  shipTexture.wrapS = shipTexture.wrapT = THREE.RepeatWrapping; 
+  shipTexture.repeat.set( 1, 1 );
+  shipTexture.anisotropy = 32;
+  material = new THREE.MeshLambertMaterial( { map: shipTexture, transparent:true, opacity:1.0, color: 0x000000 } );
+  # material = new THREE.MeshLambertMaterial({color: 0x445566, ambient: 0x151515, opacity: 0.0})
   window.App.ship = new THREE.Mesh( new THREE.CubeGeometry(1,1,1), material)
   App.ship.eulerOrder = "YXZ";
 
   App.ship.geometry.vertices[0].x += 1;
   App.ship.geometry.vertices[0].z += 10;
-
   App.ship.geometry.vertices[1].x += 3;
-  # App.ship.geometry.vertices[1].y += 1;
   App.ship.geometry.vertices[1].z -= 10;
-
   App.ship.geometry.vertices[4].x -= 3;
-  # App.ship.geometry.vertices[4].y += 1;
   App.ship.geometry.vertices[4].z -= 10;
-
   App.ship.geometry.vertices[5].x -= 1;
   App.ship.geometry.vertices[5].z += 10;
-
   App.ship.position.set(0,-3,0)
-  # App.ship.centroid.set(0,0,0)
   App.shipParent.add(App.ship)
 
   # targeting reticule
@@ -140,8 +131,6 @@ window.App.initGeometry = ->
   targetTexture.anisotropy = 32;
   targetMaterial = new THREE.MeshLambertMaterial( { map: targetTexture, transparent:true, opacity:0.75 } );
   targetGeometry = new THREE.PlaneGeometry(0.15, 0.15, 1, 1);
-  # targetGeometry = new THREE.CubeGeometry(2, 2, 2);
-  # targetMaterial = new THREE.MeshLambertMaterial({ color: Math.round(Math.random() * 16777215), ambient: 0x151515 })
   
   window.App.target = new THREE.Mesh(targetGeometry, targetMaterial)
   # App.target.eulerOrder = "YXZ";
@@ -182,7 +171,10 @@ window.App.initGeometry = ->
   App.scene.add(floor);
 
 window.App.addBox = (options = {}) ->
-  material = new THREE.MeshLambertMaterial({ color: Math.round(Math.random() * 16777215), ambient: 0x151515 })
+  if Math.random() > 0.3
+    material = new THREE.MeshLambertMaterial({ color: Math.round(Math.random() * 16777215), ambient: 0x151515 })
+  else
+    material = new THREE.MeshPhongMaterial({ color: Math.round(Math.random() * 16777215), ambient: 0x151515, specular: 0xffffff })
     
   height = Math.random() * 25 + 5
   width = height + (Math.random() * 6 - 3)
@@ -224,8 +216,7 @@ window.App.fire = () ->
 
 
 window.App.updateInput = (delta) ->
-  # speed up over time
-  step        = 40 * delta * App.speed #Math.pow(1.3, ((App.time - App.startTime)/10.0));
+  step        = 40 * delta * App.speed
   turn_speed  = 0.05 * delta
 
   # Update ship position
@@ -234,56 +225,19 @@ window.App.updateInput = (delta) ->
   if App.data.cZ
     App.bodyVerticalAngle += App.data.cZ * turn_speed
 
-  # App.bodyAngle = Math.max(App.bodyAngle, -Math.PI)
-  # App.bodyAngle = Math.min(App.bodyAngle, 0)
-  # App.bodyVerticalAngle = Math.max(App.bodyVerticalAngle, -Math.PI / 2)
-  # App.bodyVerticalAngle = Math.min(App.bodyVerticalAngle, Math.PI / 2)
-
-  # App.bodyPosition.z += step * Math.pow(1.5, ((App.time - App.startTime)/10))
-  # console.log(step * (2^((App.time - App.startTime)/1)))
-  # App.bodyPosition.y += App.bodyVerticalAngle * step;
-  # console.log(App.bodyAngle)
-  # App.bodyPosition.x += step;
-
-  # App.bodyPosition.x = Math.max(App.bodyPosition.x, -100)
-  # App.bodyPosition.x = Math.min(App.bodyPosition.x, 100)
-
-  # console.log(App.bodyVerticalAngle)
-
   App.bodyPosition.x += Math.sin(App.bodyAngle) * step;
   App.bodyPosition.y -= Math.sin(App.bodyVerticalAngle) * step;
   App.bodyPosition.z -= Math.cos(App.bodyAngle) * step;
   
-  # update the camera position when rendering to the oculus rift.
-  if App.useRift
-    App.camera.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z)
-    App.camera.rotation.x += -App.bodyVerticalAngle
+  App.camera.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z)
+  App.camera.rotation.x += -App.bodyVerticalAngle
 
-    App.shipParent.position.set(
-      App.bodyPosition.x,
-      App.bodyPosition.y,
-      App.bodyPosition.z)
-
-    # App.shipParent.position.set(
-    #   App.bodyPosition.x ,# + Math.sin(App.bodyAngle) * 10,
-    #   App.bodyPosition.y - Math.sin(App.bodyVerticalAngle) * 10 - 4,
-    #   App.bodyPosition.z + Math.cos(App.bodyVerticalAngle) * 10 - 4)# - Math.cos(App.bodyAngle) * 10);
-
-    App.shipParent.rotation.y = -App.bodyAngle - Math.PI
-    App.shipParent.rotation.x = App.bodyVerticalAngle  # * -Math.cos(App.bodyAngle) # / (180 / Math.PI)
-
-    # App.ship.rotation.y = App.camera.rotation.y + Math.PI
-    # App.ship.rotation.x = -App.camera.rotation.x# + Math.PI
-    # App.ship.rotation.z = -App.camera.rotation.z #+ Math.PI
-
-    # App.shipParent.rotation.x = App.camera.rotation.x
-    # App.shipParent.rotation.y = App.camera.rotation.y
-    # App.shipParent.rotation.z = App.camera.rotation.z
-    # App.target.position.set(
-    #   App.bodyPosition.x + Math.sin(App.bodyAngle) * 1,
-    #   App.bodyPosition.y - Math.sin(App.bodyVerticalAngle) * 1,
-    #   App.bodyPosition.z - Math.cos(App.bodyAngle) * 1);
-    # App.headlights.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z)
+  App.shipParent.position.set(
+    App.bodyPosition.x,
+    App.bodyPosition.y,
+    App.bodyPosition.z)
+  App.shipParent.rotation.y = -App.bodyAngle - Math.PI
+  App.shipParent.rotation.x = App.bodyVerticalAngle
 
 
 window.App.animate = ->

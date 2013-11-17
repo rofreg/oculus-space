@@ -80,7 +80,7 @@
   };
 
   window.App.initGeometry = function() {
-    var floor, floorGeometry, floorMaterial, floorTexture, i, material, targetGeometry, targetMaterial, targetTexture, _i;
+    var floor, floorGeometry, floorMaterial, floorTexture, i, material, shipTexture, targetGeometry, targetMaterial, targetTexture, _i;
     window.App.boxes = [];
     for (i = _i = 0; _i <= 250; i = ++_i) {
       App.addBox();
@@ -89,9 +89,15 @@
     window.App.shipParent = new THREE.Object3D();
     App.shipParent.eulerOrder = "YXZ";
     App.scene.add(App.shipParent);
+    shipTexture = new THREE.ImageUtils.loadTexture("/assets/textures/ship.png");
+    shipTexture.wrapS = shipTexture.wrapT = THREE.RepeatWrapping;
+    shipTexture.repeat.set(1, 1);
+    shipTexture.anisotropy = 32;
     material = new THREE.MeshLambertMaterial({
-      color: 0x445566,
-      ambient: 0x151515
+      map: shipTexture,
+      transparent: true,
+      opacity: 1.0,
+      color: 0x000000
     });
     window.App.ship = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), material);
     App.ship.eulerOrder = "YXZ";
@@ -159,10 +165,18 @@
     if (options == null) {
       options = {};
     }
-    material = new THREE.MeshLambertMaterial({
-      color: Math.round(Math.random() * 16777215),
-      ambient: 0x151515
-    });
+    if (Math.random() > 0.3) {
+      material = new THREE.MeshLambertMaterial({
+        color: Math.round(Math.random() * 16777215),
+        ambient: 0x151515
+      });
+    } else {
+      material = new THREE.MeshPhongMaterial({
+        color: Math.round(Math.random() * 16777215),
+        ambient: 0x151515,
+        specular: 0xffffff
+      });
+    }
     height = Math.random() * 25 + 5;
     width = height + (Math.random() * 6 - 3);
     if (Math.random() > 0.1) {
@@ -216,13 +230,11 @@
     App.bodyPosition.x += Math.sin(App.bodyAngle) * step;
     App.bodyPosition.y -= Math.sin(App.bodyVerticalAngle) * step;
     App.bodyPosition.z -= Math.cos(App.bodyAngle) * step;
-    if (App.useRift) {
-      App.camera.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
-      App.camera.rotation.x += -App.bodyVerticalAngle;
-      App.shipParent.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
-      App.shipParent.rotation.y = -App.bodyAngle - Math.PI;
-      return App.shipParent.rotation.x = App.bodyVerticalAngle;
-    }
+    App.camera.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
+    App.camera.rotation.x += -App.bodyVerticalAngle;
+    App.shipParent.position.set(App.bodyPosition.x, App.bodyPosition.y, App.bodyPosition.z);
+    App.shipParent.rotation.y = -App.bodyAngle - Math.PI;
+    return App.shipParent.rotation.x = App.bodyVerticalAngle;
   };
 
   window.App.animate = function() {
