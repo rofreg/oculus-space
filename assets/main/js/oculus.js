@@ -36,12 +36,16 @@
         return App.riftCam.setHMD(config);
       },
       "onConnect": function() {
+        App.useRift = true;
         $('#hud .oculus .disconnected').fadeOut(250);
-        return $('#hud .oculus .connected').fadeIn(250);
+        $('#hud .oculus .connected').fadeIn(250);
+        return $('body').addClass('useRift');
       },
       "onDisconnect": function() {
+        App.useRift = false;
         $('#hud .oculus .disconnected').fadeIn(250);
-        return $('#hud .oculus .connected').fadeOut(250);
+        $('#hud .oculus .connected').fadeOut(250);
+        return $('body').removeClass('useRift');
       }
     });
     oculusBridge.connect();
@@ -58,6 +62,8 @@
     window.App.camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.01, 10000);
     App.camera.useQuaternion = true;
     App.camera.eulerOrder = "YXZ";
+    App.camera.fov *= 5 / 3.0;
+    App.camera.updateProjectionMatrix();
     App.camera.position.set(100, 15, 100);
     App.camera.lookAt(App.scene.position);
     window.App.renderer = new THREE.WebGLRenderer({
@@ -238,7 +244,7 @@
   };
 
   window.App.animate = function() {
-    var box, delta, shot, _i, _j, _len, _len1, _ref, _ref1;
+    var box, delta, quat, shot, xzVector, _i, _j, _len, _len1, _ref, _ref1;
     delta = App.clock.getDelta();
     App.time += delta;
     if (App.controllerConnected || true) {
@@ -274,6 +280,13 @@
     if (App.useRift) {
       return App.riftCam.render(App.scene, App.camera);
     } else {
+      quat = new THREE.Quaternion();
+      quat.setFromAxisAngle(App.bodyAxis, -App.bodyAngle);
+      xzVector = new THREE.Vector3(0, 0, 1);
+      xzVector.applyQuaternion(quat);
+      App.viewAngle = Math.atan2(xzVector.z, xzVector.x) + Math.PI;
+      App.camera.quaternion.copy(quat);
+      App.camera.rotation.x += -App.bodyVerticalAngle;
       return App.renderer.render(App.scene, App.camera);
     }
   };

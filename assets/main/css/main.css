@@ -357,14 +357,14 @@ textarea {
   position: absolute;
   left: 0;
   text-align: left;
+  background: rgba(0,0,0,0.6);
+  min-height: 50px;
+  min-width: 123px;
 }
 #hud .controller{
   right: 0;
   left: auto;
   text-align: right;
-}
-#hud .controller{
-  background: rgba(0,0,0,0.6);
 }
 #hud .disconnected .status{
   color: #ff1a1a;
@@ -427,6 +427,7 @@ textarea {
 }
 
 .overlay{
+  display: none;
   position: absolute;
   z-index: 99;
   top: 50%;
@@ -438,6 +439,9 @@ textarea {
   text-align: center;
   padding: 5px;
   font-size: 10px;
+}
+body.useRift .overlay{
+  display: block;
 }
 .overlay.left, img.targeting.left{
   left: 29%;

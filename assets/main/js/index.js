@@ -5,8 +5,9 @@
   window.App = {
     room: null,
     data: {},
-    useRift: true,
-    controllerConnected: false
+    useRift: false,
+    controllerConnected: false,
+    musicPlaying: true
   };
 
   socket = io.connect('/');
@@ -92,6 +93,13 @@
       return App.speed = Math.max(App.speed - 0.2, 0);
     } else if (event.keyCode === 65) {
       return App.fire();
+    } else if (event.keyCode === 77) {
+      if (App.musicPlaying) {
+        document.getElementById('music').pause();
+      } else {
+        document.getElementById('music').play();
+      }
+      return App.musicPlaying = !App.musicPlaying;
     }
   });
 

@@ -48,11 +48,15 @@ window.App.init = ->
     "onConfigUpdate"      : (config) ->
       App.riftCam.setHMD(config)
     "onConnect"           : ->
+      App.useRift = true
       $('#hud .oculus .disconnected').fadeOut(250)
       $('#hud .oculus .connected').fadeIn(250)
+      $('body').addClass('useRift')
     "onDisconnect"        : ->
+      App.useRift = false
       $('#hud .oculus .disconnected').fadeIn(250)
       $('#hud .oculus .connected').fadeOut(250)
+      $('body').removeClass('useRift')
   })
   oculusBridge.connect()
   window.App.riftCam = new THREE.OculusRiftEffect(App.renderer);
@@ -69,6 +73,8 @@ window.App.initScene = ->
   window.App.camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.01, 10000);
   App.camera.useQuaternion = true;
   App.camera.eulerOrder = "YXZ";
+  App.camera.fov *= 5/3.0;
+  App.camera.updateProjectionMatrix();
 
   App.camera.position.set(100, 15, 100);
   App.camera.lookAt(App.scene.position);
@@ -268,6 +274,29 @@ window.App.animate = ->
   if App.useRift
     App.riftCam.render(App.scene, App.camera)
   else
+    # adjust camera to point forwards
+    # make a quaternion for the the body angle rotated about the Y axis.
+    quat = new THREE.Quaternion()
+    quat.setFromAxisAngle(App.bodyAxis, -App.bodyAngle)
+
+    # make a quaternion for the current orientation of the Rift
+    # quatCam = new THREE.Quaternion(quatValues.x, quatValues.y, quatValues.z, quatValues.w)
+
+    # multiply the body rotation by the Rift rotation.
+    # quat.multiply(quatCam)
+
+    # Make a vector pointing along the Z axis and rotate it accoring to the combined look/body angle.
+    xzVector = new THREE.Vector3(0, 0, 1)
+    xzVector.applyQuaternion(quat)
+
+    # Compute the X/Z angle based on the combined look/body angle.  This will be used for FPS style movement controls
+    # so you can steer with a combination of the keyboard and by moving your head.
+    App.viewAngle = Math.atan2(xzVector.z, xzVector.x) + Math.PI
+
+    # Apply the combined look/body angle to the camera.
+    App.camera.quaternion.copy(quat)
+    App.camera.rotation.x += -App.bodyVerticalAngle
+
     App.renderer.render(App.scene, App.camera)
 
 
